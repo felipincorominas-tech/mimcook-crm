@@ -15,7 +15,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f4f0; colo
 .kpi-pill span { color: #f5c842; font-weight: 700; font-size: 14px; }
 .save-indicator { font-size: 11px; color: #22c55e; padding: 4px 10px; border-radius: 10px; background: rgba(34,197,94,0.1); }
 
-.tabs { background: white; border-bottom: 1px solid #e5e5e5; padding: 0 24px; display: flex; gap: 0; }
+.tabs { background: white; border-bottom: 1px solid #e5e5e5; padding: 0 24px; display: flex; gap: 0; overflow-x: auto; }
 .tab { padding: 14px 18px; font-size: 13px; cursor: pointer; border-bottom: 2px solid transparent; color: #666; white-space: nowrap; transition: all 0.15s; }
 .tab:hover { color: #1a1a1a; }
 .tab.active { color: #1a1a1a; border-bottom-color: #f5c842; font-weight: 600; }
@@ -34,6 +34,8 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f4f0; colo
 .btn-danger { background: #fdeaea; color: #b91c1c; border-color: #fca5a5; }
 .btn-danger:hover { background: #fee2e2; }
 .btn.active { background: #1a1a1a; color: white; border-color: #1a1a1a; }
+.btn-export { background: #e8f4fd; color: #1a6fa0; border-color: #bfdbfe; }
+.btn-export:hover { background: #dbeafe; }
 
 /* KANBAN */
 .kanban { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 16px; align-items: flex-start; }
@@ -82,7 +84,6 @@ td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: #fafafa; }
 
-/* Editable cells */
 .editable { cursor: pointer; border-radius: 4px; padding: 2px 4px; min-width: 40px; display: inline-block; }
 .editable:hover { background: #f0f0f0; outline: 1px dashed #d1d5db; }
 .editable:focus { background: white !important; outline: 2px solid #f5c842; border-radius: 4px; cursor: text; }
@@ -95,12 +96,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .badge-ganado { background: #e8f9e8; color: #2d7a2d; }
 .badge-enviada { background: #fef9e7; color: #b45309; }
 .badge-perdida { background: #fdeaea; color: #b91c1c; }
-.badge-contactado { background: #e8f4fd; color: #1a6fa0; }
-.badge-nocontactado { background: #f3f4f6; color: #6b7280; }
-.badge-nocontesta { background: #fff0f0; color: #b91c1c; }
-.badge-alta { background: #fff3e0; color: #b45309; }
-.badge-media { background: #f3f4f6; color: #6b7280; }
-.badge-marcha { background: #e8f4fd; color: #1a6fa0; }
 
 /* DEMOS */
 .demos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
@@ -141,7 +136,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .kpi-val { font-size: 30px; font-weight: 800; color: #1a1a1a; }
 .kpi-label { font-size: 12px; color: #888; margin-top: 4px; }
 .kpi-sub { font-size: 11px; color: #aaa; margin-top: 2px; }
-.section-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
 
 /* MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
@@ -156,6 +150,9 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .field input:focus, .field select:focus, .field textarea:focus { border-color: #f5c842; }
 .field textarea { resize: vertical; min-height: 70px; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+/* BACKUP BANNER */
+.backup-banner { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: #92400e; }
 </style>
 </head>
 <body>
@@ -169,6 +166,8 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
     <div class="kpi-pill">Pipeline <span id="hdr-pipeline">—</span></div>
     <div class="kpi-pill">Proformas <span id="hdr-proformas">—</span></div>
     <div class="kpi-pill">Ganadas <span id="hdr-ventas">—</span></div>
+    <button class="btn btn-export" onclick="exportData()" style="font-size:11px">💾 Exportar backup</button>
+    <button class="btn" onclick="importData()" style="font-size:11px;background:#f0f9e8;color:#2d7a2d;border-color:#bbf7d0">📂 Importar</button>
     <div class="save-indicator" id="save-ind" style="display:none">✓ Guardado</div>
   </div>
 </div>
@@ -271,22 +270,17 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 
 <div id="view-kpis" class="view">
   <div class="kpi-grid" id="kpi-grid"></div>
-
   <div style="font-size:15px;font-weight:700;margin-bottom:14px;margin-top:4px">
     ✅ Ventas cerradas
     <span style="font-size:12px;font-weight:400;color:#888;margin-left:8px">Solo proformas con estado Ganado</span>
   </div>
   <div class="table-wrap" style="margin-bottom:20px">
     <table>
-      <thead><tr>
-        <th>Fecha</th><th>Cliente</th><th>Tipo</th><th>Modelo</th><th>Gas</th>
-        <th>Uds</th><th>Precio/ud (€)</th><th>Total s/IVA</th><th>Responsable</th>
-      </tr></thead>
+      <thead><tr><th>Fecha</th><th>Cliente</th><th>Tipo</th><th>Modelo</th><th>Gas</th><th>Uds</th><th>Precio/ud (€)</th><th>Total s/IVA</th><th>Responsable</th></tr></thead>
       <tbody id="ventas-tbody"></tbody>
       <tfoot id="ventas-tfoot"></tfoot>
     </table>
   </div>
-
   <div style="font-size:15px;font-weight:700;margin-bottom:14px">📦 Cartera histórica (pre-CRM)</div>
   <div class="table-wrap">
     <table>
@@ -302,6 +296,9 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 <div class="modal-bg" id="modal-bg">
   <div class="modal" id="modal-inner"></div>
 </div>
+
+<!-- IMPORT INPUT -->
+<input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
 
 <script>
 // ===================== DEFAULT DATA =====================
@@ -336,69 +333,71 @@ const DEFAULT = {
     {id:27, name:"Café Balear", sub:"Menorca · formación realizada", tipo:"Cliente final", prioridad:"Alta", stage:7, zona:"Baleares"},
   ],
   distribuidores: [
-    {id:1,  nombre:"Pilsa", zona:"Andalucía", provincia:"Andalucía", tipo:"Mixto horeca", contacto:"Victor Madera", cargo:"Comercial", tel:"609057754", email:"v.madera@pilsa.com", prioridad:"Alta", estado:"contactado", notas:"Cliente ICC, potencial exportación. Multisede: Granada, Mallorca, Canarias, Barcelona, Madrid, Sevilla, México, RD, Maldivas..."},
-    {id:2,  nombre:"Suministros Unic", zona:"Andalucía", provincia:"Sevilla", tipo:"Maquinaria Horeca", contacto:"Jorge", cargo:"Comercial", tel:"627489819", email:"", prioridad:"Alta", estado:"contactado", notas:"Cliente ICC y Mimcook. Pendiente demo en Sevilla con comerciales y cliente final."},
+    {id:1,  nombre:"Pilsa", zona:"Andalucía", provincia:"Andalucía", tipo:"Mixto horeca", contacto:"Victor Madera", cargo:"Comercial", tel:"609057754", email:"v.madera@pilsa.com", prioridad:"Alta", estado:"contactado", notas:"Cliente ICC, potencial exportación."},
+    {id:2,  nombre:"Suministros Unic", zona:"Andalucía", provincia:"Sevilla", tipo:"Maquinaria Horeca", contacto:"Jorge", cargo:"Comercial", tel:"627489819", email:"", prioridad:"Alta", estado:"contactado", notas:"Cliente ICC y Mimcook. Pendiente demo en Sevilla."},
     {id:3,  nombre:"Frio Muñoz", zona:"Murcia", provincia:"Murcia", tipo:"Maquinaria Horeca", contacto:"—", cargo:"", tel:"", email:"info@friomunoz.com", prioridad:"—", estado:"no contactado", notas:""},
-    {id:4,  nombre:"Cerdà Obrador Alimentació", zona:"Baleares", provincia:"Baleares", tipo:"Alimentación horeca", contacto:"María", cargo:"Compras", tel:"971647911", email:"", prioridad:"Media", estado:"no contactado", notas:"Importantes en Baleares. Falta identificar decisor."},
-    {id:5,  nombre:"Gas I Fred", zona:"Baleares", provincia:"Ibiza", tipo:"Maquinaria horeca", contacto:"Jordi", cargo:"Comercial", tel:"696946940", email:"", prioridad:"Alta", estado:"contactado", notas:"Vendió 3-4 Mimcooks antes. Retomando. Correo enviado para demo."},
+    {id:4,  nombre:"Cerdà Obrador Alimentació", zona:"Baleares", provincia:"Baleares", tipo:"Alimentación horeca", contacto:"María", cargo:"Compras", tel:"971647911", email:"", prioridad:"Media", estado:"no contactado", notas:"Importantes en Baleares."},
+    {id:5,  nombre:"Gas I Fred", zona:"Baleares", provincia:"Ibiza", tipo:"Maquinaria horeca", contacto:"Jordi", cargo:"Comercial", tel:"696946940", email:"", prioridad:"Alta", estado:"contactado", notas:"Vendió 3-4 Mimcooks antes. Retomando."},
     {id:6,  nombre:"ALVAREZ EQUIPMENT & SOLUTIONS", zona:"Baleares", provincia:"Palma", tipo:"Distribuidor horeca", contacto:"Antonia Ramis / Gabriel Griñán", cargo:"Comercial / Dir. Global Proyectos", tel:"971201800", email:"jitka.malkova@hbyalvarez.com", prioridad:"Alta", estado:"demo agendada", notas:"Mallorca, Canarias, RD. Demo 5 jun a las 13h."},
-    {id:7,  nombre:"Mercagroc", zona:"Baleares", provincia:"Mallorca", tipo:"Alimentación horeca", contacto:"—", cargo:"", tel:"971771769", email:"", prioridad:"Media", estado:"no contactado", notas:"Presencia local Mallorca. Validar fit horeca."},
-    {id:8,  nombre:"Cristadela", zona:"Baleares", provincia:"Menorca", tipo:"Suministros horeca", contacto:"—", cargo:"", tel:"971481382", email:"", prioridad:"Alta", estado:"no contactado", notas:"Prospección."},
-    {id:9,  nombre:"Benejam Refrigeración", zona:"Baleares", provincia:"Menorca", tipo:"Montaje cocinas", contacto:"Juanma", cargo:"Propietario", tel:"971380818", email:"", prioridad:"Alta", estado:"no contesta", notas:"Montó cocina a Café Balear (4 Mimcooks). Potencial colaboración."},
-    {id:10, nombre:"Cocineros Canarias", zona:"Canarias", provincia:"Canarias", tipo:"Horeca", contacto:"José Francisco", cargo:"Propietario", tel:"629157396", email:"canariascocinacb@gmail.com", prioridad:"Alta", estado:"pendiente de demo", notas:"Proforma ganada. Pendiente formación y feria en Canarias."},
-    {id:11, nombre:"Hotelgas", zona:"Canarias", provincia:"Tenerife", tipo:"Maquinaria horeca", contacto:"Laura Méndez", cargo:"Compras", tel:"667581941", email:"laura.mendez@hostelgastenerife.com", prioridad:"Media", estado:"no contactado", notas:"Cliente ICC previo. Identificar decisor."},
-    {id:12, nombre:"Oms y Viñes", zona:"Cataluña", provincia:"Barcelona", tipo:"Maquinaria horeca", contacto:"Toni Mestres", cargo:"Compras", tel:"671319968", email:"tmestres@oyv.es", prioridad:"Alta", estado:"pendiente de demo", notas:"Muy buen fit. Cliente ICC (sifones y cargas). Pendiente fechas demo en sus instalaciones."},
-    {id:13, nombre:"Equip Vic", zona:"Cataluña", provincia:"Vic", tipo:"Hoteles horeca", contacto:"Àngel Rierola", cargo:"Propietario", tel:"667676312", email:"info@equipvic.com", prioridad:"Alta", estado:"contactado", notas:"Especializado en hoteles. Pertenece a Hotelaria. 7 comerciales (3 Girona, 4 Vic). Quiere demo conjunta con comerciales y clientes."},
+    {id:7,  nombre:"Mercagroc", zona:"Baleares", provincia:"Mallorca", tipo:"Alimentación horeca", contacto:"—", cargo:"", tel:"971771769", email:"", prioridad:"Media", estado:"no contactado", notas:""},
+    {id:8,  nombre:"Cristadela", zona:"Baleares", provincia:"Menorca", tipo:"Suministros horeca", contacto:"—", cargo:"", tel:"971481382", email:"", prioridad:"Alta", estado:"no contactado", notas:""},
+    {id:9,  nombre:"Benejam Refrigeración", zona:"Baleares", provincia:"Menorca", tipo:"Montaje cocinas", contacto:"Juanma", cargo:"Propietario", tel:"971380818", email:"", prioridad:"Alta", estado:"no contesta", notas:"Montó cocina a Café Balear (4 Mimcooks)."},
+    {id:10, nombre:"Cocineros Canarias", zona:"Canarias", provincia:"Canarias", tipo:"Horeca", contacto:"José Francisco", cargo:"Propietario", tel:"629157396", email:"canariascocinacb@gmail.com", prioridad:"Alta", estado:"pendiente de demo", notas:"Proforma ganada. Pendiente formación y feria."},
+    {id:11, nombre:"Hotelgas", zona:"Canarias", provincia:"Tenerife", tipo:"Maquinaria horeca", contacto:"Laura Méndez", cargo:"Compras", tel:"667581941", email:"laura.mendez@hostelgastenerife.com", prioridad:"Media", estado:"no contactado", notas:""},
+    {id:12, nombre:"Oms y Viñes", zona:"Cataluña", provincia:"Barcelona", tipo:"Maquinaria horeca", contacto:"Toni Mestres", cargo:"Compras", tel:"671319968", email:"tmestres@oyv.es", prioridad:"Alta", estado:"pendiente de demo", notas:"Muy buen fit. Cliente ICC."},
+    {id:13, nombre:"Equip Vic", zona:"Cataluña", provincia:"Vic", tipo:"Hoteles horeca", contacto:"Àngel Rierola", cargo:"Propietario", tel:"667676312", email:"info@equipvic.com", prioridad:"Alta", estado:"contactado", notas:"Especializado en hoteles. 7 comerciales."},
     {id:14, nombre:"Tomas Llobet", zona:"Cataluña", provincia:"Tarragona", tipo:"Montajes / maquinaria horeca", contacto:"Kiko", cargo:"Propietario", tel:"670230435", email:"", prioridad:"Media", estado:"contactado", notas:"Activo. Trabaja con nosotros."},
-    {id:15, nombre:"La Cartuja (Bunzl)", zona:"Cataluña", provincia:"Tarragona", tipo:"Suministros hostelería / menaje", contacto:"Joana Amezcua", cargo:"Comercial", tel:"977330360 / 629080282", email:"joana.amezcua@bunzlspain.com", prioridad:"Media", estado:"no contactado", notas:""},
-    {id:16, nombre:"Hostel Group", zona:"Cataluña", provincia:"Barcelona", tipo:"Montaje de cocinas", contacto:"Eduard", cargo:"Propietario", tel:"", email:"", prioridad:"Media", estado:"contactado", notas:"Reunión de toma de contacto bien. Pendiente agendar demo."},
-    {id:17, nombre:"H-10 Hoteles", zona:"Cataluña", provincia:"Barcelona", tipo:"Cadena hoteles", contacto:"Nuria y Joan", cargo:"Directores operativos", tel:"", email:"", prioridad:"Alta", estado:"demo agendada", notas:"Demo 15 jun 11:00h en H10 Marina Barcelona. Asisten directores operativos de la cadena."},
-    {id:18, nombre:"Procuina Proyectos", zona:"Cataluña", provincia:"Girona", tipo:"Montaje cocinas", contacto:"Eduard", cargo:"Propietario", tel:"661926565", email:"", prioridad:"Alta", estado:"demo agendada", notas:"Demo 13/05 realizada. Zona Lloret de Mar / Blanes. Pendiente demo con su base de clientes."},
-    {id:19, nombre:"Complet Hotel", zona:"Cataluña", provincia:"Girona", tipo:"Hotel / partner potencial", contacto:"Dani", cargo:"Comercial", tel:"", email:"dani@complethotel.com", prioridad:"Media", estado:"contactado", notas:"Cliente histórico (2 GO en 2022). Validar si puede ser prescriptor o distribuidor local. Email enviado 5/5."},
-    {id:20, nombre:"Servitel", zona:"Madrid", provincia:"Madrid", tipo:"Integral horeca", contacto:"Juan Calderoni", cargo:"Propietario", tel:"629572474", email:"", prioridad:"Alta", estado:"contactado", notas:"Muy potente. Contacto Mahou. Interesados tb en Sete (F1 Madrid). Información enviada, pendiente agendar demo."},
-    {id:21, nombre:"Inhostel", zona:"Madrid", provincia:"Madrid", tipo:"Integral horeca", contacto:"—", cargo:"Propietario", tel:"607036318", email:"", prioridad:"Alta", estado:"no contactado", notas:"Cliente previo Mimcook. Explotar Madrid."},
-    {id:22, nombre:"Antonio de Miguel SL", zona:"Madrid", provincia:"Madrid", tipo:"Alimentación horeca", contacto:"David Sánchez", cargo:"Comercial", tel:"628708572", email:"dsanchez@antoniodemiguel.es", prioridad:"Alta", estado:"demo agendada", notas:"Demo 26/05 realizada. Asistieron comerciales de Madrid + grabación para el resto."},
-    {id:23, nombre:"DG3 Gastronomía SL", zona:"Valencia", provincia:"Valencia", tipo:"Horeca gastronómico", contacto:"David", cargo:"Propietario", tel:"647310903", email:"", prioridad:"Alta", estado:"demo agendada", notas:"Demo 6,7 y 8 julio. 15 cocineros/clientes cada día. Montar estrategia previa con Esteve."},
-    {id:24, nombre:"Original Paella", zona:"Valencia", provincia:"Valencia", tipo:"Menaje y material paellas", contacto:"Javier", cargo:"Propietario", tel:"662603982", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Mimcook antiguo pendiente de renovación. Tiene showcooking. Vendió en Hong Kong. Colabora en web. Acuerdo para nuevo Mimcook a cambio de demos."},
-    {id:25, nombre:"CBB Hostelería", zona:"Valencia", provincia:"L'Olleria", tipo:"Maquinaria, vajilla, mobiliario", contacto:"Vicente", cargo:"Propietario", tel:"659869766", email:"info@cbbhosteleria.es", prioridad:"Alta", estado:"demo agendada", notas:"Contacto de Fernando Reyes. Ha vendido NTGAS. Demo 29/05 con Fernando. Ojo solapamiento con Original Paella."},
-    {id:26, nombre:"Irual Distribución", zona:"Andalucía / Canarias", provincia:"Málaga / Canarias", tipo:"Porta paellas / menaje", contacto:"Raúl", cargo:"Propietario", tel:"607472565", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Delegación en Canarias. Fuerza en Málaga. Pendiente demo en mayo en Málaga y otra en Canarias."},
-    {id:27, nombre:"Exposervi", zona:"Levante", provincia:"Alicante", tipo:"Maquinaria horeca", contacto:"Pablo Alcalde", cargo:"Propietario", tel:"", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Les contacta Fernando Reyes. Email enviado por ICC."},
-    {id:28, nombre:"Ema Hostelería", zona:"Levante", provincia:"Alicante", tipo:"Menaje y equipamiento", contacto:"Ema Pujades", cargo:"Propietario", tel:"", email:"", prioridad:"Media", estado:"pendiente de demo", notas:"Demo con Fernando Reyes. Postpuesta de 28/05, pendiente confirmar próxima semana."},
-    {id:29, nombre:"Roig Profesional SL", zona:"Galicia", provincia:"Galicia", tipo:"Maquinaria", contacto:"Marcos", cargo:"Propietario", tel:"606394116", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Llamada 30/04. Pendiente configurar demo. Tienen que pedir Mimcook para las demos. Llamada finales de mayo."},
-    {id:30, nombre:"Jose Ignacio SL (IGR)", zona:"Asturias", provincia:"Oviedo", tipo:"Maquinaria", contacto:"Nacho", cargo:"Propietario", tel:"650946798", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Ha vendido bastante. Demo conjunta pendiente. Llamada 18/05 al volver de vacaciones."},
-    {id:31, nombre:"Jesús Cantos Sánchez SL", zona:"Castilla-La Mancha", provincia:"Albacete", tipo:"Maquinaria industrial hostelería", contacto:"Jesús Cantos", cargo:"Propietario", tel:"670246640", email:"", prioridad:"Alta", estado:"contactado", notas:"Contacto de Fernando Reyes. Ya tiene clientes interesados. Whatsapp enviado 6/5."},
-    {id:32, nombre:"Exclusivas Manero SA", zona:"País Vasco", provincia:"País Vasco", tipo:"Maquinaria hostelería", contacto:"Txema", cargo:"Propietario", tel:"943454309 / 610575024", email:"txema@exclusivasmanero.com", prioridad:"Alta", estado:"no contactado", notas:""},
+    {id:15, nombre:"La Cartuja (Bunzl)", zona:"Cataluña", provincia:"Tarragona", tipo:"Suministros hostelería", contacto:"Joana Amezcua", cargo:"Comercial", tel:"977330360", email:"joana.amezcua@bunzlspain.com", prioridad:"Media", estado:"no contactado", notas:""},
+    {id:16, nombre:"Hostel Group", zona:"Cataluña", provincia:"Barcelona", tipo:"Montaje de cocinas", contacto:"Eduard", cargo:"Propietario", tel:"", email:"", prioridad:"Media", estado:"contactado", notas:"Pendiente agendar demo."},
+    {id:17, nombre:"H-10 Hoteles", zona:"Cataluña", provincia:"Barcelona", tipo:"Cadena hoteles", contacto:"Nuria y Joan", cargo:"Directores operativos", tel:"", email:"", prioridad:"Alta", estado:"demo agendada", notas:"Demo 15 jun 11:00h en H10 Marina Barcelona."},
+    {id:18, nombre:"Procuina Proyectos", zona:"Cataluña", provincia:"Girona", tipo:"Montaje cocinas", contacto:"Eduard", cargo:"Propietario", tel:"661926565", email:"", prioridad:"Alta", estado:"demo agendada", notas:"Demo 13/05 realizada. Pendiente demo con clientes."},
+    {id:19, nombre:"Complet Hotel", zona:"Cataluña", provincia:"Girona", tipo:"Hotel / partner potencial", contacto:"Dani", cargo:"Comercial", tel:"", email:"dani@complethotel.com", prioridad:"Media", estado:"contactado", notas:"Cliente histórico (2 GO en 2022)."},
+    {id:20, nombre:"Servitel", zona:"Madrid", provincia:"Madrid", tipo:"Integral horeca", contacto:"Juan Calderoni", cargo:"Propietario", tel:"629572474", email:"", prioridad:"Alta", estado:"contactado", notas:"Muy potente. Contacto Mahou."},
+    {id:21, nombre:"Inhostel", zona:"Madrid", provincia:"Madrid", tipo:"Integral horeca", contacto:"—", cargo:"Propietario", tel:"607036318", email:"", prioridad:"Alta", estado:"no contactado", notas:"Cliente previo Mimcook."},
+    {id:22, nombre:"Antonio de Miguel SL", zona:"Madrid", provincia:"Madrid", tipo:"Alimentación horeca", contacto:"David Sánchez", cargo:"Comercial", tel:"628708572", email:"dsanchez@antoniodemiguel.es", prioridad:"Alta", estado:"demo agendada", notas:"Demo 26/05 realizada."},
+    {id:23, nombre:"DG3 Gastronomía SL", zona:"Valencia", provincia:"Valencia", tipo:"Horeca gastronómico", contacto:"David", cargo:"Propietario", tel:"647310903", email:"", prioridad:"Alta", estado:"demo agendada", notas:"Demo 6,7 y 8 julio. 15 cocineros/clientes cada día."},
+    {id:24, nombre:"Original Paella", zona:"Valencia", provincia:"Valencia", tipo:"Menaje y material paellas", contacto:"Javier", cargo:"Propietario", tel:"662603982", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Mimcook antiguo pendiente de renovación."},
+    {id:25, nombre:"CBB Hostelería", zona:"Valencia", provincia:"L'Olleria", tipo:"Maquinaria, vajilla, mobiliario", contacto:"Vicente", cargo:"Propietario", tel:"659869766", email:"info@cbbhosteleria.es", prioridad:"Alta", estado:"demo agendada", notas:"Demo 29/05 con Fernando."},
+    {id:26, nombre:"Irual Distribución", zona:"Andalucía / Canarias", provincia:"Málaga / Canarias", tipo:"Porta paellas / menaje", contacto:"Raúl", cargo:"Propietario", tel:"607472565", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Delegación en Canarias."},
+    {id:27, nombre:"Exposervi", zona:"Levante", provincia:"Alicante", tipo:"Maquinaria horeca", contacto:"Pablo Alcalde", cargo:"Propietario", tel:"", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:""},
+    {id:28, nombre:"Ema Hostelería", zona:"Levante", provincia:"Alicante", tipo:"Menaje y equipamiento", contacto:"Ema Pujades", cargo:"Propietario", tel:"", email:"", prioridad:"Media", estado:"pendiente de demo", notas:""},
+    {id:29, nombre:"Roig Profesional SL", zona:"Galicia", provincia:"Galicia", tipo:"Maquinaria", contacto:"Marcos", cargo:"Propietario", tel:"606394116", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:""},
+    {id:30, nombre:"Jose Ignacio SL (IGR)", zona:"Asturias", provincia:"Oviedo", tipo:"Maquinaria", contacto:"Nacho", cargo:"Propietario", tel:"650946798", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Ha vendido bastante."},
+    {id:31, nombre:"Jesús Cantos Sánchez SL", zona:"Castilla-La Mancha", provincia:"Albacete", tipo:"Maquinaria industrial hostelería", contacto:"Jesús Cantos", cargo:"Propietario", tel:"670246640", email:"", prioridad:"Alta", estado:"contactado", notas:"Ya tiene clientes interesados."},
+    {id:32, nombre:"Exclusivas Manero SA", zona:"País Vasco", provincia:"País Vasco", tipo:"Maquinaria hostelería", contacto:"Txema", cargo:"Propietario", tel:"943454309", email:"txema@exclusivasmanero.com", prioridad:"Alta", estado:"no contactado", notas:""},
     {id:33, nombre:"Comercial Hostelera del Norte", zona:"País Vasco", provincia:"Donosti", tipo:"Maquinaria hostelería", contacto:"Belén", cargo:"Propietario", tel:"902215066", email:"belen@comercialhostelera.com", prioridad:"Media", estado:"no contactado", notas:""},
-    {id:34, nombre:"Frinoxtel", zona:"Navarra", provincia:"Navarra", tipo:"Maquinaria", contacto:"Javier Malón", cargo:"Propietario", tel:"", email:"", prioridad:"Alta", estado:"contactado", notas:"Han pedido proforma. Hacer seguimiento y agendar demo."},
-    {id:35, nombre:"Hoalve", zona:"Castilla y León", provincia:"León", tipo:"—", contacto:"Luis Lopez", cargo:"Propietario", tel:"", email:"llopez@hoalve.es / cgarcia@hoalve.es", prioridad:"Alta", estado:"no contactado", notas:"Compran a ICC sifones y cargas de gas."},
+    {id:34, nombre:"Frinoxtel", zona:"Navarra", provincia:"Navarra", tipo:"Maquinaria", contacto:"Javier Malón", cargo:"Propietario", tel:"", email:"", prioridad:"Alta", estado:"contactado", notas:"Han pedido proforma."},
+    {id:35, nombre:"Hoalve", zona:"Castilla y León", provincia:"León", tipo:"—", contacto:"Luis Lopez", cargo:"Propietario", tel:"", email:"llopez@hoalve.es", prioridad:"Alta", estado:"no contactado", notas:""},
     {id:36, nombre:"Comeca Importação e Exportação SA", zona:"Portugal", provincia:"Portugal", tipo:"Maquinaria Horeca", contacto:"—", cargo:"", tel:"+351 219155600", email:"horeca@comeca.pt", prioridad:"Alta", estado:"contactado", notas:""},
   ],
   proformas: [
-    {id:1, num:"PF-001", cliente:"Cocineros Canarias", contacto:"José Francisco", tel:"629157396", provincia:"Canarias", tipo:"Distribuidor", modelo:"GO", tipoGas:"GP", unidades:2, precioUnit:"", responsable:"Felipe", estado:"Ganado", proximoPaso:"Seguimiento pago", fecha:"22/04/2026", notas:"Cliente ICC. Pendiente fabricación/envío. Posible demo y formación.", convertida:true},
+    {id:1, num:"PF-001", cliente:"Cocineros Canarias", contacto:"José Francisco", tel:"629157396", provincia:"Canarias", tipo:"Distribuidor", modelo:"GO", tipoGas:"GP", unidades:2, precioUnit:"", responsable:"Felipe", estado:"Ganado", proximoPaso:"Seguimiento pago", fecha:"22/04/2026", notas:"", convertida:true},
     {id:2, num:"PF-002", cliente:"Tomas Llobet", contacto:"Kiko", tel:"670230435", provincia:"Tarragona", tipo:"Cliente Final", modelo:"PRO", tipoGas:"", unidades:1, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Llamar", fecha:"22/04/2026", notas:"Proyecto hasta septiembre."},
-    {id:3, num:"A-5352", cliente:"Suministros Unic", contacto:"Jorge Gómez", tel:"627489819", provincia:"Cádiz", tipo:"Distribuidor", modelo:"GO", tipoGas:"GP", unidades:2, precioUnit:"2796.5", responsable:"Felipe", estado:"Ganado", proximoPaso:"Activar canal", fecha:"15/04/2026", notas:"Activar como canal, no solo venta puntual.", convertida:true},
+    {id:3, num:"A-5352", cliente:"Suministros Unic", contacto:"Jorge Gómez", tel:"627489819", provincia:"Cádiz", tipo:"Distribuidor", modelo:"GO", tipoGas:"GP", unidades:2, precioUnit:"2796.5", responsable:"Felipe", estado:"Ganado", proximoPaso:"Activar canal", fecha:"15/04/2026", notas:"", convertida:true},
     {id:4, num:"A-5313", cliente:"MAFIVINOS", contacto:"Matías", tel:"675862287", provincia:"Canarias", tipo:"Distribuidor", modelo:"GO + PRO", tipoGas:"GN", unidades:6, precioUnit:"", responsable:"Felipe", estado:"Perdida", proximoPaso:"Recuperación jun", fecha:"09/03/2026", notas:"Compró a la competencia."},
-    {id:5, num:"A-5305", cliente:"CHR EQUIPEMENTS SARL", contacto:"Mohamed", tel:"", provincia:"Marruecos", tipo:"Internacional", modelo:"GO + PRO", tipoGas:"GP", unidades:7, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Seguimiento email", fecha:"26/02/2026", notas:"Sin respuesta por email."},
-    {id:6, num:"A-5319", cliente:"Montnegre Fitty / Fiftyrest", contacto:"Joan Cinto", tel:"623966292", provincia:"Barcelona", tipo:"Cliente final", modelo:"GO", tipoGas:"GP", unidades:1, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Llamar", fecha:"12/03/2026", notas:"Validar interés actual."},
-    {id:7, num:"A-5317", cliente:"Arrocería Samm, S.L.", contacto:"Sergio", tel:"667787536", provincia:"Madrid", tipo:"Cliente final", modelo:"GO", tipoGas:"GP", unidades:4, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Llamar", fecha:"11/03/2026", notas:"Volumen potencial interesante."},
-    {id:8, num:"A-5331", cliente:"Rizmo Restaurante", contacto:"Santiago Navarro", tel:"615293642", provincia:"Murcia", tipo:"Cliente final", modelo:"PRO + GO", tipoGas:"GN", unidades:4, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Llamar", fecha:"18/03/2026", notas:"Lead web Mimcook."},
-    {id:9, num:"A-5343", cliente:"Arroz de la Tomasa", contacto:"Fernando Nuñez", tel:"651730950", provincia:"Navarra", tipo:"Cliente final", modelo:"GO", tipoGas:"GP", unidades:3, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Llamar", fecha:"08/04/2026", notas:"Argumento de volumen para cierre."},
+    {id:5, num:"A-5305", cliente:"CHR EQUIPEMENTS SARL", contacto:"Mohamed", tel:"", provincia:"Marruecos", tipo:"Internacional", modelo:"GO + PRO", tipoGas:"GP", unidades:7, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Seguimiento email", fecha:"26/02/2026", notas:""},
+    {id:6, num:"A-5319", cliente:"Montnegre Fitty / Fiftyrest", contacto:"Joan Cinto", tel:"623966292", provincia:"Barcelona", tipo:"Cliente final", modelo:"GO", tipoGas:"GP", unidades:1, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Llamar", fecha:"12/03/2026", notas:""},
+    {id:7, num:"A-5317", cliente:"Arrocería Samm, S.L.", contacto:"Sergio", tel:"667787536", provincia:"Madrid", tipo:"Cliente final", modelo:"GO", tipoGas:"GP", unidades:4, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Llamar", fecha:"11/03/2026", notas:""},
+    {id:8, num:"A-5331", cliente:"Rizmo Restaurante", contacto:"Santiago Navarro", tel:"615293642", provincia:"Murcia", tipo:"Cliente final", modelo:"PRO + GO", tipoGas:"GN", unidades:4, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Llamar", fecha:"18/03/2026", notas:""},
+    {id:9, num:"A-5343", cliente:"Arroz de la Tomasa", contacto:"Fernando Nuñez", tel:"651730950", provincia:"Navarra", tipo:"Cliente final", modelo:"GO", tipoGas:"GP", unidades:3, precioUnit:"", responsable:"Felipe", estado:"Enviada", proximoPaso:"Llamar", fecha:"08/04/2026", notas:""},
   ],
   demos: [
     {id:1, nombre:"Procuina", provincia:"Barcelona", zona:"Cataluña", tipo:"Distribuidor", contacto:"Eduard", tel:"", tipoOp:"demo", notas:"Demo en sus instalaciones el miércoles 13 a las 11:00h.", fecha:"13/05/2026"},
     {id:2, nombre:"Café Balear", provincia:"Menorca", zona:"Baleares", tipo:"Cliente final", contacto:"Josep", tel:"", tipoOp:"formacion", notas:"Formación jueves 14 por la mañana en Menorca.", fecha:"14/05/2026"},
-    {id:3, nombre:"Antonio de Miguel SL", provincia:"Madrid", zona:"Madrid", tipo:"Distribuidor", contacto:"David Sánchez", tel:"628708572", tipoOp:"demo", notas:"Evento 24/05 Finca Astible. Feria 25/05. Demo almacén 26/05 15-19h. Comerciales Madrid + grabación.", fecha:"26/05/2026"},
+    {id:3, nombre:"Antonio de Miguel SL", provincia:"Madrid", zona:"Madrid", tipo:"Distribuidor", contacto:"David Sánchez", tel:"628708572", tipoOp:"demo", notas:"Demo almacén 26/05 15-19h.", fecha:"26/05/2026"},
     {id:4, nombre:"Oms I Vinyes", provincia:"Barcelona", zona:"Cataluña", tipo:"Distribuidor", contacto:"Toni", tel:"", tipoOp:"presentacion", notas:"Presentación 02/06 a las 11:00h.", fecha:"02/06/2026"},
     {id:5, nombre:"Alvarez Group", provincia:"Palma", zona:"Baleares", tipo:"Distribuidor", contacto:"Maria", tel:"", tipoOp:"demo", notas:"Demo 5/06 a las 13:00h.", fecha:"05/06/2026"},
+    {id:6, nombre:"H-10 Hoteles", provincia:"Barcelona", zona:"Cataluña", tipo:"Cliente final", contacto:"Nuria y Joan", tel:"", tipoOp:"demo_clientes", notas:"Demo 15/06 a las 11:00h en H10 Marina Barcelona. Directores operativos de la cadena.", fecha:"15/06/2026"},
+    {id:7, nombre:"DG3 Gastronomía", provincia:"Valencia", zona:"Valencia", tipo:"Distribuidor", contacto:"David", tel:"647310903", tipoOp:"demo_clientes", notas:"Demo 6, 7 y 8 julio. 15 cocineros/clientes cada día. Montar estrategia previa con Esteve.", fecha:"06/07/2026"},
   ],
   acciones: [
     {id:1, accion:"Demo presencial con Socarrat", cliente:"Socarrat", responsable:"David Gomis", estado:"Pendiente", fecha:"27/04/2026", notas:""},
     {id:2, accion:"Llamar a David post-demo (Socarrat)", cliente:"Socarrat", responsable:"Felipe", estado:"Pendiente", fecha:"27/04/2026", notas:""},
     {id:3, accion:"Llamar a Servitel - Juan Calderoni", cliente:"Servitel", responsable:"Felipe", estado:"En marcha", fecha:"27/04/2026", notas:"Llamada hecha 27/04, pendiente fechas reunión."},
     {id:4, accion:"Hablar con Ana Ruiz sobre Original Paella", cliente:"Original Paella", responsable:"Felipe", estado:"En marcha", fecha:"27/04/2026", notas:"Pendiente nº de serie para enviar a fábrica."},
-    {id:5, accion:"Contactar Alvarez Group", cliente:"ALVAREZ EQUIPMENT", responsable:"Felipe", estado:"Pendiente", fecha:"25/04/2026", notas:"Validar potencial Baleares, Canarias y República Dominicana."},
-    {id:6, accion:"Llamar a Mercagroc", cliente:"Mercagroc", responsable:"Felipe", estado:"Pendiente", fecha:"25/04/2026", notas:"Presencia local Mallorca. Validar fit horeca."},
-    {id:7, accion:"Llamar a Cerdà Obrador Alimentació", cliente:"Cerdà Obrador", responsable:"Felipe", estado:"Pendiente", fecha:"25/04/2026", notas:"Importantes en Baleares. Falta decisor."},
+    {id:5, accion:"Contactar Alvarez Group", cliente:"ALVAREZ EQUIPMENT", responsable:"Felipe", estado:"Pendiente", fecha:"25/04/2026", notas:""},
+    {id:6, accion:"Llamar a Mercagroc", cliente:"Mercagroc", responsable:"Felipe", estado:"Pendiente", fecha:"25/04/2026", notas:""},
+    {id:7, accion:"Llamar a Cerdà Obrador Alimentació", cliente:"Cerdà Obrador", responsable:"Felipe", estado:"Pendiente", fecha:"25/04/2026", notas:""},
     {id:8, accion:"Seguimiento Cocineros Canarias", cliente:"Cocineros Canarias", responsable:"Felipe", estado:"Pendiente", fecha:"27/04/2026", notas:"Confirmar agenda feria Canarias y formación."},
     {id:9, accion:"Seguimiento cliente Socarrat", cliente:"Socarrat", responsable:"Felipe", estado:"Pendiente", fecha:"29/04/2026", notas:""},
   ],
@@ -406,14 +405,14 @@ const DEFAULT = {
     {id:1, cliente:"Eskocia Wurm S.L.", provincia:"Canarias", zona:"Canarias", producto:"Mimcook PRO GP", unidades:9, importe:34560, año:"2026", distribuidor:"Directo"},
     {id:2, cliente:"Suministros Unic, S.L.", provincia:"Cádiz", zona:"Andalucía", producto:"Mimcook GO GP", unidades:2, importe:5593, año:"2026", distribuidor:"Suministros Unic"},
     {id:3, cliente:"Maui Mojácar Beach Club", provincia:"Almería", zona:"Andalucía", producto:"GO y PRO", unidades:6, importe:0, año:"2026", distribuidor:"Exposervi"},
-    {id:4, cliente:"NOARUIZ SLU (La Cocina de Noa)", provincia:"Almería", zona:"Andalucía", producto:"Mimcook PRO GP", unidades:1, importe:0, año:"2025", distribuidor:"Irual"},
+    {id:4, cliente:"NOARUIZ SLU", provincia:"Almería", zona:"Andalucía", producto:"Mimcook PRO GP", unidades:1, importe:0, año:"2025", distribuidor:"Irual"},
     {id:5, cliente:"Ovidio Playa SL", provincia:"Málaga", zona:"Andalucía", producto:"GO Y PRO", unidades:6, importe:0, año:"2025", distribuidor:"—"},
     {id:6, cliente:"HOGAR HOTEL DIAZ SL", provincia:"Murcia", zona:"Andalucía", producto:"Mimcook PRO GP", unidades:6, importe:0, año:"2024", distribuidor:"—"},
     {id:7, cliente:"BRASSERIE EL POAL SL", provincia:"Córdoba", zona:"Andalucía", producto:"GO", unidades:1, importe:0, año:"2024", distribuidor:"Pilsa"},
   ],
   comisiones: [
-    {id:201, cliente:"Eskocia Wurm S.L.", fechaCierre:"14/04/2026", modelo:"PRO GP", unidades:9, importeVenta:34560, pctComision:"", importeComision:"", cobrada:"no", fechaCobro:"", notas:"Descuento excepcional por volumen. Cliente estratégico Canarias."},
-    {id:202, cliente:"Suministros Unic (Maria Trifulca)", fechaCierre:"27/04/2026", modelo:"GO GP", unidades:2, importeVenta:5593, pctComision:"", importeComision:"", cobrada:"no", fechaCobro:"", notas:"Albarán A64155. Precio distribuidor."},
+    {id:201, cliente:"Eskocia Wurm S.L.", fechaCierre:"14/04/2026", modelo:"PRO GP", unidades:9, importeVenta:34560, pctComision:"", importeComision:"", cobrada:"no", fechaCobro:"", notas:"Descuento excepcional por volumen."},
+    {id:202, cliente:"Suministros Unic (Maria Trifulca)", fechaCierre:"27/04/2026", modelo:"GO GP", unidades:2, importeVenta:5593, pctComision:"", importeComision:"", cobrada:"no", fechaCobro:"", notas:"Albarán A64155."},
   ]
 };
 
@@ -425,9 +424,7 @@ let nextId = 100;
 function fixDuplicateIds(arr) {
   const seen = new Set();
   return arr.map(item => {
-    if (seen.has(item.id)) {
-      item = { ...item, id: ++nextId };
-    }
+    if (seen.has(item.id)) item = { ...item, id: ++nextId };
     seen.add(item.id);
     return item;
   });
@@ -439,14 +436,8 @@ function loadState() {
     if (saved) {
       state = JSON.parse(saved);
       if (!state.comisiones) state.comisiones = [];
-      // Recalculate nextId from max existing id
-      const allIds = [
-        ...(state.pipeline||[]), ...(state.distribuidores||[]),
-        ...(state.proformas||[]), ...(state.demos||[]),
-        ...(state.acciones||[]), ...(state.comisiones||[]), ...(state.cartera||[])
-      ].map(x => typeof x.id === 'number' ? x.id : 0);
+      const allIds = [...(state.pipeline||[]),...(state.distribuidores||[]),...(state.proformas||[]),...(state.demos||[]),...(state.acciones||[]),...(state.comisiones||[]),...(state.cartera||[])].map(x=>typeof x.id==='number'?x.id:0);
       nextId = Math.max(100, ...allIds);
-      // Fix duplicate ids
       state.pipeline       = fixDuplicateIds(state.pipeline||[]);
       state.distribuidores = fixDuplicateIds(state.distribuidores||[]);
       state.proformas      = fixDuplicateIds(state.proformas||[]);
@@ -454,7 +445,6 @@ function loadState() {
       state.acciones       = fixDuplicateIds(state.acciones||[]);
       state.comisiones     = fixDuplicateIds(state.comisiones||[]);
       state.cartera        = fixDuplicateIds(state.cartera||[]);
-      // Migration: backfill responsable field on proformas that don't have it
       state.proformas.forEach(p => { if (!p.responsable) p.responsable = 'Felipe'; });
       return;
     }
@@ -475,6 +465,33 @@ function updateHeader() {
   document.getElementById('hdr-pipeline').textContent = state.pipeline.filter(p=>p.stage<5).length;
   document.getElementById('hdr-proformas').textContent = state.proformas.filter(p=>p.estado==='Enviada').length;
   document.getElementById('hdr-ventas').textContent = state.proformas.filter(p=>p.estado==='Ganado').length;
+}
+
+// ===================== EXPORT / IMPORT =====================
+function exportData() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `mimcook_crm_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+}
+function importData() { document.getElementById('import-file').click(); }
+function handleImport(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!imported.pipeline) { alert('Archivo no válido'); return; }
+      if (!confirm('¿Sobrescribir todos los datos actuales con el backup?')) return;
+      state = imported;
+      saveState();
+      location.reload();
+    } catch(err) { alert('Error al leer el archivo'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
 }
 
 // ===================== STAGES =====================
@@ -505,10 +522,10 @@ function renderKanban() {
       <div class="col-body" ondragover="dragOver(event)" ondrop="drop(event,${s.id})" ondragleave="dragLeave(event)">
         ${cards.map(c => {
           const acts = [];
-          if (c.fechaVisita) acts.push({emoji:'👀', tipo:'visita', fecha:c.fechaVisita});
-          if (c.fechaDemoInterna) acts.push({emoji:'🎬', tipo:'demo_interna', fecha:c.fechaDemoInterna});
-          if (c.fechaDemoClientes) acts.push({emoji:'🍽️', tipo:'demo_clientes', fecha:c.fechaDemoClientes});
-          if (c.fechaFormacion) acts.push({emoji:'🎓', tipo:'formacion', fecha:c.fechaFormacion});
+          if (c.fechaVisita) acts.push({emoji:'👀', fecha:c.fechaVisita});
+          if (c.fechaDemoInterna) acts.push({emoji:'🎬', fecha:c.fechaDemoInterna});
+          if (c.fechaDemoClientes) acts.push({emoji:'🍽️', fecha:c.fechaDemoClientes});
+          if (c.fechaFormacion) acts.push({emoji:'🎓', fecha:c.fechaFormacion});
           const actsHtml = acts.map(a => {
             const past = isDatePast(a.fecha);
             return `<span style="font-size:10px;color:${past?'#9ca3af':'#f5c842'};margin-right:4px">${a.emoji} ${a.fecha}</span>`;
@@ -536,16 +553,12 @@ function renderKanban() {
   });
 }
 
-function dragStart(e, id) {
-  dragId = id;
-  setTimeout(() => e.target.classList.add('dragging'), 0);
-}
+function dragStart(e, id) { dragId = id; setTimeout(() => e.target.classList.add('dragging'), 0); }
 function dragEnd(e) { e.target.classList.remove('dragging'); }
 function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
 function drop(e, stageId) {
-  e.preventDefault();
-  e.currentTarget.classList.remove('drag-over');
+  e.preventDefault(); e.currentTarget.classList.remove('drag-over');
   if (dragId === null) return;
   const card = state.pipeline.find(p => p.id === dragId);
   if (card) { card.stage = stageId; saveState(); renderKanban(); }
@@ -630,29 +643,22 @@ function renderProformas() {
       <td><span class="editable" contenteditable="true" onblur="updatePF(${p.id},'cliente',this.textContent)">${p.cliente}</span></td>
       <td><span class="editable" contenteditable="true" onblur="updatePF(${p.id},'contacto',this.textContent)">${p.contacto}</span><br>
         <span style="font-size:11px;color:#aaa"><span class="editable" contenteditable="true" onblur="updatePF(${p.id},'tel',this.textContent)">${p.tel}</span></span></td>
-      <td>
-        <select class="cell-select" onchange="updatePF(${p.id},'modelo',this.value)">
+      <td><select class="cell-select" onchange="updatePF(${p.id},'modelo',this.value)">
           ${['GO','PRO','GO + PRO','PRO + GO'].map(m=>`<option ${m===(p.modelo||'')?'selected':''}>${m}</option>`).join('')}
-        </select>
-      </td>
-      <td>
-        <select class="cell-select" onchange="updatePF(${p.id},'tipoGas',this.value)">
+        </select></td>
+      <td><select class="cell-select" onchange="updatePF(${p.id},'tipoGas',this.value)">
           ${['GP','GN',''].map(g=>`<option value="${g}" ${g===(p.tipoGas||'')?'selected':''}>${g||'—'}</option>`).join('')}
-        </select>
-      </td>
+        </select></td>
       <td><span class="editable" contenteditable="true" onblur="updatePFNum(${p.id},'unidades',this.textContent)" style="text-align:center;display:block;font-weight:600">${p.unidades}</span></td>
       <td><span class="editable" contenteditable="true" onblur="updatePFNum(${p.id},'precioUnit',this.textContent)">${p.precioUnit||''}</span></td>
       <td style="font-weight:700;color:${total?'#1a1a1a':'#aaa'}">${totalStr}</td>
-      <td>
-        <select class="cell-select" onchange="updatePF(${p.id},'responsable',this.value)">
+      <td><select class="cell-select" onchange="updatePF(${p.id},'responsable',this.value)">
           ${['Felipe','Esteve','Fernando','Otro'].map(r=>`<option ${r===(p.responsable||'Felipe')?'selected':''}>${r}</option>`).join('')}
-        </select>
-      </td>
-      <td>
-        <select class="cell-select" onchange="updatePF(${p.id},'estado',this.value)" style="font-weight:600;${p.estado==='Ganado'?'color:#2d7a2d':p.estado==='Perdida'?'color:#b91c1c':''}">
+        </select></td>
+      <td><select class="cell-select" onchange="updatePF(${p.id},'estado',this.value)" style="font-weight:600;${p.estado==='Ganado'?'color:#2d7a2d':p.estado==='Perdida'?'color:#b91c1c':''}">
           ${ESTADOS_PF.map(e=>`<option ${e===p.estado?'selected':''}>${e}</option>`).join('')}
         </select>
-        ${p.estado==='Ganado' && p.convertida ? '<span title="Añadida a cartera y comisiones" style="font-size:11px;color:#2d7a2d;margin-left:4px">✓ Contabilizada</span>' : ''}
+        ${p.estado==='Ganado' && p.convertida ? '<span title="Contabilizada" style="font-size:11px;color:#2d7a2d;margin-left:4px">✓</span>' : ''}
       </td>
       <td><span class="editable" contenteditable="true" onblur="updatePF(${p.id},'proximoPaso',this.textContent)">${p.proximoPaso}</span></td>
       <td style="max-width:160px"><span class="editable" contenteditable="true" onblur="updatePF(${p.id},'notas',this.textContent)" style="font-size:12px;color:#555;display:block">${p.notas}</span></td>
@@ -662,40 +668,14 @@ function renderProformas() {
 }
 
 function convertProformaToSale(p) {
-  if (p.convertida) return; // already processed
+  if (p.convertida) return;
   p.convertida = true;
   const total = (p.precioUnit && p.unidades) ? (+p.precioUnit * +p.unidades) : 0;
-
-  // 1. Add to cartera
-  state.cartera.push({
-    id: ++nextId,
-    cliente: p.cliente,
-    provincia: p.provincia || '—',
-    zona: '—',
-    producto: `Mimcook ${p.modelo||''} ${p.tipoGas||''}`.trim(),
-    unidades: +p.unidades || 0,
-    importe: total,
-    año: new Date().getFullYear().toString(),
-    distribuidor: p.tipo === 'Distribuidor' ? p.cliente : 'Directo',
-  });
-
-  // 2. Auto-create comisión if responsable is Felipe
+  state.cartera.push({ id: ++nextId, cliente: p.cliente, provincia: p.provincia||'—', zona:'—', producto:`Mimcook ${p.modelo||''} ${p.tipoGas||''}`.trim(), unidades:+p.unidades||0, importe:total, año:new Date().getFullYear().toString(), distribuidor:p.tipo==='Distribuidor'?p.cliente:'Directo' });
   const resp = (p.responsable||'').toLowerCase().trim();
-  if (resp === 'felipe' || resp === 'felipe (propietario)') {
+  if (resp === 'felipe') {
     if (!state.comisiones) state.comisiones = [];
-    state.comisiones.push({
-      id: ++nextId,
-      cliente: p.cliente,
-      fechaCierre: p.fecha || '',
-      modelo: `${p.modelo||''} ${p.tipoGas||''}`.trim(),
-      unidades: +p.unidades || 0,
-      importeVenta: total,
-      pctComision: '',
-      importeComision: '',
-      cobrada: 'no',
-      fechaCobro: '',
-      notas: `Auto-generada desde proforma ${p.num}`,
-    });
+    state.comisiones.push({ id:++nextId, cliente:p.cliente, fechaCierre:p.fecha||'', modelo:`${p.modelo||''} ${p.tipoGas||''}`.trim(), unidades:+p.unidades||0, importeVenta:total, pctComision:'', importeComision:'', cobrada:'no', fechaCobro:'', notas:`Auto-generada desde proforma ${p.num}` });
   }
   saveState();
 }
@@ -705,12 +685,7 @@ function updatePF(id, field, value) {
   if (!p) return;
   const prevEstado = p.estado;
   p[field] = value.trim();
-  // Trigger auto-conversion when marking as Ganado
-  if (field === 'estado' && value === 'Ganado' && prevEstado !== 'Ganado') {
-    convertProformaToSale(p);
-    renderKPIs();
-    renderComisiones();
-  }
+  if (field === 'estado' && value === 'Ganado' && prevEstado !== 'Ganado') { convertProformaToSale(p); renderKPIs(); renderComisiones(); }
   saveState(); renderProformas();
 }
 function updatePFNum(id, field, value) {
@@ -733,7 +708,6 @@ function setPFFilter(val) {
 // ===================== DEMOS =====================
 function isDatePast(dateStr) {
   if (!dateStr) return false;
-  // Format: DD/MM/AAAA or DD/MM/AAAA HH:MM
   const [datePart, timePart] = dateStr.split(' ');
   const parts = datePart.split('/');
   if (parts.length !== 3) return false;
@@ -742,49 +716,31 @@ function isDatePast(dateStr) {
   return d < new Date();
 }
 
-function demoCardId(d) { return typeof d.id === 'string' ? `'${d.id}'` : d.id; }
-
 function demoCard(d, past) {
-  const TIPO_LABELS = {
-    visita: '👀 Visita cliente',
-    demo_interna: '🎬 Demo interna',
-    demo_clientes: '🍽️ Demo clientes finales',
-    formacion: '🎓 Formación',
-    presentacion: '📊 Presentación',
-    demo: '🎬 Demo',
-  };
+  const TIPO_LABELS = { visita:'👀 Visita cliente', demo_interna:'🎬 Demo interna', demo_clientes:'🍽️ Demo clientes finales', formacion:'🎓 Formación', presentacion:'📊 Presentación', demo:'🎬 Demo' };
   const label = TIPO_LABELS[d.tipoOp] || d.tipoOp;
-  return `<div class="demo-card ${d.tipoOp||''} ${past?'pasada':''}">`+`
+  const idRef = typeof d.id === 'string' ? `'${d.id}'` : d.id;
+  return `<div class="demo-card ${d.tipoOp||''} ${past?'pasada':''}">
     ${d.fromPipeline
       ? `<span style="position:absolute;top:10px;right:10px;font-size:10px;color:#9ca3af;background:#f3f4f6;border-radius:4px;padding:1px 5px">📋 Pipeline</span>`
       : `<button class="card-del-btn" onclick="deleteDemo(${d.id})">✕</button>`}
     <span class="demo-type ${d.tipoOp}">${label}</span>
-    ${past
-      ? `<span style="font-size:10px;color:#9ca3af;margin-left:6px">✓ Realizada${d.manuallyRealized?' (manual)':''}</span>`
-      : `<span style="font-size:10px;color:#22c55e;margin-left:6px">⬤ Próxima</span>`}
+    ${past ? `<span style="font-size:10px;color:#9ca3af;margin-left:6px">✓ Realizada</span>` : `<span style="font-size:10px;color:#22c55e;margin-left:6px">⬤ Próxima</span>`}
     <div class="demo-name">${d.nombre}</div>
     <div class="demo-date">📅 ${d.fecha} · ${d.zona||d.provincia||''}</div>
     ${d.contacto?`<div style="font-size:12px;color:#888;margin-bottom:6px">👤 ${d.contacto}${d.tel?' · '+d.tel:''}</div>`:''}
     <div style="margin-bottom:8px">
       <div style="font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#999;font-weight:600;margin-bottom:4px">📝 Notas</div>
-      <div class="editable" contenteditable="true"
-        onblur="updateDemoField(${demoCardId(d)},'notas',this.textContent)"
-        style="font-size:12px;color:#444;min-height:32px;line-height:1.6;display:block;background:#f9f9f9;border-radius:6px;padding:6px 8px;border:1px solid #ebebeb"
-        data-placeholder="Añadir notas...">${d.notas||''}</div>
+      <div class="editable" contenteditable="true" onblur="updateDemoField(${idRef},'notas',this.textContent)" style="font-size:12px;color:#444;min-height:32px;line-height:1.6;display:block;background:#f9f9f9;border-radius:6px;padding:6px 8px;border:1px solid #ebebeb" data-placeholder="Añadir notas...">${d.notas||''}</div>
     </div>
     <div style="border-top:1px solid #f0f0f0;padding-top:8px;margin-top:4px">
-      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#999;font-weight:600;margin-bottom:4px">
-        ${past?'💬 Observaciones post-demo':'💬 Observaciones'}
-      </div>
-      <div class="editable" contenteditable="true"
-        onblur="updateDemoField(${demoCardId(d)},'observaciones',this.textContent)"
-        style="font-size:12px;color:#444;min-height:40px;line-height:1.6;display:block;background:${past?'#fffbeb':'#f9f9f9'};border-radius:6px;padding:6px 8px;border:1px solid ${past?'#fde68a':'#ebebeb'}"
-        data-placeholder="${past?'¿Cómo fue? ¿Próximos pasos?':'Añadir observaciones...'}">${d.observaciones||''}</div>
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#999;font-weight:600;margin-bottom:4px">${past?'💬 Observaciones post-demo':'💬 Observaciones'}</div>
+      <div class="editable" contenteditable="true" onblur="updateDemoField(${idRef},'observaciones',this.textContent)" style="font-size:12px;color:#444;min-height:40px;line-height:1.6;display:block;background:${past?'#fffbeb':'#f9f9f9'};border-radius:6px;padding:6px 8px;border:1px solid ${past?'#fde68a':'#ebebeb'}" data-placeholder="${past?'¿Cómo fue? ¿Próximos pasos?':'Añadir observaciones...'}">${d.observaciones||''}</div>
     </div>
     <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
       ${!past
-        ? `<button onclick="markRealized(${typeof d.id==='string'?`'${d.id}'`:d.id},true)" style="flex:1;padding:6px 10px;background:#f0f9e8;color:#2d7a2d;border:1px solid #bbf7d0;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">✓ Marcar realizada</button>`
-        : `<button onclick="markRealized(${typeof d.id==='string'?`'${d.id}'`:d.id},false)" style="flex:1;padding:6px 10px;background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;border-radius:6px;cursor:pointer;font-size:11px">↩ Mover a pendientes</button>
+        ? `<button onclick="markRealized(${idRef},true)" style="flex:1;padding:6px 10px;background:#f0f9e8;color:#2d7a2d;border:1px solid #bbf7d0;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">✓ Marcar realizada</button>`
+        : `<button onclick="markRealized(${idRef},false)" style="flex:1;padding:6px 10px;background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;border-radius:6px;cursor:pointer;font-size:11px">↩ Mover a pendientes</button>
            <button onclick="addFollowUpAction('${d.nombre.replace(/'/g,"\\'")}','${(d.zona||'').replace(/'/g,"\\'")}') " style="flex:1;padding:6px 10px;background:#fff3e0;color:#b45309;border:1px solid #fed7aa;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">➕ Crear acción</button>`
       }
     </div>
@@ -792,42 +748,15 @@ function demoCard(d, past) {
 }
 
 function getAllDemoItems() {
-  const ACT_TYPES = [
-    {field:'fechaVisita',      tipo:'visita'},
-    {field:'fechaDemoInterna', tipo:'demo_interna'},
-    {field:'fechaDemoClientes',tipo:'demo_clientes'},
-    {field:'fechaFormacion',   tipo:'formacion'},
-  ];
-
-  // Pipeline-derived items (source of truth for pipeline distributors)
+  const ACT_TYPES = [{field:'fechaVisita',tipo:'visita'},{field:'fechaDemoInterna',tipo:'demo_interna'},{field:'fechaDemoClientes',tipo:'demo_clientes'},{field:'fechaFormacion',tipo:'formacion'}];
   const pipelineItems = [];
   state.pipeline.forEach(card => {
-    ACT_TYPES.forEach(({field, tipo}) => {
-      if (card[field]) {
-        pipelineItems.push({
-          id: `p${card.id}_${tipo}`,
-          nombre: card.name,
-          zona: card.zona || '—',
-          contacto: '', tel: '',
-          tipoOp: tipo,
-          fecha: card[field],
-          notas: card.sub || '',
-          observaciones: card[`obs_${tipo}`] || '',
-          manuallyRealized: card[`done_${tipo}`] || false,
-          fromPipeline: true,
-          pipelineId: card.id,
-          pipelineField: `obs_${tipo}`,
-        });
-      }
+    ACT_TYPES.forEach(({field,tipo}) => {
+      if (card[field]) pipelineItems.push({ id:`p${card.id}_${tipo}`, nombre:card.name, zona:card.zona||'—', contacto:'', tel:'', tipoOp:tipo, fecha:card[field], notas:card.sub||'', observaciones:card[`obs_${tipo}`]||'', manuallyRealized:card[`done_${tipo}`]||false, fromPipeline:true, pipelineId:card.id });
     });
   });
-
-  // Standalone demos: only include if the name doesn't match any pipeline card
   const pipelineNames = new Set(state.pipeline.map(c => c.name.toLowerCase().trim()));
-  const standaloneItems = state.demos
-    .filter(d => !pipelineNames.has((d.nombre||'').toLowerCase().trim()))
-    .map(d => ({...d, fromPipeline: false}));
-
+  const standaloneItems = state.demos.filter(d => !pipelineNames.has((d.nombre||'').toLowerCase().trim())).map(d => ({...d, fromPipeline:false}));
   return [...pipelineItems, ...standaloneItems];
 }
 
@@ -840,9 +769,7 @@ function parseDemoDate(dateStr) {
   return new Date(+parts[2], +parts[1]-1, +parts[0], h||0, m||0);
 }
 
-function isRealized(d) {
-  return d.manuallyRealized || isDatePast(d.fecha);
-}
+function isRealized(d) { return d.manuallyRealized || isDatePast(d.fecha); }
 
 function markRealized(id, realized) {
   const sid = String(id);
@@ -859,16 +786,13 @@ function markRealized(id, realized) {
 }
 
 function addFollowUpAction(nombre, zona) {
-  openModal(`
-    <h2>➕ Acción de seguimiento</h2>
-    <p style="font-size:12px;color:#888;margin-bottom:14px">Se añadirá a la pestaña Acciones</p>
+  openModal(`<h2>➕ Acción de seguimiento</h2>
     <div class="field-group">
       <div class="field full"><label>Acción</label><input id="fa-accion" value="Seguimiento post-demo ${nombre}" style="width:100%"></div>
       <div class="field"><label>Cliente</label><input id="fa-cliente" value="${nombre}"></div>
       <div class="field"><label>Responsable</label><input id="fa-resp" value="Felipe"></div>
-      <div class="field"><label>Fecha (DD/MM/AAAA)</label><input id="fa-fecha" placeholder="${new Date().toLocaleDateString('es-ES')}"></div>
-      <div class="field"><label>Estado</label>
-        <select id="fa-estado"><option>Pendiente</option><option>En marcha</option></select></div>
+      <div class="field"><label>Fecha (DD/MM/AAAA)</label><input id="fa-fecha"></div>
+      <div class="field"><label>Estado</label><select id="fa-estado"><option>Pendiente</option><option>En marcha</option></select></div>
       <div class="field full"><label>Notas</label><textarea id="fa-notas"></textarea></div>
     </div>
     <div class="modal-footer">
@@ -880,85 +804,45 @@ function addFollowUpAction(nombre, zona) {
 function saveFollowUp() {
   const accion = document.getElementById('fa-accion').value.trim();
   if (!accion) return;
-  state.acciones.unshift({
-    id: ++nextId,
-    accion,
-    cliente: document.getElementById('fa-cliente').value.trim(),
-    responsable: document.getElementById('fa-resp').value.trim(),
-    fecha: document.getElementById('fa-fecha').value.trim() || new Date().toLocaleDateString('es-ES'),
-    estado: document.getElementById('fa-estado').value,
-    notas: document.getElementById('fa-notas').value.trim(),
-  });
+  state.acciones.unshift({ id:++nextId, accion, cliente:document.getElementById('fa-cliente').value.trim(), responsable:document.getElementById('fa-resp').value.trim(), fecha:document.getElementById('fa-fecha').value.trim()||new Date().toLocaleDateString('es-ES'), estado:document.getElementById('fa-estado').value, notas:document.getElementById('fa-notas').value.trim() });
   saveState(); closeModal(); renderAcciones();
-  // Switch to acciones tab
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.querySelector('.tab:nth-child(6)').classList.add('active');
+  document.querySelector('.tab:nth-child(5)').classList.add('active');
   document.getElementById('view-acciones').classList.add('active');
 }
 
 function renderDemos() {
   const proxSection = document.getElementById('demos-proximas-section');
   const realSection = document.getElementById('demos-realizadas-section');
-
   const typeFilters = ['visita','demo_interna','demo_clientes','formacion','presentacion','demo'];
   let all = getAllDemoItems();
   if (typeFilters.includes(demoFilter)) all = all.filter(d => d.tipoOp === demoFilter);
-
-  // Split by realized status (auto or manual)
-  const prox = all.filter(d => !isRealized(d))
-    .sort((a,b) => parseDemoDate(a.fecha) - parseDemoDate(b.fecha)); // ← closest first
-  const real = all.filter(d =>  isRealized(d))
-    .sort((a,b) => parseDemoDate(b.fecha) - parseDemoDate(a.fecha)); // ← most recent first
-
+  const prox = all.filter(d => !isRealized(d)).sort((a,b) => parseDemoDate(a.fecha) - parseDemoDate(b.fecha));
+  const real = all.filter(d =>  isRealized(d)).sort((a,b) => parseDemoDate(b.fecha) - parseDemoDate(a.fecha));
   const showProx = demoFilter !== 'realizada';
   const showReal = demoFilter !== 'proxima';
-
-  proxSection.innerHTML = showProx && prox.length ? `
-    <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:12px;display:flex;align-items:center;gap:8px">
-      <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>
-      Próximas (${prox.length})
-    </div>
-    <div class="demos-grid" style="margin-bottom:24px">${prox.map(d=>demoCard(d,false)).join('')}</div>` : '';
-
-  realSection.innerHTML = showReal && real.length ? `
-    <div style="font-size:13px;font-weight:700;color:#6b7280;margin-bottom:12px;display:flex;align-items:center;gap:8px">
-      <span style="width:8px;height:8px;border-radius:50%;background:#d1d5db;display:inline-block"></span>
-      Realizadas (${real.length})
-    </div>
-    <div class="demos-grid">${real.map(d=>demoCard(d,true)).join('')}</div>` : '';
-
-  if (!prox.length && !real.length)
-    proxSection.innerHTML = '<div style="color:#aaa;font-size:13px;padding:20px">No hay resultados para este filtro.</div>';
+  proxSection.innerHTML = showProx && prox.length ? `<div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>Próximas (${prox.length})</div><div class="demos-grid" style="margin-bottom:24px">${prox.map(d=>demoCard(d,false)).join('')}</div>` : '';
+  realSection.innerHTML = showReal && real.length ? `<div style="font-size:13px;font-weight:700;color:#6b7280;margin-bottom:12px;display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:#d1d5db;display:inline-block"></span>Realizadas (${real.length})</div><div class="demos-grid">${real.map(d=>demoCard(d,true)).join('')}</div>` : '';
+  if (!prox.length && !real.length) proxSection.innerHTML = '<div style="color:#aaa;font-size:13px;padding:20px">No hay resultados para este filtro.</div>';
 }
 
 function setDemoFilter(val) {
   demoFilter = val;
   ['all','prox','real','visita','demo_interna','demo_clientes','form'].forEach(k => document.getElementById('dm-'+k)?.classList.remove('active'));
   const map = {'all':'all','proxima':'prox','realizada':'real','formacion':'form'};
-  const key = map[val] || val;
-  document.getElementById('dm-'+key)?.classList.add('active');
+  document.getElementById('dm-'+(map[val]||val))?.classList.add('active');
   renderDemos();
 }
 
-function updateDemo(id, field, value) {
-  const d = state.demos.find(x=>x.id===id);
-  if (d) { d[field]=value.trim(); saveState(); }
-}
 function updateDemoField(id, field, value) {
-  // Pipeline-derived item: id is string like "p27_visita"
   if (typeof id === 'string' && id.startsWith('p')) {
     const parts = id.substring(1).split('_');
-    const cardId = +parts[0];
-    const tipo = parts.slice(1).join('_');
-    const card = state.pipeline.find(x=>x.id===cardId);
-    if (card) {
-      if (field === 'observaciones') card[`obs_${tipo}`] = value.trim();
-      if (field === 'notas') card.sub = value.trim();
-      saveState();
-    }
+    const card = state.pipeline.find(x=>x.id===+parts[0]);
+    if (card) { if (field==='observaciones') card[`obs_${parts.slice(1).join('_')}`]=value.trim(); if (field==='notas') card.sub=value.trim(); saveState(); }
   } else {
-    updateDemo(+id, field, value);
+    const d = state.demos.find(x=>x.id===+id);
+    if (d) { d[field]=value.trim(); saveState(); }
   }
 }
 
@@ -972,26 +856,12 @@ function deleteDemo(id) {
 function renderComisiones() {
   if (!state.comisiones) state.comisiones = [];
   const rows = state.comisiones.filter(c => comFilter==='all' || c.cobrada===comFilter);
-
-  const totalPendiente = state.comisiones.filter(c=>c.cobrada==='no')
-    .reduce((s,c)=>s+(+c.importeComision||0),0);
-  const totalCobrado = state.comisiones.filter(c=>c.cobrada==='si')
-    .reduce((s,c)=>s+(+c.importeComision||0),0);
-
+  const totalPendiente = state.comisiones.filter(c=>c.cobrada==='no').reduce((s,c)=>s+(+c.importeComision||0),0);
+  const totalCobrado = state.comisiones.filter(c=>c.cobrada==='si').reduce((s,c)=>s+(+c.importeComision||0),0);
   document.getElementById('com-resumen').innerHTML = `
-    <div class="kpi-card" style="min-width:160px">
-      <div class="kpi-val" style="font-size:22px;color:#22c55e">${totalCobrado>0?totalCobrado.toLocaleString('es-ES',{maximumFractionDigits:0})+'€':'—'}</div>
-      <div class="kpi-label">Comisiones cobradas</div>
-    </div>
-    <div class="kpi-card" style="min-width:160px">
-      <div class="kpi-val" style="font-size:22px;color:#f5c842">${totalPendiente>0?totalPendiente.toLocaleString('es-ES',{maximumFractionDigits:0})+'€':'—'}</div>
-      <div class="kpi-label">Pendientes de cobro</div>
-    </div>
-    <div class="kpi-card" style="min-width:160px">
-      <div class="kpi-val" style="font-size:22px">${state.comisiones.length}</div>
-      <div class="kpi-label">Ventas registradas</div>
-    </div>`;
-
+    <div class="kpi-card" style="min-width:160px"><div class="kpi-val" style="font-size:22px;color:#22c55e">${totalCobrado>0?totalCobrado.toLocaleString('es-ES',{maximumFractionDigits:0})+'€':'—'}</div><div class="kpi-label">Comisiones cobradas</div></div>
+    <div class="kpi-card" style="min-width:160px"><div class="kpi-val" style="font-size:22px;color:#f5c842">${totalPendiente>0?totalPendiente.toLocaleString('es-ES',{maximumFractionDigits:0})+'€':'—'}</div><div class="kpi-label">Pendientes de cobro</div></div>
+    <div class="kpi-card" style="min-width:160px"><div class="kpi-val" style="font-size:22px">${state.comisiones.length}</div><div class="kpi-label">Ventas registradas</div></div>`;
   document.getElementById('com-tbody').innerHTML = rows.map(c => {
     const total = (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
     const totalStr = total ? total.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+'€' : '—';
@@ -1001,16 +871,12 @@ function renderComisiones() {
       <td><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'modelo',this.textContent)">${c.modelo||'—'}</span></td>
       <td style="text-align:center;font-weight:600"><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'unidades',this.textContent)">${c.unidades||'—'}</span></td>
       <td><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'importeVenta',this.textContent)">${c.importeVenta?c.importeVenta.toLocaleString('es-ES')+'€':'—'}</span></td>
-      <td style="text-align:center">
-        <span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'pctComision',this.textContent)">${c.pctComision||''}</span>%
-      </td>
+      <td style="text-align:center"><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'pctComision',this.textContent)">${c.pctComision||''}</span>%</td>
       <td style="font-weight:700">${totalStr}</td>
-      <td>
-        <select class="cell-select" onchange="updateCom(${c.id},'cobrada',this.value);renderComisiones()">
-          <option value="no" ${c.cobrada==='no'?'selected':''}>⏳ Pendiente</option>
-          <option value="si" ${c.cobrada==='si'?'selected':''}>✅ Cobrada</option>
-        </select>
-      </td>
+      <td><select class="cell-select" onchange="updateCom(${c.id},'cobrada',this.value);renderComisiones()">
+        <option value="no" ${c.cobrada==='no'?'selected':''}>⏳ Pendiente</option>
+        <option value="si" ${c.cobrada==='si'?'selected':''}>✅ Cobrada</option>
+      </select></td>
       <td><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'fechaCobro',this.textContent)">${c.fechaCobro||'—'}</span></td>
       <td style="max-width:160px"><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'notas',this.textContent)" style="font-size:12px;color:#555;display:block">${c.notas||''}</span></td>
       <td><button class="btn btn-danger" onclick="deleteCom(${c.id})">✕</button></td>
@@ -1018,64 +884,27 @@ function renderComisiones() {
   }).join('');
 }
 
-function updateCom(id, field, value) {
-  const c = state.comisiones.find(x=>x.id===id);
-  if (c) { c[field]=value.trim(); saveState(); renderComisiones(); }
-}
-function updateComNum(id, field, value) {
-  const c = state.comisiones.find(x=>x.id===id);
-  if (c) { c[field]=value.trim().replace(',','.').replace('€',''); saveState(); renderComisiones(); }
-}
-function deleteCom(id) {
-  if (!confirm('¿Eliminar?')) return;
-  state.comisiones = state.comisiones.filter(x=>x.id!==id);
-  saveState(); renderComisiones();
-}
-function setComFilter(val) {
-  comFilter = val;
-  ['all','pen','cob'].forEach(k=>document.getElementById('com-'+k)?.classList.remove('active'));
-  const map={'all':'all','pendiente':'pen','cobrada':'cob'};
-  document.getElementById('com-'+(map[val]))?.classList.add('active');
-  renderComisiones();
-}
+function updateCom(id,field,value){const c=state.comisiones.find(x=>x.id===id);if(c){c[field]=value.trim();saveState();renderComisiones();}}
+function updateComNum(id,field,value){const c=state.comisiones.find(x=>x.id===id);if(c){c[field]=value.trim().replace(',','.').replace('€','');saveState();renderComisiones();}}
+function deleteCom(id){if(!confirm('¿Eliminar?'))return;state.comisiones=state.comisiones.filter(x=>x.id!==id);saveState();renderComisiones();}
+function setComFilter(val){comFilter=val;['all','pen','cob'].forEach(k=>document.getElementById('com-'+k)?.classList.remove('active'));const map={'all':'all','pendiente':'pen','cobrada':'cob'};document.getElementById('com-'+(map[val]))?.classList.add('active');renderComisiones();}
+
 function openNewComisionModal() {
-  openModal(`
-    <h2>💰 Nueva venta / comisión</h2>
+  openModal(`<h2>💰 Nueva venta / comisión</h2>
     <div class="field-group">
       <div class="field full"><label>Cliente</label><input id="nc3-cliente"></div>
-      <div class="field"><label>Fecha cierre (DD/MM/AAAA)</label><input id="nc3-fecha"></div>
+      <div class="field"><label>Fecha cierre</label><input id="nc3-fecha" placeholder="DD/MM/AAAA"></div>
       <div class="field"><label>Modelo</label><input id="nc3-modelo" placeholder="Ej: PRO GP"></div>
       <div class="field"><label>Unidades</label><input id="nc3-uds" type="number" value="1"></div>
       <div class="field"><label>Importe venta (€)</label><input id="nc3-importe" type="number" step="0.01"></div>
-      <div class="field"><label>% Comisión</label><input id="nc3-pct" type="number" step="0.01" placeholder="Ej: 5"></div>
-      <div class="field"><label>Cobrada</label>
-        <select id="nc3-cobrada"><option value="no">⏳ Pendiente</option><option value="si">✅ Cobrada</option></select></div>
+      <div class="field"><label>% Comisión</label><input id="nc3-pct" type="number" step="0.01"></div>
+      <div class="field"><label>Cobrada</label><select id="nc3-cobrada"><option value="no">⏳ Pendiente</option><option value="si">✅ Cobrada</option></select></div>
       <div class="field"><label>Fecha cobro</label><input id="nc3-fechacobro" placeholder="DD/MM/AAAA"></div>
       <div class="field full"><label>Notas</label><textarea id="nc3-notas"></textarea></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNewComision()">Guardar</button>
-    </div>`);
+    <div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewComision()">Guardar</button></div>`);
 }
-function saveNewComision() {
-  const cliente = document.getElementById('nc3-cliente').value.trim();
-  if (!cliente) { alert('Cliente obligatorio'); return; }
-  if (!state.comisiones) state.comisiones = [];
-  state.comisiones.push({
-    id: ++nextId, cliente,
-    fechaCierre: document.getElementById('nc3-fecha').value.trim(),
-    modelo: document.getElementById('nc3-modelo').value.trim(),
-    unidades: +document.getElementById('nc3-uds').value||1,
-    importeVenta: +document.getElementById('nc3-importe').value||0,
-    pctComision: document.getElementById('nc3-pct').value.trim(),
-    importeComision: '',
-    cobrada: document.getElementById('nc3-cobrada').value,
-    fechaCobro: document.getElementById('nc3-fechacobro').value.trim(),
-    notas: document.getElementById('nc3-notas').value.trim(),
-  });
-  saveState(); closeModal(); renderComisiones();
-}
+function saveNewComision(){const cliente=document.getElementById('nc3-cliente').value.trim();if(!cliente){alert('Cliente obligatorio');return;}if(!state.comisiones)state.comisiones=[];state.comisiones.push({id:++nextId,cliente,fechaCierre:document.getElementById('nc3-fecha').value.trim(),modelo:document.getElementById('nc3-modelo').value.trim(),unidades:+document.getElementById('nc3-uds').value||1,importeVenta:+document.getElementById('nc3-importe').value||0,pctComision:document.getElementById('nc3-pct').value.trim(),importeComision:'',cobrada:document.getElementById('nc3-cobrada').value,fechaCobro:document.getElementById('nc3-fechacobro').value.trim(),notas:document.getElementById('nc3-notas').value.trim()});saveState();closeModal();renderComisiones();}
 
 // ===================== ACCIONES =====================
 function renderAcciones() {
@@ -1084,10 +913,8 @@ function renderAcciones() {
   list.innerHTML = rows.map(a => `
     <div class="accion-row">
       <div class="accion-dot ${a.estado==='En marcha'?'ok':''}"></div>
-      <div class="accion-body" style="flex:1">
-        <div style="font-size:13px;font-weight:600">
-          <span class="editable" contenteditable="true" onblur="updateAcc(${a.id},'accion',this.textContent)">${a.accion}</span>
-        </div>
+      <div class="accion-body">
+        <div style="font-size:13px;font-weight:600"><span class="editable" contenteditable="true" onblur="updateAcc(${a.id},'accion',this.textContent)">${a.accion}</span></div>
         <div style="font-size:11px;color:#888;margin-top:2px">
           ${a.fecha} · <span class="editable" contenteditable="true" onblur="updateAcc(${a.id},'cliente',this.textContent)">${a.cliente}</span> ·
           <span class="editable" contenteditable="true" onblur="updateAcc(${a.id},'responsable',this.textContent)">${a.responsable}</span> ·
@@ -1101,25 +928,12 @@ function renderAcciones() {
     </div>`).join('');
 }
 
-function updateAcc(id, field, value) {
-  const a = state.acciones.find(x => x.id === id);
-  if (a) { a[field] = value.trim(); saveState(); }
-}
-function deleteAcc(id) {
-  if (!confirm('¿Eliminar acción?')) return;
-  state.acciones = state.acciones.filter(x => x.id !== id);
-  saveState(); renderAcciones();
-}
-function setAccFilter(val) {
-  accFilter = val;
-  ['all','pen','mar'].forEach(k => document.getElementById('af-'+k)?.classList.remove('active'));
-  const map = {'all':'all','Pendiente':'pen','En marcha':'mar'};
-  document.getElementById('af-'+(map[val]||val))?.classList.add('active');
-  renderAcciones();
-}
+function updateAcc(id,field,value){const a=state.acciones.find(x=>x.id===id);if(a){a[field]=value.trim();saveState();}}
+function deleteAcc(id){if(!confirm('¿Eliminar acción?'))return;state.acciones=state.acciones.filter(x=>x.id!==id);saveState();renderAcciones();}
+function setAccFilter(val){accFilter=val;['all','pen','mar'].forEach(k=>document.getElementById('af-'+k)?.classList.remove('active'));const map={'all':'all','Pendiente':'pen','En marcha':'mar'};document.getElementById('af-'+(map[val]||val))?.classList.add('active');renderAcciones();}
 
 // ===================== KPIs =====================
-function fmt(n) { return (+n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmt(n){return (+n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});}
 
 function renderKPIs() {
   const pfGanadas  = state.proformas.filter(p => p.estado === 'Ganado');
@@ -1130,31 +944,24 @@ function renderKPIs() {
   const comPend = state.comisiones.filter(c=>c.cobrada==='no').reduce((s,c)=>s+(+c.importeComision||0),0);
   const comCob  = state.comisiones.filter(c=>c.cobrada==='si').reduce((s,c)=>s+(+c.importeComision||0),0);
   const demNext = getAllDemoItems().filter(d=>!isDatePast(d.fecha)).length;
-
   document.getElementById('hdr-pipeline').textContent  = state.pipeline.filter(p=>p.stage<5).length;
   document.getElementById('hdr-proformas').textContent = pfEnviadas;
   document.getElementById('hdr-ventas').textContent    = pfGanadas.length;
-
   document.getElementById('kpi-grid').innerHTML = [
-    {val: pfGanadas.length,                        label:'Ventas cerradas',       sub:'Proformas ganadas',                color:'#2d7a2d'},
-    {val: totalUds+'u',                            label:'Unidades vendidas',      sub:'Total Mimcooks',                   color:'#1a1a1a'},
-    {val: totalEuros>0 ? fmt(totalEuros)+'€':'—',  label:'Facturación s/IVA',      sub:'Proformas con precio',             color:'#1a1a1a'},
-    {val: pfEnviadas,                              label:'Proformas activas',      sub:'Pendientes de cierre',             color:'#b45309'},
-    {val: comPend>0 ? fmt(comPend)+'€':'—',        label:'Comisiones pendientes',  sub:'Felipe — por cobrar',              color:'#b45309'},
-    {val: comCob>0  ? fmt(comCob)+'€':'—',         label:'Comisiones cobradas',    sub:'Felipe — recibidas',               color:'#2d7a2d'},
-    {val: state.distribuidores.length,             label:'Distribuidores',         sub:`${state.distribuidores.filter(d=>d.estado!=='no contactado').length} contactados`, color:'#1a1a1a'},
-    {val: demNext,                                 label:'Actividades próximas',   sub:'Visitas + demos + formación',      color:'#7c3aed'},
-  ].map(k=>`<div class="kpi-card">
-    <div class="kpi-val" style="color:${k.color};font-size:${String(k.val).length>7?'20px':'28px'}">${k.val}</div>
-    <div class="kpi-label">${k.label}</div>
-    <div class="kpi-sub">${k.sub}</div>
-  </div>`).join('');
+    {val:pfGanadas.length, label:'Ventas cerradas', sub:'Proformas ganadas', color:'#2d7a2d'},
+    {val:totalUds+'u', label:'Unidades vendidas', sub:'Total Mimcooks', color:'#1a1a1a'},
+    {val:totalEuros>0?fmt(totalEuros)+'€':'—', label:'Facturación s/IVA', sub:'Proformas con precio', color:'#1a1a1a'},
+    {val:pfEnviadas, label:'Proformas activas', sub:'Pendientes de cierre', color:'#b45309'},
+    {val:comPend>0?fmt(comPend)+'€':'—', label:'Comisiones pendientes', sub:'Felipe — por cobrar', color:'#b45309'},
+    {val:comCob>0?fmt(comCob)+'€':'—', label:'Comisiones cobradas', sub:'Felipe — recibidas', color:'#2d7a2d'},
+    {val:state.distribuidores.length, label:'Distribuidores', sub:`${state.distribuidores.filter(d=>d.estado!=='no contactado').length} contactados`, color:'#1a1a1a'},
+    {val:demNext, label:'Actividades próximas', sub:'Visitas + demos + formación', color:'#7c3aed'},
+  ].map(k=>`<div class="kpi-card"><div class="kpi-val" style="color:${k.color};font-size:${String(k.val).length>7?'20px':'28px'}">${k.val}</div><div class="kpi-label">${k.label}</div><div class="kpi-sub">${k.sub}</div></div>`).join('');
 
-  // Ventas cerradas table — derived directly from proformas ganadas
   const vtbody = document.getElementById('ventas-tbody');
   const vtfoot = document.getElementById('ventas-tfoot');
   if (pfGanadas.length === 0) {
-    vtbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#aaa;padding:20px">No hay ventas cerradas — marca proformas como Ganado para verlas aquí</td></tr>`;
+    vtbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:#aaa;padding:20px">No hay ventas cerradas</td></tr>`;
     vtfoot.innerHTML = '';
   } else {
     vtbody.innerHTML = pfGanadas.map(p => {
@@ -1166,21 +973,14 @@ function renderKPIs() {
         <td style="font-weight:600">${p.modelo||'—'}</td>
         <td>${p.tipoGas||'—'}</td>
         <td style="text-align:center;font-weight:700;font-size:15px">${p.unidades||'—'}</td>
-        <td style="text-align:right">${p.precioUnit ? fmt(+p.precioUnit)+'€' : '<span style="color:#ccc">sin precio</span>'}</td>
-        <td style="text-align:right;font-weight:700;color:${total>0?'#2d7a2d':'#aaa'};font-size:${total>0?'14px':'12px'}">${total>0 ? fmt(total)+'€' : '—'}</td>
+        <td style="text-align:right">${p.precioUnit?fmt(+p.precioUnit)+'€':'<span style="color:#ccc">sin precio</span>'}</td>
+        <td style="text-align:right;font-weight:700;color:${total>0?'#2d7a2d':'#aaa'}">${total>0?fmt(total)+'€':'—'}</td>
         <td style="font-size:12px;color:#888">${p.responsable||'—'}</td>
       </tr>`;
     }).join('');
-    vtfoot.innerHTML = `<tr style="background:#f0f9e8">
-      <td colspan="5" style="padding:10px 14px;font-weight:700;font-size:13px">TOTAL</td>
-      <td style="text-align:center;padding:10px 14px;font-weight:700;font-size:15px">${totalUds}u</td>
-      <td></td>
-      <td style="text-align:right;padding:10px 14px;font-weight:800;font-size:15px;color:#2d7a2d">${totalEuros>0 ? fmt(totalEuros)+'€' : '—'}</td>
-      <td></td>
-    </tr>`;
+    vtfoot.innerHTML = `<tr style="background:#f0f9e8"><td colspan="5" style="padding:10px 14px;font-weight:700;font-size:13px">TOTAL</td><td style="text-align:center;padding:10px 14px;font-weight:700;font-size:15px">${totalUds}u</td><td></td><td style="text-align:right;padding:10px 14px;font-weight:800;font-size:15px;color:#2d7a2d">${totalEuros>0?fmt(totalEuros)+'€':'—'}</td><td></td></tr>`;
   }
 
-  // Cartera histórica
   document.getElementById('cartera-tbody').innerHTML = state.cartera.map(c=>`
     <tr>
       <td><span class="editable" contenteditable="true" onblur="updateCartera(${c.id},'cliente',this.textContent)">${c.cliente}</span></td>
@@ -1194,39 +994,23 @@ function renderKPIs() {
     </tr>`).join('');
 }
 
-function updateCartera(id, field, value) {
-  const c = state.cartera.find(x=>x.id===id);
-  if (c) { c[field]=value.trim(); saveState(); }
-}
-function deleteCartera(id) {
-  if (!confirm('¿Eliminar?')) return;
-  state.cartera = state.cartera.filter(x=>x.id!==id);
-  saveState(); renderKPIs();
-}
+function updateCartera(id,field,value){const c=state.cartera.find(x=>x.id===id);if(c){c[field]=value.trim();saveState();}}
+function deleteCartera(id){if(!confirm('¿Eliminar?'))return;state.cartera=state.cartera.filter(x=>x.id!==id);saveState();renderKPIs();}
 
 // ===================== MODALS =====================
-function openModal(html) {
-  document.getElementById('modal-inner').innerHTML = html;
-  document.getElementById('modal-bg').classList.add('open');
-}
-function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
-document.getElementById('modal-bg').addEventListener('click', e => { if(e.target.id==='modal-bg') closeModal(); });
+function openModal(html){document.getElementById('modal-inner').innerHTML=html;document.getElementById('modal-bg').classList.add('open');}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+document.getElementById('modal-bg').addEventListener('click',e=>{if(e.target.id==='modal-bg')closeModal();});
 
 function openNewCardModal(defaultStage=0) {
-  openModal(`
-    <h2>➕ Nueva tarjeta</h2>
+  openModal(`<h2>➕ Nueva tarjeta</h2>
     <div class="field-group">
       <div class="field full"><label>Nombre</label><input id="nc-name" placeholder="Nombre del cliente/distribuidor"></div>
       <div class="field full"><label>Info adicional</label><input id="nc-sub" placeholder="Zona, referencia..."></div>
-      <div class="field"><label>Tipo</label>
-        <select id="nc-tipo"><option>Distribuidor</option><option>Cliente final</option><option>Internacional</option></select></div>
-      <div class="field"><label>Prioridad</label>
-        <select id="nc-prio"><option>Alta</option><option>Media</option><option>Baja</option><option>—</option></select></div>
+      <div class="field"><label>Tipo</label><select id="nc-tipo"><option>Distribuidor</option><option>Cliente final</option><option>Internacional</option></select></div>
+      <div class="field"><label>Prioridad</label><select id="nc-prio"><option>Alta</option><option>Media</option><option>Baja</option><option>—</option></select></div>
       <div class="field"><label>Zona</label><input id="nc-zona" placeholder="Ej: Cataluña"></div>
-      <div class="field"><label>Etapa</label>
-        <select id="nc-stage">
-          ${STAGES.map(s=>`<option value="${s.id}" ${s.id===defaultStage?'selected':''}>${s.name}</option>`).join('')}
-        </select></div>
+      <div class="field"><label>Etapa</label><select id="nc-stage">${STAGES.map(s=>`<option value="${s.id}" ${s.id===defaultStage?'selected':''}>${s.name}</option>`).join('')}</select></div>
     </div>
     <div style="border-top:1px solid #f0f0f0;padding-top:14px;margin-top:4px">
       <div style="font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:10px">📅 Actividades <span style="font-weight:400;color:#aaa">(opcional)</span></div>
@@ -1237,47 +1021,22 @@ function openNewCardModal(defaultStage=0) {
         <div class="field"><label>🎓 Formación</label><input id="nc-form" placeholder="DD/MM/AAAA HH:MM"></div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNewCard()">Guardar</button>
-    </div>`);
+    <div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewCard()">Guardar</button></div>`);
 }
 
-function saveNewCard() {
-  const name = document.getElementById('nc-name').value.trim();
-  if (!name) { alert('El nombre es obligatorio'); return; }
-  state.pipeline.push({
-    id: ++nextId, name,
-    sub: document.getElementById('nc-sub').value.trim(),
-    tipo: document.getElementById('nc-tipo').value,
-    prioridad: document.getElementById('nc-prio').value,
-    zona: document.getElementById('nc-zona').value.trim() || '—',
-    stage: +document.getElementById('nc-stage').value,
-    fechaVisita:       document.getElementById('nc-visita').value.trim(),
-    fechaDemoInterna:  document.getElementById('nc-demoint').value.trim(),
-    fechaDemoClientes: document.getElementById('nc-democli').value.trim(),
-    fechaFormacion:    document.getElementById('nc-form').value.trim(),
-  });
-  saveState(); closeModal(); renderKanban(); renderDemos();
-}
+function saveNewCard(){const name=document.getElementById('nc-name').value.trim();if(!name){alert('El nombre es obligatorio');return;}state.pipeline.push({id:++nextId,name,sub:document.getElementById('nc-sub').value.trim(),tipo:document.getElementById('nc-tipo').value,prioridad:document.getElementById('nc-prio').value,zona:document.getElementById('nc-zona').value.trim()||'—',stage:+document.getElementById('nc-stage').value,fechaVisita:document.getElementById('nc-visita').value.trim(),fechaDemoInterna:document.getElementById('nc-demoint').value.trim(),fechaDemoClientes:document.getElementById('nc-democli').value.trim(),fechaFormacion:document.getElementById('nc-form').value.trim()});saveState();closeModal();renderKanban();renderDemos();}
 
 function openEditCardModal(id) {
   const c = state.pipeline.find(x=>x.id===id);
   if (!c) return;
-  openModal(`
-    <h2>✏️ Editar tarjeta</h2>
+  openModal(`<h2>✏️ Editar tarjeta</h2>
     <div class="field-group">
       <div class="field full"><label>Nombre</label><input id="ec-name" value="${c.name}"></div>
       <div class="field full"><label>Info adicional</label><input id="ec-sub" value="${c.sub}"></div>
-      <div class="field"><label>Tipo</label>
-        <select id="ec-tipo">
-          ${['Distribuidor','Cliente final','Internacional'].map(t=>`<option ${t===c.tipo?'selected':''}>${t}</option>`).join('')}
-        </select></div>
-      <div class="field"><label>Prioridad</label>
-        <select id="ec-prio">${PRIORIDADES.map(p=>`<option ${p===c.prioridad?'selected':''}>${p}</option>`).join('')}</select></div>
+      <div class="field"><label>Tipo</label><select id="ec-tipo">${['Distribuidor','Cliente final','Internacional'].map(t=>`<option ${t===c.tipo?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="field"><label>Prioridad</label><select id="ec-prio">${PRIORIDADES.map(p=>`<option ${p===c.prioridad?'selected':''}>${p}</option>`).join('')}</select></div>
       <div class="field"><label>Zona</label><input id="ec-zona" value="${c.zona}"></div>
-      <div class="field"><label>Etapa</label>
-        <select id="ec-stage">${STAGES.map(s=>`<option value="${s.id}" ${s.id===c.stage?'selected':''}>${s.name}</option>`).join('')}</select></div>
+      <div class="field"><label>Etapa</label><select id="ec-stage">${STAGES.map(s=>`<option value="${s.id}" ${s.id===c.stage?'selected':''}>${s.name}</option>`).join('')}</select></div>
     </div>
     <div style="border-top:1px solid #f0f0f0;padding-top:14px;margin-top:4px">
       <div style="font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:10px">📅 Actividades — aparecen automáticamente en Demos</div>
@@ -1295,254 +1054,23 @@ function openEditCardModal(id) {
     </div>`);
 }
 
-function saveEditCard(id) {
-  const c = state.pipeline.find(x=>x.id===id);
-  if (!c) return;
-  c.name = document.getElementById('ec-name').value.trim();
-  c.sub = document.getElementById('ec-sub').value.trim();
-  c.tipo = document.getElementById('ec-tipo').value;
-  c.prioridad = document.getElementById('ec-prio').value;
-  c.zona = document.getElementById('ec-zona').value.trim() || '—';
-  c.stage = +document.getElementById('ec-stage').value;
-  c.fechaVisita = document.getElementById('ec-visita').value.trim();
-  c.fechaDemoInterna = document.getElementById('ec-demoint').value.trim();
-  c.fechaDemoClientes = document.getElementById('ec-democli').value.trim();
-  c.fechaFormacion = document.getElementById('ec-form').value.trim();
-  saveState(); closeModal(); renderKanban(); renderDemos();
-}
+function saveEditCard(id){const c=state.pipeline.find(x=>x.id===id);if(!c)return;c.name=document.getElementById('ec-name').value.trim();c.sub=document.getElementById('ec-sub').value.trim();c.tipo=document.getElementById('ec-tipo').value;c.prioridad=document.getElementById('ec-prio').value;c.zona=document.getElementById('ec-zona').value.trim()||'—';c.stage=+document.getElementById('ec-stage').value;c.fechaVisita=document.getElementById('ec-visita').value.trim();c.fechaDemoInterna=document.getElementById('ec-demoint').value.trim();c.fechaDemoClientes=document.getElementById('ec-democli').value.trim();c.fechaFormacion=document.getElementById('ec-form').value.trim();saveState();closeModal();renderKanban();renderDemos();}
 
-function openNewDistModal() {
-  openModal(`
-    <h2>➕ Nuevo distribuidor</h2>
-    <div class="field-group">
-      <div class="field full"><label>Nombre</label><input id="nd-nombre"></div>
-      <div class="field"><label>Zona</label><input id="nd-zona"></div>
-      <div class="field"><label>Provincia</label><input id="nd-prov"></div>
-      <div class="field"><label>Tipo</label><input id="nd-tipo" placeholder="Ej: Maquinaria Horeca"></div>
-      <div class="field"><label>Contacto</label><input id="nd-contacto"></div>
-      <div class="field"><label>Cargo</label><input id="nd-cargo"></div>
-      <div class="field"><label>Teléfono</label><input id="nd-tel"></div>
-      <div class="field"><label>Email</label><input id="nd-email"></div>
-      <div class="field"><label>Prioridad</label>
-        <select id="nd-prio">${PRIORIDADES.map(p=>`<option>${p}</option>`).join('')}</select></div>
-      <div class="field"><label>Estado</label>
-        <select id="nd-estado">${ESTADOS_DIST.map(e=>`<option>${e}</option>`).join('')}</select></div>
-      <div class="field full"><label>Notas</label><textarea id="nd-notas"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNewDist()">Guardar</button>
-    </div>`);
-}
+function openNewDistModal(){openModal(`<h2>➕ Nuevo distribuidor</h2><div class="field-group"><div class="field full"><label>Nombre</label><input id="nd-nombre"></div><div class="field"><label>Zona</label><input id="nd-zona"></div><div class="field"><label>Provincia</label><input id="nd-prov"></div><div class="field"><label>Tipo</label><input id="nd-tipo" placeholder="Ej: Maquinaria Horeca"></div><div class="field"><label>Contacto</label><input id="nd-contacto"></div><div class="field"><label>Cargo</label><input id="nd-cargo"></div><div class="field"><label>Teléfono</label><input id="nd-tel"></div><div class="field"><label>Email</label><input id="nd-email"></div><div class="field"><label>Prioridad</label><select id="nd-prio">${PRIORIDADES.map(p=>`<option>${p}</option>`).join('')}</select></div><div class="field"><label>Estado</label><select id="nd-estado">${ESTADOS_DIST.map(e=>`<option>${e}</option>`).join('')}</select></div><div class="field full"><label>Notas</label><textarea id="nd-notas"></textarea></div></div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewDist()">Guardar</button></div>`);}
+function saveNewDist(){const nombre=document.getElementById('nd-nombre').value.trim();if(!nombre){alert('Nombre obligatorio');return;}state.distribuidores.push({id:++nextId,nombre,zona:document.getElementById('nd-zona').value.trim(),provincia:document.getElementById('nd-prov').value.trim(),tipo:document.getElementById('nd-tipo').value.trim(),contacto:document.getElementById('nd-contacto').value.trim()||'—',cargo:document.getElementById('nd-cargo').value.trim(),tel:document.getElementById('nd-tel').value.trim(),email:document.getElementById('nd-email').value.trim(),prioridad:document.getElementById('nd-prio').value,estado:document.getElementById('nd-estado').value,notas:document.getElementById('nd-notas').value.trim()});saveState();closeModal();renderDistribuidores();}
 
-function saveNewDist() {
-  const nombre = document.getElementById('nd-nombre').value.trim();
-  if (!nombre) { alert('Nombre obligatorio'); return; }
-  state.distribuidores.push({
-    id: ++nextId, nombre,
-    zona: document.getElementById('nd-zona').value.trim(),
-    provincia: document.getElementById('nd-prov').value.trim(),
-    tipo: document.getElementById('nd-tipo').value.trim(),
-    contacto: document.getElementById('nd-contacto').value.trim() || '—',
-    cargo: document.getElementById('nd-cargo').value.trim(),
-    tel: document.getElementById('nd-tel').value.trim(),
-    email: document.getElementById('nd-email').value.trim(),
-    prioridad: document.getElementById('nd-prio').value,
-    estado: document.getElementById('nd-estado').value,
-    notas: document.getElementById('nd-notas').value.trim(),
-  });
-  saveState(); closeModal(); renderDistribuidores();
-}
+function openNewPFModal(){openModal(`<h2>➕ Nueva proforma</h2><div class="field-group"><div class="field"><label>Nº Proforma</label><input id="np-num"></div><div class="field"><label>Fecha</label><input id="np-fecha" placeholder="DD/MM/AAAA"></div><div class="field full"><label>Cliente</label><input id="np-cliente"></div><div class="field"><label>Contacto</label><input id="np-contacto"></div><div class="field"><label>Teléfono</label><input id="np-tel"></div><div class="field"><label>Provincia</label><input id="np-prov"></div><div class="field"><label>Tipo cliente</label><select id="np-tipo"><option>Distribuidor</option><option>Cliente final</option><option>Internacional</option></select></div><div class="field"><label>Modelo</label><select id="np-modelo"><option>GO</option><option>PRO</option><option>GO + PRO</option><option>PRO + GO</option></select></div><div class="field"><label>Tipo de gas</label><select id="np-gas"><option value="GP">GP</option><option value="GN">GN</option><option value="">—</option></select></div><div class="field"><label>Unidades</label><input id="np-uds" type="number" value="1" min="1"></div><div class="field"><label>Precio unitario (€)</label><input id="np-precio" type="number" step="0.01"></div><div class="field"><label>Estado</label><select id="np-estado">${ESTADOS_PF.map(e=>`<option>${e}</option>`).join('')}</select></div><div class="field"><label>Responsable</label><select id="np-resp"><option>Felipe</option><option>Esteve</option><option>Fernando</option><option>Otro</option></select></div><div class="field"><label>Próximo paso</label><input id="np-paso"></div><div class="field full"><label>Notas</label><textarea id="np-notas"></textarea></div></div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewPF()">Guardar</button></div>`);}
+function saveNewPF(){const cliente=document.getElementById('np-cliente').value.trim();if(!cliente){alert('Cliente obligatorio');return;}state.proformas.push({id:++nextId,num:document.getElementById('np-num').value.trim()||'PF-NEW',fecha:document.getElementById('np-fecha').value.trim(),cliente,contacto:document.getElementById('np-contacto').value.trim(),tel:document.getElementById('np-tel').value.trim(),provincia:document.getElementById('np-prov').value.trim(),tipo:document.getElementById('np-tipo').value,modelo:document.getElementById('np-modelo').value,tipoGas:document.getElementById('np-gas').value,unidades:+document.getElementById('np-uds').value||1,precioUnit:document.getElementById('np-precio').value.trim(),estado:document.getElementById('np-estado').value,responsable:document.getElementById('np-resp').value,proximoPaso:document.getElementById('np-paso').value.trim(),notas:document.getElementById('np-notas').value.trim()});saveState();closeModal();renderProformas();}
 
-function openNewPFModal() {
-  openModal(`
-    <h2>➕ Nueva proforma</h2>
-    <div class="field-group">
-      <div class="field"><label>Nº Proforma</label><input id="np-num"></div>
-      <div class="field"><label>Fecha</label><input id="np-fecha" placeholder="DD/MM/AAAA"></div>
-      <div class="field full"><label>Cliente</label><input id="np-cliente"></div>
-      <div class="field"><label>Contacto</label><input id="np-contacto"></div>
-      <div class="field"><label>Teléfono</label><input id="np-tel"></div>
-      <div class="field"><label>Provincia</label><input id="np-prov"></div>
-      <div class="field"><label>Tipo cliente</label>
-        <select id="np-tipo"><option>Distribuidor</option><option>Cliente final</option><option>Internacional</option></select></div>
-      <div class="field"><label>Modelo</label>
-        <select id="np-modelo"><option>GO</option><option>PRO</option><option>GO + PRO</option><option>PRO + GO</option></select></div>
-      <div class="field"><label>Tipo de gas</label>
-        <select id="np-gas"><option value="GP">GP – Gas Propano</option><option value="GN">GN – Gas Natural</option><option value="">Sin especificar</option></select></div>
-      <div class="field"><label>Unidades</label><input id="np-uds" type="number" value="1" min="1"></div>
-      <div class="field"><label>Precio unitario (€ s/IVA)</label><input id="np-precio" type="number" step="0.01" placeholder="Ej: 2796.50"></div>
-      <div class="field"><label>Estado</label>
-        <select id="np-estado">${ESTADOS_PF.map(e=>`<option>${e}</option>`).join('')}</select></div>
-      <div class="field"><label>Responsable</label>
-        <select id="np-resp"><option>Felipe</option><option>Esteve</option><option>Fernando</option><option>Otro</option></select></div>
-      <div class="field"><label>Próximo paso</label><input id="np-paso"></div>
-      <div class="field full"><label>Notas</label><textarea id="np-notas"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNewPF()">Guardar</button>
-    </div>`);
-}
+function openNewDemoModal(){const pipelineOptions=state.pipeline.map(c=>`<option value="${c.id}">${c.name} (${c.zona})</option>`).join('');openModal(`<h2>➕ Nueva actividad</h2><p style="font-size:12px;color:#888;margin-bottom:14px">Si el distribuidor está en el pipeline, selecciónalo y la fecha se añade directamente a su tarjeta.</p><div class="field-group"><div class="field full"><label>Distribuidor / Cliente del pipeline</label><select id="nd2-pipeline" onchange="toggleStandalone(this.value)"><option value="">— No está en el pipeline (entrada manual) —</option>${pipelineOptions}</select></div><div id="nd2-standalone-fields"><div class="field full" style="margin-top:8px"><label>Nombre (manual)</label><input id="nd2-nombre" placeholder="Solo si no está en el pipeline"></div><div class="field"><label>Zona</label><input id="nd2-zona"></div></div><div class="field"><label>Tipo</label><select id="nd2-tipo"><option value="visita">👀 Visita cliente</option><option value="demo_interna">🎬 Demo interna</option><option value="demo_clientes">🍽️ Demo con clientes finales</option><option value="formacion">🎓 Formación</option><option value="presentacion">📊 Presentación</option></select></div><div class="field"><label>Fecha y hora</label><input id="nd2-fecha" placeholder="DD/MM/AAAA HH:MM"></div><div class="field full"><label>Notas</label><textarea id="nd2-notas"></textarea></div></div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewDemo()">Guardar</button></div>`);}
+function toggleStandalone(val){document.getElementById('nd2-standalone-fields').style.display=val?'none':'';}
+function saveNewDemo(){const pipelineId=+document.getElementById('nd2-pipeline').value;const tipo=document.getElementById('nd2-tipo').value;const fecha=document.getElementById('nd2-fecha').value.trim();const notas=document.getElementById('nd2-notas').value.trim();if(pipelineId){const card=state.pipeline.find(x=>x.id===pipelineId);if(!card)return;const fieldMap={visita:'fechaVisita',demo_interna:'fechaDemoInterna',demo_clientes:'fechaDemoClientes',formacion:'fechaFormacion'};const field=fieldMap[tipo];if(field)card[field]=fecha;if(notas)card.sub=notas;saveState();closeModal();renderKanban();renderDemos();}else{const nombre=document.getElementById('nd2-nombre').value.trim();if(!nombre){alert('Introduce un nombre o selecciona un distribuidor del pipeline');return;}state.demos.push({id:++nextId,nombre,fecha,tipoOp:tipo,zona:document.getElementById('nd2-zona').value.trim()||'—',contacto:'',tel:'',notas,tipo:'Distribuidor',provincia:''});saveState();closeModal();renderDemos();}}
 
-function saveNewPF() {
-  const cliente = document.getElementById('np-cliente').value.trim();
-  if (!cliente) { alert('Cliente obligatorio'); return; }
-  state.proformas.push({
-    id: ++nextId,
-    num: document.getElementById('np-num').value.trim() || 'PF-NEW',
-    fecha: document.getElementById('np-fecha').value.trim(),
-    cliente,
-    contacto: document.getElementById('np-contacto').value.trim(),
-    tel: document.getElementById('np-tel').value.trim(),
-    provincia: document.getElementById('np-prov').value.trim(),
-    tipo: document.getElementById('np-tipo').value,
-    modelo: document.getElementById('np-modelo').value,
-    tipoGas: document.getElementById('np-gas').value,
-    unidades: +document.getElementById('np-uds').value || 1,
-    precioUnit: document.getElementById('np-precio').value.trim(),
-    estado: document.getElementById('np-estado').value,
-    responsable: document.getElementById('np-resp').value,
-    proximoPaso: document.getElementById('np-paso').value.trim(),
-    notas: document.getElementById('np-notas').value.trim(),
-  });
-  saveState(); closeModal(); renderProformas();
-}
+function openNewAccModal(){openModal(`<h2>➕ Nueva acción</h2><div class="field-group"><div class="field full"><label>Acción</label><input id="na-accion" placeholder="Descripción de la acción"></div><div class="field"><label>Cliente</label><input id="na-cliente"></div><div class="field"><label>Responsable</label><input id="na-resp" value="Felipe"></div><div class="field"><label>Fecha</label><input id="na-fecha" placeholder="DD/MM/AAAA"></div><div class="field"><label>Estado</label><select id="na-estado"><option>Pendiente</option><option>En marcha</option><option>Completado</option></select></div><div class="field full"><label>Notas</label><textarea id="na-notas"></textarea></div></div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewAcc()">Guardar</button></div>`);}
+function saveNewAcc(){const accion=document.getElementById('na-accion').value.trim();if(!accion){alert('Acción obligatoria');return;}state.acciones.unshift({id:++nextId,accion,cliente:document.getElementById('na-cliente').value.trim(),responsable:document.getElementById('na-resp').value.trim(),fecha:document.getElementById('na-fecha').value.trim(),estado:document.getElementById('na-estado').value,notas:document.getElementById('na-notas').value.trim()});saveState();closeModal();renderAcciones();}
 
-function openNewDemoModal() {
-  const pipelineOptions = state.pipeline
-    .map(c => `<option value="${c.id}">${c.name} (${c.zona})</option>`)
-    .join('');
-  openModal(`
-    <h2>➕ Nueva actividad</h2>
-    <p style="font-size:12px;color:#888;margin-bottom:14px">Si el distribuidor está en el pipeline, selecciónalo y la fecha se añade directamente a su tarjeta.</p>
-    <div class="field-group">
-      <div class="field full">
-        <label>Distribuidor / Cliente del pipeline</label>
-        <select id="nd2-pipeline" onchange="toggleStandalone(this.value)">
-          <option value="">— No está en el pipeline (entrada manual) —</option>
-          ${pipelineOptions}
-        </select>
-      </div>
-      <div id="nd2-standalone-fields">
-        <div class="field full" style="margin-top:8px"><label>Nombre (manual)</label><input id="nd2-nombre" placeholder="Solo si no está en el pipeline"></div>
-        <div class="field"><label>Zona</label><input id="nd2-zona"></div>
-      </div>
-      <div class="field"><label>Tipo</label>
-        <select id="nd2-tipo">
-          <option value="visita">👀 Visita cliente</option>
-          <option value="demo_interna">🎬 Demo interna</option>
-          <option value="demo_clientes">🍽️ Demo con clientes finales</option>
-          <option value="formacion">🎓 Formación</option>
-          <option value="presentacion">📊 Presentación</option>
-        </select></div>
-      <div class="field"><label>Fecha y hora</label><input id="nd2-fecha" placeholder="DD/MM/AAAA HH:MM"></div>
-      <div class="field full"><label>Notas</label><textarea id="nd2-notas"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNewDemo()">Guardar</button>
-    </div>`);
-}
-
-function toggleStandalone(val) {
-  document.getElementById('nd2-standalone-fields').style.display = val ? 'none' : '';
-}
-
-function saveNewDemo() {
-  const pipelineId = +document.getElementById('nd2-pipeline').value;
-  const tipo = document.getElementById('nd2-tipo').value;
-  const fecha = document.getElementById('nd2-fecha').value.trim();
-  const notas = document.getElementById('nd2-notas').value.trim();
-
-  if (pipelineId) {
-    // Link to pipeline card — save directly on the card
-    const card = state.pipeline.find(x => x.id === pipelineId);
-    if (!card) return;
-    const fieldMap = {visita:'fechaVisita', demo_interna:'fechaDemoInterna', demo_clientes:'fechaDemoClientes', formacion:'fechaFormacion'};
-    const field = fieldMap[tipo];
-    if (field) card[field] = fecha;
-    if (notas) card.sub = notas;
-    saveState(); closeModal(); renderKanban(); renderDemos();
-  } else {
-    // Standalone entry (for contacts not in pipeline)
-    const nombre = document.getElementById('nd2-nombre').value.trim();
-    if (!nombre) { alert('Introduce un nombre o selecciona un distribuidor del pipeline'); return; }
-    state.demos.push({
-      id: ++nextId, nombre, fecha, tipoOp: tipo,
-      zona: document.getElementById('nd2-zona').value.trim() || '—',
-      contacto: '', tel: '', notas, tipo: 'Distribuidor', provincia: '',
-    });
-    saveState(); closeModal(); renderDemos();
-  }
-}
-
-function openNewAccModal() {
-  openModal(`
-    <h2>➕ Nueva acción</h2>
-    <div class="field-group">
-      <div class="field full"><label>Acción</label><input id="na-accion" placeholder="Descripción de la acción"></div>
-      <div class="field"><label>Cliente</label><input id="na-cliente"></div>
-      <div class="field"><label>Responsable</label><input id="na-resp" value="Felipe"></div>
-      <div class="field"><label>Fecha</label><input id="na-fecha" placeholder="DD/MM/AAAA"></div>
-      <div class="field"><label>Estado</label>
-        <select id="na-estado"><option>Pendiente</option><option>En marcha</option><option>Completado</option></select></div>
-      <div class="field full"><label>Notas</label><textarea id="na-notas"></textarea></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNewAcc()">Guardar</button>
-    </div>`);
-}
-
-function saveNewAcc() {
-  const accion = document.getElementById('na-accion').value.trim();
-  if (!accion) { alert('Acción obligatoria'); return; }
-  state.acciones.unshift({
-    id: ++nextId, accion,
-    cliente: document.getElementById('na-cliente').value.trim(),
-    responsable: document.getElementById('na-resp').value.trim(),
-    fecha: document.getElementById('na-fecha').value.trim(),
-    estado: document.getElementById('na-estado').value,
-    notas: document.getElementById('na-notas').value.trim(),
-  });
-  saveState(); closeModal(); renderAcciones();
-}
-
-function openNewCarteraModal() {
-  openModal(`
-    <h2>➕ Añadir a cartera</h2>
-    <div class="field-group">
-      <div class="field full"><label>Cliente</label><input id="nc2-cliente"></div>
-      <div class="field"><label>Provincia</label><input id="nc2-prov"></div>
-      <div class="field"><label>Zona</label><input id="nc2-zona"></div>
-      <div class="field full"><label>Producto</label><input id="nc2-prod" placeholder="Ej: Mimcook GO GP"></div>
-      <div class="field"><label>Unidades</label><input id="nc2-uds" type="number" value="1"></div>
-      <div class="field"><label>Importe (€)</label><input id="nc2-imp" type="number"></div>
-      <div class="field"><label>Año</label><input id="nc2-año" value="2026"></div>
-      <div class="field"><label>Distribuidor</label><input id="nc2-dist" placeholder="O 'Directo'"></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNewCartera()">Guardar</button>
-    </div>`);
-}
-
-function saveNewCartera() {
-  const cliente = document.getElementById('nc2-cliente').value.trim();
-  if (!cliente) { alert('Cliente obligatorio'); return; }
-  state.cartera.push({
-    id: ++nextId, cliente,
-    provincia: document.getElementById('nc2-prov').value.trim(),
-    zona: document.getElementById('nc2-zona').value.trim(),
-    producto: document.getElementById('nc2-prod').value.trim(),
-    unidades: +document.getElementById('nc2-uds').value || 1,
-    importe: +document.getElementById('nc2-imp').value || 0,
-    año: document.getElementById('nc2-año').value.trim(),
-    distribuidor: document.getElementById('nc2-dist').value.trim() || '—',
-  });
-  saveState(); closeModal(); renderKPIs();
-}
+function openNewCarteraModal(){openModal(`<h2>➕ Añadir a cartera</h2><div class="field-group"><div class="field full"><label>Cliente</label><input id="nc2-cliente"></div><div class="field"><label>Provincia</label><input id="nc2-prov"></div><div class="field"><label>Zona</label><input id="nc2-zona"></div><div class="field full"><label>Producto</label><input id="nc2-prod" placeholder="Ej: Mimcook GO GP"></div><div class="field"><label>Unidades</label><input id="nc2-uds" type="number" value="1"></div><div class="field"><label>Importe (€)</label><input id="nc2-imp" type="number"></div><div class="field"><label>Año</label><input id="nc2-año" value="2026"></div><div class="field"><label>Distribuidor</label><input id="nc2-dist" placeholder="O 'Directo'"></div></div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewCartera()">Guardar</button></div>`);}
+function saveNewCartera(){const cliente=document.getElementById('nc2-cliente').value.trim();if(!cliente){alert('Cliente obligatorio');return;}state.cartera.push({id:++nextId,cliente,provincia:document.getElementById('nc2-prov').value.trim(),zona:document.getElementById('nc2-zona').value.trim(),producto:document.getElementById('nc2-prod').value.trim(),unidades:+document.getElementById('nc2-uds').value||1,importe:+document.getElementById('nc2-imp').value||0,año:document.getElementById('nc2-año').value.trim(),distribuidor:document.getElementById('nc2-dist').value.trim()||'—'});saveState();closeModal();renderKPIs();}
 
 // ===================== NAV =====================
 function showTab(name, el) {
@@ -1550,20 +1078,20 @@ function showTab(name, el) {
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('view-'+name).classList.add('active');
-  if (name==='pipeline') renderKanban();
-  if (name==='distribuidores') renderDistribuidores();
-  if (name==='proformas') renderProformas();
-  if (name==='demos') renderDemos();
-  if (name==='acciones') renderAcciones();
-  if (name==='comisiones') renderComisiones();
-  if (name==='kpis') renderKPIs();
+  if(name==='pipeline') renderKanban();
+  if(name==='distribuidores') renderDistribuidores();
+  if(name==='proformas') renderProformas();
+  if(name==='demos') renderDemos();
+  if(name==='acciones') renderAcciones();
+  if(name==='comisiones') renderComisiones();
+  if(name==='kpis') renderKPIs();
 }
 
 // ===================== INIT =====================
 loadState();
 if (!state.comisiones) state.comisiones = [];
 
-// Migration 1: add missing distributors from DEFAULT (by name, case-insensitive)
+// Migration: add missing distributors from DEFAULT
 const existingDistNames = new Set(state.distribuidores.map(d => d.nombre.toLowerCase().trim()));
 let distAdded = false;
 DEFAULT.distribuidores.forEach(def => {
@@ -1574,14 +1102,11 @@ DEFAULT.distribuidores.forEach(def => {
 });
 if (distAdded) saveState();
 
-// Migration 2: process any Ganado proformas not yet converted
+// Migration: process Ganado proformas not yet converted
 let migrated = false;
 state.proformas.forEach(p => {
   if (!p.responsable) p.responsable = 'Felipe';
-  if (p.estado === 'Ganado' && !p.convertida) {
-    convertProformaToSale(p);
-    migrated = true;
-  }
+  if (p.estado === 'Ganado' && !p.convertida) { convertProformaToSale(p); migrated = true; }
 });
 if (migrated) saveState();
 
