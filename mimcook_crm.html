@@ -175,7 +175,7 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
       <span id="bell-badge" style="display:none;position:absolute;top:0px;right:0px;background:#ef4444;color:white;font-size:10px;font-weight:800;border-radius:999px;min-width:16px;height:16px;line-height:16px;text-align:center;padding:0 3px">0</span>
     </button>
     <div class="save-indicator" id="save-ind" style="display:none">✓ Guardado</div>
-    <button onclick="if(confirm('¿Resetear todos los datos a los valores por defecto?')){localStorage.removeItem(\'mimcook_crm_v3\');localStorage.removeItem(\'mimcook_crm_v2\');location.reload();}" style="background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);font-size:10px;padding:3px 8px;border-radius:5px;cursor:pointer;margin-left:4px" title="Reset datos">↺</button>
+    <button onclick="if(confirm('¿Resetear todos los datos a los valores por defecto?')){localStorage.removeItem(\'mimcook_crm_v4\');localStorage.removeItem(\'mimcook_crm_v2\');location.reload();}" style="background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);font-size:10px;padding:3px 8px;border-radius:5px;cursor:pointer;margin-left:4px" title="Reset datos">↺</button>
   </div>
 </div>
 
@@ -339,33 +339,32 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 // ===================== DEFAULT DATA =====================
 const DEFAULT = {
   pipeline: [
-    {id:1, name:"Frio Muñoz", sub:"Murcia", tipo:"Distribuidor", prioridad:"—", stage:0, zona:"Murcia"},
-    {id:2, name:"Cerdà Obrador", sub:"Baleares", tipo:"Distribuidor", prioridad:"Media", stage:0, zona:"Baleares"},
-    {id:3, name:"Mercagroc", sub:"Mallorca", tipo:"Distribuidor", prioridad:"Media", stage:0, zona:"Baleares"},
-    {id:4, name:"Cristadela", sub:"Menorca", tipo:"Distribuidor", prioridad:"Alta", stage:0, zona:"Baleares"},
-    {id:5, name:"Benejam Refrigeración", sub:"Menorca", tipo:"Distribuidor", prioridad:"Alta", stage:0, zona:"Baleares"},
-    {id:6, name:"Pilsa", sub:"Andalucía", tipo:"Distribuidor", prioridad:"Alta", stage:1, zona:"Andalucía"},
-    {id:7, name:"Suministros Unic", sub:"Sevilla", tipo:"Distribuidor", prioridad:"Alta", stage:1, zona:"Andalucía"},
-    {id:8, name:"Gas I Fred", sub:"Ibiza", tipo:"Distribuidor", prioridad:"Alta", stage:1, zona:"Baleares"},
-    {id:9, name:"Servitel", sub:"Pendiente fechas", tipo:"Distribuidor", prioridad:"Alta", stage:1, zona:"—"},
-    {id:10, name:"Cocineros Canarias", sub:"Canarias", tipo:"Distribuidor", prioridad:"Alta", stage:1, zona:"Canarias"},
-    {id:11, name:"ALVAREZ EQUIPMENT", sub:"Palma · videollamada RD", tipo:"Distribuidor", prioridad:"Alta", stage:1, zona:"Baleares"},
-    {id:12, name:"Procuina", sub:"Barcelona · demo 13/05", tipo:"Distribuidor", prioridad:"Alta", stage:2, zona:"Cataluña"},
-    {id:13, name:"Antonio de Miguel SL", sub:"Madrid · demo 26/05", tipo:"Distribuidor", prioridad:"Alta", stage:2, zona:"Madrid"},
-    {id:14, name:"Oms I Vinyes", sub:"Barcelona · 2 jun", tipo:"Distribuidor", prioridad:"Alta", stage:2, zona:"Cataluña"},
-    {id:15, name:"Alvarez Group", sub:"Palma · 5 jun", tipo:"Distribuidor", prioridad:"Alta", stage:2, zona:"Baleares"},
-    {id:16, name:"Socarrat", sub:"Valencia · David Gomis", tipo:"Cliente final", prioridad:"Alta", stage:2, zona:"Valencia"},
-    {id:17, name:"Tomas Llobet", sub:"PF-002 · proyecto sep", tipo:"Cliente Final", prioridad:"Media", stage:4, zona:"Cataluña"},
-    {id:18, name:"CHR Equipements", sub:"Marruecos · A-5305 · 7u", tipo:"Internacional", prioridad:"Alta", stage:4, zona:"Marruecos"},
-    {id:19, name:"Montnegre Fitty", sub:"Barcelona · A-5319", tipo:"Cliente final", prioridad:"Media", stage:4, zona:"Cataluña"},
-    {id:20, name:"Arrocería Samm", sub:"Madrid · A-5317 · 4u", tipo:"Cliente final", prioridad:"Alta", stage:4, zona:"Madrid"},
-    {id:21, name:"Rizmo Restaurante", sub:"Murcia · A-5331 · 4u", tipo:"Cliente final", prioridad:"Alta", stage:4, zona:"Murcia"},
-    {id:22, name:"Arroz de la Tomasa", sub:"Navarra · A-5343 · 3u", tipo:"Cliente final", prioridad:"Alta", stage:4, zona:"Navarra"},
-    {id:23, name:"Cocineros Canarias", sub:"PF-001 · 2u GO GP", tipo:"Distribuidor", prioridad:"Alta", stage:5, zona:"Canarias"},
-    {id:24, name:"Suministros Unic", sub:"A-5352 · 2u · 5.593€", tipo:"Distribuidor", prioridad:"Alta", stage:5, zona:"Andalucía"},
-    {id:25, name:"Eskocia Wurm S.L.", sub:"9u PRO GP · 34.560€", tipo:"Cliente final", prioridad:"Alta", stage:5, zona:"Canarias"},
-    {id:26, name:"MAFIVINOS", sub:"A-5313 · 6u · perdido a competencia", tipo:"Distribuidor", prioridad:"Media", stage:6, zona:"Canarias"},
-    {id:27, name:"Café Balear", sub:"Menorca · formación realizada", tipo:"Cliente final", prioridad:"Alta", stage:7, zona:"Baleares"},
+    {id:1,  name:"Frio Muñoz",              sub:"Murcia",                    tipo:"Distribuidor",   prioridad:"—",    stage:0, zona:"Murcia"},
+    {id:2,  name:"Cerdà Obrador",           sub:"Baleares",                  tipo:"Distribuidor",   prioridad:"Media",stage:0, zona:"Baleares"},
+    {id:3,  name:"Mercagroc",               sub:"Mallorca",                  tipo:"Distribuidor",   prioridad:"Media",stage:0, zona:"Baleares"},
+    {id:4,  name:"Cristadela",              sub:"Menorca",                   tipo:"Distribuidor",   prioridad:"Alta", stage:0, zona:"Baleares"},
+    {id:5,  name:"Benejam Refrigeración",   sub:"Menorca",                   tipo:"Distribuidor",   prioridad:"Alta", stage:0, zona:"Baleares"},
+    {id:6,  name:"Pilsa",                   sub:"Andalucía",                 tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"Andalucía"},
+    {id:7,  name:"Suministros Unic",        sub:"Sevilla",                   tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"Andalucía"},
+    {id:8,  name:"Gas I Fred",              sub:"Ibiza",                     tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"Baleares"},
+    {id:9,  name:"Servitel",                sub:"Pendiente fechas",          tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"—"},
+    {id:11, name:"ALVAREZ EQUIPMENT",       sub:"Palma",                     tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"Baleares"},
+    {id:12, name:"Procuina",                sub:"Demo 13/05 · clientes 30/06",tipo:"Distribuidor",  prioridad:"Alta", stage:2, zona:"Cataluña"},
+    {id:13, name:"Antonio de Miguel SL",    sub:"Demo 25/05 Madrid",         tipo:"Distribuidor",   prioridad:"Alta", stage:2, zona:"Madrid"},
+    {id:14, name:"Oms I Vinyes",            sub:"Reunión 02/06 · demo pendiente",tipo:"Distribuidor",prioridad:"Alta",stage:2, zona:"Cataluña"},
+    {id:15, name:"Alvarez Group",           sub:"Demo 05/06 Mallorca",       tipo:"Distribuidor",   prioridad:"Alta", stage:2, zona:"Baleares"},
+    {id:28, name:"CBB Hostelería",          sub:"Demo 29/05 · Fernando",     tipo:"Distribuidor",   prioridad:"Alta", stage:2, zona:"Valencia"},
+    {id:29, name:"Hostel Group",            sub:"Demo 12/06 Barcelona",      tipo:"Distribuidor",   prioridad:"Alta", stage:2, zona:"Cataluña"},
+    {id:17, name:"Tomas Llobet",            sub:"PF-002 · proyecto sep",     tipo:"Distribuidor",   prioridad:"Media",stage:4, zona:"Cataluña"},
+    {id:18, name:"CHR Equipements",         sub:"Marruecos · A-5305 · 7u",   tipo:"Internacional",  prioridad:"Alta", stage:4, zona:"Marruecos"},
+    {id:19, name:"Montnegre Fitty",         sub:"Barcelona · A-5319",        tipo:"Cliente final",  prioridad:"Media",stage:4, zona:"Cataluña"},
+    {id:20, name:"Arrocería Samm",          sub:"Madrid · A-5317 · 5u",      tipo:"Cliente final",  prioridad:"Alta", stage:4, zona:"Madrid"},
+    {id:21, name:"Rizmo Restaurante",       sub:"Murcia · A-5331 · 4u",      tipo:"Cliente final",  prioridad:"Alta", stage:4, zona:"Murcia"},
+    {id:22, name:"Arroz de la Tomasa",      sub:"Navarra · A-5343 · 3u",     tipo:"Cliente final",  prioridad:"Alta", stage:4, zona:"Navarra"},
+    {id:23, name:"Cocineros Canarias",      sub:"PF-001 · 2u GO GP",         tipo:"Distribuidor",   prioridad:"Alta", stage:5, zona:"Canarias"},
+    {id:24, name:"Suministros Unic",        sub:"A-5352 · 2u · 5.593€",      tipo:"Distribuidor",   prioridad:"Alta", stage:5, zona:"Andalucía"},
+    {id:25, name:"Eskocia Wurm S.L.",       sub:"9u PRO GP · 34.560€",       tipo:"Cliente final",  prioridad:"Alta", stage:5, zona:"Canarias"},
+    {id:26, name:"MAFIVINOS",               sub:"A-5313 · 6u · perdido a competencia", tipo:"Distribuidor", prioridad:"Media", stage:6, zona:"Canarias"},
   ],
   distribuidores: [
     {id:1,  nombre:"Pilsa", zona:"Andalucía", provincia:"Andalucía", tipo:"Mixto horeca", contacto:"Victor Madera", cargo:"Comercial", tel:"609057754", email:"v.madera@pilsa.com", prioridad:"Alta", estado:"contactado", notas:"Cliente ICC, potencial exportación. Multisede: Granada, Mallorca, Canarias, Barcelona, Madrid, Sevilla, México, RD, Maldivas..."},
@@ -406,38 +405,38 @@ const DEFAULT = {
     {id:36, nombre:"Comeca Importação e Exportação SA", zona:"Portugal", provincia:"Portugal", tipo:"Maquinaria Horeca", contacto:"—", cargo:"", tel:"+351 219155600", email:"horeca@comeca.pt", prioridad:"Alta", estado:"contactado", notas:""},
   ],
   proformas: [
-    {id:1,  num:"PF-001",  cliente:"Cocineros Canarias",              contacto:"José Francisco",  tel:"629157396",  provincia:"Canarias",   tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GP", unidades:2,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Ganado",        proximoPaso:"Seguimiento pago",    fecha:"22/04/2026", notas:"Cliente ICC. Pendiente fabricación/envío. Posible demo y formación.", convertida:true},
-    {id:2,  num:"PF-002",  cliente:"Tomas Llobet",                    contacto:"Kiko",             tel:"670230435",  provincia:"Tarragona",  tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GN", unidades:12, precioUnit:"2796.5",  responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar en noviembre", fecha:"22/04/2026", notas:"Proyecto hasta septiembre. 12u GO GN a precio distribuidor.", fechaSeguimiento:"01/11/2026"},
-    {id:3,  num:"A-5352",  cliente:"Suministros Unic",                contacto:"Jorge Gómez",     tel:"627489819",  provincia:"Cádiz",      tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GP", unidades:2,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Ganado",        proximoPaso:"Activar canal",       fecha:"15/04/2026", notas:"Activar como canal, no solo venta puntual.", convertida:true},
-    {id:4,  num:"A-5313",  cliente:"MAFIVINOS",                       contacto:"Matías",           tel:"675862287",  provincia:"Canarias",   tipo:"Distribuidor",   modelo:"GO + PRO", tipoGas:"GN", unidades:6,  precioUnit:"3995",    responsable:"Felipe", estado:"Perdida",       proximoPaso:"Recuperación jun",    fecha:"09/03/2026", notas:"Compró a la competencia. 3 GO GN + 3 PRO GN aprox."},
-    {id:5,  num:"A-5305",  cliente:"CHR EQUIPEMENTS SARL",            contacto:"Mohamed",          tel:"",           provincia:"Marruecos",  tipo:"Internacional",  modelo:"PRO + GO", tipoGas:"GP", unidades:7,  precioUnit:"3890",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento email",   fecha:"26/02/2026", notas:"2 PRO GP (3.890€) + 5 GO GP (3.499€). Sin respuesta por email. Total 25.275€."},
+    {id:1,  num:"PF-001",  cliente:"Cocineros Canarias",              contacto:"José Francisco",  tel:"629157396",  provincia:"Canarias",   tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GP", unidades:2,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Ganado",        proximoPaso:"Seguimiento pago",                                          fecha:"22/04/2026", notas:"Cliente ICC. Pendiente fabricación/envío. Posible demo y formación.", convertida:true},
+    {id:2,  num:"PF-002",  cliente:"Tomas Llobet",                    contacto:"Kiko",             tel:"670230435",  provincia:"Tarragona",  tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GN", unidades:12, precioUnit:"2796.5",  responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar en noviembre",                                       fecha:"22/04/2026", notas:"Proyecto hasta septiembre. 12u GO GN a precio distribuidor.", fechaSeguimiento:"01/11/2026"},
+    {id:3,  num:"A-5352",  cliente:"Suministros Unic",                contacto:"Jorge Gómez",     tel:"627489819",  provincia:"Cádiz",      tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GP", unidades:2,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Ganado",        proximoPaso:"Activar canal",                                             fecha:"15/04/2026", notas:"Activar como canal, no solo venta puntual.", convertida:true},
+    {id:4,  num:"A-5313",  cliente:"MAFIVINOS",                       contacto:"Matías",           tel:"675862287",  provincia:"Canarias",   tipo:"Distribuidor",   modelo:"GO + PRO", tipoGas:"GN", unidades:6,  precioUnit:"",        totalManual:"",      responsable:"Felipe", estado:"Perdida",       proximoPaso:"Recuperación jun",                                          fecha:"09/03/2026", notas:"Compró a la competencia."},
+    {id:5,  num:"A-5305",  cliente:"CHR EQUIPEMENTS SARL",            contacto:"Mohamed",          tel:"",           provincia:"Marruecos",  tipo:"Internacional",  modelo:"PRO + GO", tipoGas:"GP", unidades:7,  precioUnit:"",        totalManual:"25275", responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento email",   fecha:"26/02/2026", notas:"2 PRO GP (3.890€) + 5 GO GP (3.499€). Sin respuesta por email. Total 25.275€."},
     {id:6,  num:"A-5319",  cliente:"Montnegre Fitty / Fiftyrest",     contacto:"Joan Cinto",       tel:"623966292",  provincia:"Barcelona",  tipo:"Cliente final",  modelo:"GO",       tipoGas:"GP", unidades:1,  precioUnit:"3499",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"12/03/2026", notas:"Validar interés actual."},
     {id:7,  num:"A-5317",  cliente:"Arrocería Samm, S.L.",            contacto:"Sergio",           tel:"667787536",  provincia:"Madrid",     tipo:"Cliente final",  modelo:"GO",       tipoGas:"GP", unidades:5,  precioUnit:"3499",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"11/03/2026", notas:"5u GO GP según PDF. Volumen potencial interesante."},
-    {id:8,  num:"A-5331",  cliente:"Rizmo Restaurante",               contacto:"Santiago Navarro", tel:"615293642",  provincia:"Murcia",     tipo:"Cliente final",  modelo:"GO + PRO", tipoGas:"GN", unidades:4,  precioUnit:"3995",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"18/03/2026", notas:"2 GO GN (3.995€) + 2 PRO GN (4.800€). Total 17.590€. Lead web Mimcook."},
-    {id:9,  num:"A-5343",  cliente:"Arroz de la Tomasa",              contacto:"Fernando Nuñez",   tel:"651730950",  provincia:"Navarra",    tipo:"Cliente final",  modelo:"GO",       tipoGas:"GP", unidades:3,  precioUnit:"3499",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"08/04/2026", notas:"3u GO GP. Argumento de volumen para cierre."},
-    {id:50, num:"A-5347",  cliente:"Rostisseria Yaya Juana",          contacto:"Victor",           tel:"",           provincia:"Barcelona",  tipo:"Cliente final",  modelo:"PRO",      tipoGas:"GN", unidades:1,  precioUnit:"4800",    responsable:"Felipe", estado:"En negociación", proximoPaso:"Seguimiento financiación", fecha:"10/04/2026", notas:"Documentación enviada para aprobación financiación."},
+    {id:8,  num:"A-5331",  cliente:"Rizmo Restaurante",               contacto:"Santiago Navarro", tel:"615293642",  provincia:"Murcia",     tipo:"Cliente final",  modelo:"GO + PRO", tipoGas:"GN", unidades:4,  precioUnit:"",        totalManual:"17590", responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"18/03/2026", notas:"2 GO GN (3.995€) + 2 PRO GN (4.800€). Total 17.590€. Lead web Mimcook."},
+    {id:9,  num:"A-5343",  cliente:"Arroz de la Tomasa",              contacto:"Fernando Nuñez",   tel:"651730950",  provincia:"Navarra",    tipo:"Cliente final",  modelo:"GO",       tipoGas:"GP", unidades:3,  precioUnit:"3795.25", responsable:"Felipe", estado:"Ganado",        proximoPaso:"Llamar el lunes 15/6 para pagar (Ana Ruiz)", fecha:"08/04/2026", notas:"Argumento de volumen para cierre.", fechaSeguimiento:"15/06/2026", convertida:true},
+    {id:50, num:"A-5347",  cliente:"Rostisseria Yaya Juana",          contacto:"Victor",           tel:"",           provincia:"Barcelona",  tipo:"Cliente final",  modelo:"PRO",      tipoGas:"GN", unidades:1,  precioUnit:"4800",    responsable:"Felipe", estado:"Perdida",       proximoPaso:"Seguimiento financiación", fecha:"10/04/2026", notas:"Documentación enviada para aprobación financiación."},
     {id:51, num:"A-5354",  cliente:"Frinoxtel",                       contacto:"Javier Malón",     tel:"651895922",  provincia:"Navarra",    tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GN", unidades:2,  precioUnit:"2796.5",  responsable:"Felipe", estado:"En negociación", proximoPaso:"Llamar",              fecha:"17/04/2026", notas:"Ya cliente ICC. Su manera de trabajar: esperan a que el cliente les pida algo."},
-    {id:52, num:"A-5359",  cliente:"Roig Profesional, S.L.",          contacto:"Marcos",           tel:"606394116",  provincia:"Galicia",    tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GP", unidades:1,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento",         fecha:"04/05/2026", notas:"Demo Mimcook para sus instalaciones. 1u GO GP precio distribuidor."},
-    {id:53, num:"A-5360",  cliente:"(Cliente por determinar)",        contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"GO",       tipoGas:"GN", unidades:8,  precioUnit:"3995",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Identificar cliente", fecha:"05/05/2026", notas:"8u GO GN. Cliente fiscal por determinar. 31.960€ bruto."},
-    {id:54, num:"A-5361",  cliente:"Bonobo Playa, S.L.",              contacto:"",                 tel:"",           provincia:"Cartagena",  tipo:"Cliente final",  modelo:"GO + PRO", tipoGas:"GP", unidades:9,  precioUnit:"",        responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento entrega", fecha:"06/05/2026", notas:"6u GO GP (dto 10%) + 3u PRO GP (dto 5%). Total 35.253€. Entrega mediados junio 2026."},
-    {id:55, num:"A-5369",  cliente:"EFEN-Hotelaria, S.A.",            contacto:"",                 tel:"",           provincia:"Portugal",   tipo:"Internacional",  modelo:"PRO",      tipoGas:"GP", unidades:4,  precioUnit:"4800",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento",         fecha:"12/05/2026", notas:"4u PRO GP. Cliente Portugal."},
-    {id:56, num:"A-5372",  cliente:"Aeroso Fun, S.L.",                contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"PRO",      tipoGas:"GP", unidades:1,  precioUnit:"4800",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento",         fecha:"15/05/2026", notas:"1u PRO GP."},
-    {id:57, num:"A-5377",  cliente:"Rest. El Nuevo Varadero",         contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"GO",       tipoGas:"GN", unidades:3,  precioUnit:"3995",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"26/05/2026", notas:"3u GO GN. 11.985€."},
-    {id:58, num:"A-5380",  cliente:"Piccola Gestión Hostelería, S.L.",contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"PRO",      tipoGas:"GP", unidades:6,  precioUnit:"4800",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"27/05/2026", notas:"6u PRO GP. 28.800€."},
-    {id:59, num:"A-5381",  cliente:"Suministros Unic, S.L.",          contacto:"Jorge",            tel:"627489819",  provincia:"Cádiz",      tipo:"Distribuidor",   modelo:"PRO",      tipoGas:"GP", unidades:6,  precioUnit:"3360",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento",         fecha:"28/05/2026", notas:"6u PRO GP precio distribuidor (3.360€/u). 20.160€."},
+    {id:52, num:"A-5359",  cliente:"Roig Profesional, S.L.",          contacto:"Marcos",           tel:"606394116",  provincia:"Galicia",    tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GP", unidades:1,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Perdida",       proximoPaso:"Dice que no lo va a comprar hasta que no tenga clientes", fecha:"04/05/2026", notas:"Demo Mimcook para sus instalaciones. 1u GO GP precio distribuidor."},
+    {id:53, num:"A-5360",  cliente:"Grupo La Olla",                   contacto:"Ramón",            tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"GO",       tipoGas:"GN", unidades:8,  precioUnit:"3995",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar a Ramón", fecha:"05/05/2026", notas:"8u GO GN. Cliente fiscal por determinar. 31.960€ bruto."},
+    {id:54, num:"A-5361",  cliente:"Bonobo Playa, S.L.",              contacto:"",                 tel:"",           provincia:"Cartagena",  tipo:"Cliente final",  modelo:"GO + PRO", tipoGas:"GP", unidades:9,  precioUnit:"",        totalManual:"35253", responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento entrega", fecha:"06/05/2026", notas:"6u GO GP (dto 10%) + 3u PRO GP (dto 5%). Total 35.253€. Entrega mediados junio 2026.", fechaSeguimiento:"01/09/2026"},
+    {id:55, num:"A-5369",  cliente:"EFEN-Hotelaria, S.A.",            contacto:"",                 tel:"",           provincia:"Portugal",   tipo:"Internacional",  modelo:"PRO",      tipoGas:"GP", unidades:4,  precioUnit:"4800",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar a Enric y preguntar",  fecha:"12/05/2026", notas:"4u PRO GP. Cliente Portugal.", contacto:"Enric"},
+    {id:56, num:"A-5372",  cliente:"Aeroso Fun, S.L.",                contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"PRO",      tipoGas:"GP", unidades:1,  precioUnit:"4800",    responsable:"Felipe", estado:"En negociación", proximoPaso:"Seguimiento llamar en septiembre. 1 mimcook con reserva 150€ feria", fecha:"15/05/2026", notas:"1u PRO GP.", fechaSeguimiento:"01/09/2026"},
+    {id:57, num:"A-5377",  cliente:"Rest. El Nuevo Varadero",         contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"GO",       tipoGas:"GN", unidades:3,  precioUnit:"3995",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar a Jordi",              fecha:"26/05/2026", notas:"3u GO GN. 11.985€.", contacto:"Jordi"},
+    {id:58, num:"A-5380",  cliente:"Piccola Gestión Hostelería, S.L.",contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"PRO",      tipoGas:"GP", unidades:6,  precioUnit:"4800",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"27/05/2026", notas:"6u PRO GP. 28.800€. Cliente de Suministros Unic (David)."},
+    {id:59, num:"A-5381",  cliente:"Suministros Unic, S.L.",          contacto:"Jorge",            tel:"627489819",  provincia:"Cádiz",      tipo:"Distribuidor",   modelo:"PRO",      tipoGas:"GP", unidades:6,  precioUnit:"3360",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento",         fecha:"28/05/2026", fechaSeguimiento:"22/06/2026", notas:"6u PRO GP precio distribuidor (3.360€/u). 20.160€."},
     {id:60, num:"A-5388",  cliente:"Rent Hostelería Mallorca, S.L.",  contacto:"",                 tel:"",           provincia:"Mallorca",   tipo:"Cliente final",  modelo:"GO",       tipoGas:"GP", unidades:1,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento",         fecha:"11/06/2026", notas:"1u GO GP. Precio distribuidor."},
   ],
   demos: [
     {id:1,  nombre:"Procuina",                provincia:"Barcelona", zona:"Cataluña",  tipo:"Distribuidor",  contacto:"Eduard",         tel:"661926565",  tipoOp:"demo_interna",   notas:"Demo interna realizada el 13/05 en sus instalaciones. Zona Lloret de Mar / Blanes.", fecha:"13/05/2026", manuallyRealized:true},
     {id:2,  nombre:"Antonio de Miguel SL",    provincia:"Madrid",    zona:"Madrid",    tipo:"Distribuidor",  contacto:"David Sánchez",  tel:"628708572",  tipoOp:"demo_clientes",  notas:"Demo realizada el 25/05 en evento Finca Astible. Asistieron comerciales de Madrid + grabación.", fecha:"25/05/2026", manuallyRealized:true},
-    {id:3,  nombre:"CBB Hostelería",          provincia:"Valencia",  zona:"Valencia",  tipo:"Distribuidor",  contacto:"Vicente",        tel:"659869766",  tipoOp:"demo_interna",   notas:"Demo realizada el 29/05 con Fernando Reyes en sus instalaciones.", fecha:"29/05/2026", manuallyRealized:true},
+    {id:3,  nombre:"CBB Hostelería",          provincia:"Valencia",  zona:"Valencia",  tipo:"Distribuidor",  contacto:"Vicente",        tel:"659869766",  tipoOp:"demo_interna",   notas:"Demo realizada el 29/05 por Fernando Reyes en sus instalaciones.", fecha:"29/05/2026", manuallyRealized:true},
     {id:4,  nombre:"Oms I Vinyes",            provincia:"Barcelona", zona:"Cataluña",  tipo:"Distribuidor",  contacto:"Toni",           tel:"671319968",  tipoOp:"presentacion",   notas:"Reunión 02/06 a las 11:00h. A la espera de confirmar demo para sus comerciales.", fecha:"02/06/2026", manuallyRealized:true},
     {id:5,  nombre:"Alvarez Group",           provincia:"Palma",     zona:"Baleares",  tipo:"Distribuidor",  contacto:"Gabriel Griñán", tel:"971201800",  tipoOp:"demo_clientes",  notas:"Demo realizada el 05/06 a todo el equipo comercial en Mallorca. Email enviado a directores comerciales para acordar estrategia. Pendiente respuesta.", fecha:"05/06/2026", manuallyRealized:true},
     {id:6,  nombre:"Tonet Paellas",           provincia:"Madrid",    zona:"Madrid",    tipo:"Cliente final", contacto:"Tonet",          tel:"",           tipoOp:"demo_clientes",  notas:"Demo el 08/06 en restaurante de cliente en Madrid. Va a comprar en noviembre. Llamarle en noviembre.", fecha:"08/06/2026", manuallyRealized:true},
-    {id:7,  nombre:"Hostel Group",            provincia:"Barcelona", zona:"Cataluña",  tipo:"Distribuidor",  contacto:"Eduard",         tel:"",           tipoOp:"demo_interna",   notas:"Demo interna el viernes 12/06 a las 12:30h en sus instalaciones en Barcelona.", fecha:"12/06/2026"},
+    {id:7,  nombre:"Hostel Group",            provincia:"Barcelona", zona:"Cataluña",  tipo:"Distribuidor",  contacto:"Eduard",         tel:"",           tipoOp:"demo_interna",   notas:"Demo interna el viernes 12/06 a las 12:30h en sus instalaciones en Barcelona.", fecha:"12/06/2026", manuallyRealized:true},
     {id:8,  nombre:"H-10 Hoteles",            provincia:"Barcelona", zona:"Cataluña",  tipo:"Cliente final", contacto:"Nuria y Joan",   tel:"",           tipoOp:"demo_clientes",  notas:"Demo el lunes 15/06 a las 11:00h con directores operativos de la cadena H-10 en Barcelona.", fecha:"15/06/2026"},
-    {id:9,  nombre:"Procuina (clientes finales)", provincia:"Barcelona", zona:"Cataluña", tipo:"Distribuidor", contacto:"Eduard",       tel:"661926565",  tipoOp:"demo_clientes",  notas:"Demo con clientes finales de Procuina el 30/06 a las 09:00h.", fecha:"30/06/2026"},
     {id:11, nombre:"El Buen Yantar (Original Paella)", provincia:"Madrid", zona:"Madrid", tipo:"Cliente final", contacto:"",            tel:"",            tipoOp:"demo_clientes",  notas:"Demo a cliente final del distribuidor Original Paella. Miércoles 17/06 a las 12:30h en el restaurante El Buen Yantar, Madrid. Hacer seguimiento post-demo.", fecha:"17/06/2026"},
+    {id:9,  nombre:"Procuina (clientes finales)", provincia:"Barcelona", zona:"Cataluña", tipo:"Distribuidor", contacto:"Eduard",       tel:"661926565",  tipoOp:"demo_clientes",  notas:"Demo con clientes finales de Procuina el 30/06 a las 09:00h.", fecha:"30/06/2026"},
     {id:10, nombre:"DG3 Gastronomía SL",      provincia:"Valencia",  zona:"Valencia",  tipo:"Distribuidor",  contacto:"David",          tel:"647310903",  tipoOp:"demo_clientes",  notas:"Demo 3 días: 13, 14 y 15 de julio. 15 cocineros/clientes cada día. Montar estrategia previa con Esteve.", fecha:"13/07/2026"},
   ],
   acciones: [
@@ -492,7 +491,7 @@ function loadState() {
   // Clear old localStorage versions to avoid conflicts
   localStorage.removeItem('mimcook_crm_v2');
   try {
-    const saved = localStorage.getItem('mimcook_crm_v3');
+    const saved = localStorage.getItem('mimcook_crm_v4');
     if (saved) {
       state = JSON.parse(saved);
       if (!state.comisiones) state.comisiones = [];
@@ -520,7 +519,7 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem('mimcook_crm_v3', JSON.stringify(state));
+  localStorage.setItem('mimcook_crm_v4', JSON.stringify(state));
   const ind = document.getElementById('save-ind');
   ind.style.display = 'block';
   clearTimeout(ind._t);
@@ -683,7 +682,8 @@ function renderProformas() {
     return parseDate(b.fecha) - parseDate(a.fecha);
   });
   tbody.innerHTML = rows.map(p => {
-    const total = (p.precioUnit && p.unidades) ? (+p.precioUnit * +p.unidades) : null;
+    const calcTotal = (p.precioUnit && p.unidades) ? (+p.precioUnit * +p.unidades) : null;
+    const total = p.totalManual ? +p.totalManual : calcTotal;
     const totalStr = total ? total.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+'€' : '—';
     return `
     <tr>
@@ -704,7 +704,13 @@ function renderProformas() {
       </td>
       <td><span class="editable" contenteditable="true" onblur="updatePFNum(${p.id},'unidades',this.textContent)" style="text-align:center;display:block;font-weight:600">${p.unidades}</span></td>
       <td><span class="editable" contenteditable="true" onblur="updatePFNum(${p.id},'precioUnit',this.textContent)">${p.precioUnit||''}</span></td>
-      <td style="font-weight:700;color:${total?'#1a1a1a':'#aaa'}">${totalStr}</td>
+      <td style="font-weight:700;color:${total?'#1a1a1a':'#aaa'}">
+        <span class="editable" contenteditable="true" 
+          onblur="updatePFNum(${p.id},'totalManual',this.textContent.replace('€','').replace('.','').replace(',','.'))"
+          title="Editable — escribe el total si hay modelos mixtos"
+          style="display:block;min-width:80px">${totalStr}</span>
+        ${p.totalManual ? '<span style="font-size:9px;color:#b45309;display:block">✎ manual</span>' : ''}
+      </td>
       <td>
         <select class="cell-select" onchange="updatePF(${p.id},'responsable',this.value)">
           ${['Felipe','Esteve','Fernando','Otro'].map(r=>`<option ${r===(p.responsable||'Felipe')?'selected':''}>${r}</option>`).join('')}
