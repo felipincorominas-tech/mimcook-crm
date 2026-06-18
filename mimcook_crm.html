@@ -7,23 +7,18 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f4f0; color: #1a1a1a; }
-
 .header { background: #1a1a1a; color: white; padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
 .header h1 { font-size: 18px; font-weight: 700; }
 .header-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
 .kpi-pill { background: #2a2a2a; border-radius: 20px; padding: 6px 14px; font-size: 12px; color: #ccc; }
 .kpi-pill span { color: #f5c842; font-weight: 700; font-size: 14px; }
 .save-indicator { font-size: 11px; color: #22c55e; padding: 4px 10px; border-radius: 10px; background: rgba(34,197,94,0.1); }
-
 .tabs { background: white; border-bottom: 1px solid #e5e5e5; padding: 0 24px; display: flex; gap: 0; }
 .tab { padding: 14px 18px; font-size: 13px; cursor: pointer; border-bottom: 2px solid transparent; color: #666; white-space: nowrap; transition: all 0.15s; }
 .tab:hover { color: #1a1a1a; }
 .tab.active { color: #1a1a1a; border-bottom-color: #f5c842; font-weight: 600; }
-
 .view { display: none; padding: 20px 24px; }
 .view.active { display: block; }
-
-/* TOOLBAR */
 .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
 .toolbar input[type=text] { border: 1px solid #e5e5e5; border-radius: 8px; padding: 7px 12px; font-size: 13px; width: 220px; outline: none; }
 .toolbar input[type=text]:focus { border-color: #f5c842; }
@@ -34,15 +29,12 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f4f0; colo
 .btn-danger { background: #fdeaea; color: #b91c1c; border-color: #fca5a5; }
 .btn-danger:hover { background: #fee2e2; }
 .btn.active { background: #1a1a1a; color: white; border-color: #1a1a1a; }
-
-/* KANBAN */
 .kanban { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 16px; align-items: flex-start; }
 .kanban-col { flex: 0 0 210px; background: white; border-radius: 10px; overflow: visible; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
 .col-header { padding: 11px 13px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; border-radius: 10px 10px 0 0; }
 .col-count { background: rgba(0,0,0,0.12); border-radius: 10px; padding: 1px 7px; font-size: 11px; }
 .col-body { padding: 8px; display: flex; flex-direction: column; gap: 7px; min-height: 80px; }
 .col-body.drag-over { background: #fffbeb; border-radius: 0 0 10px 10px; }
-
 .card { background: white; border: 1px solid #ebebeb; border-radius: 8px; padding: 10px 11px; cursor: grab; transition: box-shadow 0.15s; position: relative; }
 .card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
 .card.dragging { opacity: 0.4; cursor: grabbing; }
@@ -54,17 +46,14 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f4f0; colo
 .card-btn { width: 22px; height: 22px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; }
 .card-btn-edit { background: #e8f4fd; }
 .card-btn-del { background: #fdeaea; }
-
 .tag { font-size: 10px; border-radius: 4px; padding: 2px 6px; font-weight: 500; }
 .tag-dist { background: #e8f4fd; color: #1a6fa0; }
 .tag-final { background: #f0f9e8; color: #2d7a2d; }
 .tag-alta { background: #fff3e0; color: #b45309; }
 .tag-media { background: #f3f4f6; color: #6b7280; }
 .tag-zone { background: #faf0ff; color: #7c3aed; }
-
 .add-card-btn { width: 100%; padding: 7px; border: 1px dashed #d1d5db; background: transparent; border-radius: 7px; cursor: pointer; font-size: 12px; color: #9ca3af; margin-top: 4px; }
 .add-card-btn:hover { background: #f9fafb; color: #555; }
-
 .stage-0 .col-header { background: #f5f5f5; color: #555; }
 .stage-1 .col-header { background: #e8f4fd; color: #1a6fa0; }
 .stage-2 .col-header { background: #fff3e0; color: #b45309; }
@@ -73,36 +62,19 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f4f0; colo
 .stage-5 .col-header { background: #e8f9e8; color: #2d7a2d; }
 .stage-6 .col-header { background: #fdeaea; color: #b91c1c; }
 .stage-7 .col-header { background: #e8f5e9; color: #1b5e20; }
-
-/* TABLE */
 .table-wrap { background: white; border-radius: 10px; overflow-x: auto; overflow-y: visible; box-shadow: 0 1px 3px rgba(0,0,0,0.08); -webkit-overflow-scrolling: touch; }
 table { width: 100%; min-width: 900px; border-collapse: collapse; font-size: 13px; }
 th { background: #f9f9f9; padding: 9px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.4px; color: #888; font-weight: 600; border-bottom: 1px solid #ebebeb; white-space: nowrap; }
 td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: #fafafa; }
-
-/* Editable cells */
 .editable { cursor: pointer; border-radius: 4px; padding: 2px 4px; min-width: 40px; display: inline-block; }
 .editable:hover { background: #f0f0f0; outline: 1px dashed #d1d5db; }
 .editable:focus { background: white !important; outline: 2px solid #f5c842; border-radius: 4px; cursor: text; }
 .editable:empty:before { content: attr(data-placeholder); color: #bbb; pointer-events: none; }
 .editable[contenteditable=true] { cursor: text; }
-
 select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px 6px; font-size: 12px; background: white; cursor: pointer; }
-
 .badge { display: inline-block; border-radius: 5px; padding: 2px 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
-.badge-ganado { background: #e8f9e8; color: #2d7a2d; }
-.badge-enviada { background: #fef9e7; color: #b45309; }
-.badge-perdida { background: #fdeaea; color: #b91c1c; }
-.badge-contactado { background: #e8f4fd; color: #1a6fa0; }
-.badge-nocontactado { background: #f3f4f6; color: #6b7280; }
-.badge-nocontesta { background: #fff0f0; color: #b91c1c; }
-.badge-alta { background: #fff3e0; color: #b45309; }
-.badge-media { background: #f3f4f6; color: #6b7280; }
-.badge-marcha { background: #e8f4fd; color: #1a6fa0; }
-
-/* DEMOS */
 .demos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
 .demo-card { background: white; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid #f5c842; position: relative; }
 .demo-card.formacion { border-left-color: #7c3aed; }
@@ -114,7 +86,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .demo-date { font-size: 12px; color: #f5c842; font-weight: 600; margin-bottom: 8px; }
 .demo-card.formacion .demo-date { color: #7c3aed; }
 .demo-card.pasada .demo-date { color: #9ca3af; }
-.demo-note { font-size: 12px; color: #666; line-height: 1.5; }
 .demo-type { display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; }
 .demo-type.visita { background: #f0f9e8; color: #2d7a2d; }
 .demo-type.demo_interna { background: #fff3e0; color: #b45309; }
@@ -124,8 +95,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .demo-type.demo { background: #fff3e0; color: #b45309; }
 .card-del-btn { position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border: none; border-radius: 4px; background: #fdeaea; color: #b91c1c; cursor: pointer; font-size: 14px; display: none; align-items: center; justify-content: center; }
 .demo-card:hover .card-del-btn { display: flex; }
-
-/* ACCIONES */
 .accion-row { display: flex; gap: 12px; align-items: flex-start; padding: 11px 14px; border-bottom: 1px solid #f0f0f0; position: relative; }
 .accion-row:last-child { border-bottom: none; }
 .accion-row:hover { background: #fafafa; }
@@ -134,16 +103,11 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .accion-body { flex: 1; }
 .accion-del { display: none; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
 .accion-row:hover .accion-del { display: block; }
-
-/* KPIs */
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
 .kpi-card { background: white; border-radius: 10px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
 .kpi-val { font-size: 30px; font-weight: 800; color: #1a1a1a; }
 .kpi-label { font-size: 12px; color: #888; margin-top: 4px; }
 .kpi-sub { font-size: 11px; color: #aaa; margin-top: 2px; }
-.section-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
-
-/* MODAL */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
 .modal-bg.open { display: flex; }
 .modal { background: white; border-radius: 12px; padding: 24px; width: 480px; max-width: 95vw; max-height: 85vh; overflow-y: auto; }
@@ -159,7 +123,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 </style>
 </head>
 <body>
-
 <div class="header">
   <div>
     <div style="font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px">CRM</div>
@@ -169,17 +132,14 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
     <div class="kpi-pill">Pipeline <span id="hdr-pipeline">—</span></div>
     <div class="kpi-pill">Proformas <span id="hdr-proformas">—</span></div>
     <div class="kpi-pill">Ganadas <span id="hdr-ventas">—</span></div>
-    <!-- CAMPANITA -->
     <button id="bell-btn" onclick="toggleNotifPanel()" style="position:relative;background:none;border:none;cursor:pointer;padding:6px 8px;border-radius:8px;transition:background 0.15s;display:flex;align-items:center" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">
       <span style="font-size:22px;line-height:1">🔔</span>
       <span id="bell-badge" style="display:none;position:absolute;top:0px;right:0px;background:#ef4444;color:white;font-size:10px;font-weight:800;border-radius:999px;min-width:16px;height:16px;line-height:16px;text-align:center;padding:0 3px">0</span>
     </button>
     <div class="save-indicator" id="save-ind" style="display:none">✓ Guardado</div>
-    <button onclick="if(confirm('¿Resetear todos los datos a los valores por defecto?')){localStorage.removeItem(\'mimcook_crm_v5\');localStorage.removeItem(\'mimcook_crm_v2\');location.reload();}" style="background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);font-size:10px;padding:3px 8px;border-radius:5px;cursor:pointer;margin-left:4px" title="Reset datos">↺</button>
+    <button onclick="if(confirm('¿Exportar copia de seguridad (backup) de todos los datos?')){exportBackup();}" style="background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);font-size:10px;padding:3px 8px;border-radius:5px;cursor:pointer;margin-left:4px" title="Exportar backup">💾 Backup</button>
   </div>
 </div>
-
-<!-- PANEL NOTIFICACIONES — fuera del header para evitar clipping en Safari -->
 <div id="notif-panel" style="display:none;position:fixed;top:56px;right:16px;width:340px;max-width:calc(100vw - 32px);background:white;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.22);z-index:1000;overflow:hidden">
   <div style="padding:14px 16px;border-bottom:1px solid #f0f0f0;font-size:13px;font-weight:700;color:#1a1a1a;display:flex;justify-content:space-between;align-items:center">
     🔔 Notificaciones
@@ -187,10 +147,7 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   </div>
   <div id="notif-list" style="max-height:420px;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>
 </div>
-
-<!-- Overlay para cerrar al clicar fuera -->
 <div id="notif-overlay" onclick="closeNotifPanel()" style="display:none;position:fixed;inset:0;z-index:999"></div>
-
 <div class="tabs">
   <div class="tab active" onclick="showTab('pipeline',this)">🗂 Pipeline</div>
   <div class="tab" onclick="showTab('distribuidores',this)">🤝 Distribuidores</div>
@@ -201,7 +158,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   <div class="tab" onclick="showTab('comisiones',this)">💰 Comisiones</div>
   <div class="tab" onclick="showTab('kpis',this)">📊 KPIs</div>
 </div>
-
 <div id="view-pipeline" class="view active">
   <div class="toolbar">
     <button class="btn btn-primary" onclick="openNewCardModal()">+ Nueva tarjeta</button>
@@ -209,7 +165,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   </div>
   <div class="kanban" id="kanban"></div>
 </div>
-
 <div id="view-distribuidores" class="view">
   <div class="toolbar">
     <input type="text" id="dist-search" placeholder="Buscar..." oninput="renderDistribuidores()">
@@ -225,7 +180,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
     </table>
   </div>
 </div>
-
 <div id="view-proformas" class="view">
   <div id="pf-alert-banner"></div>
   <div class="toolbar">
@@ -243,10 +197,10 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
     </table>
   </div>
 </div>
-
 <div id="view-demos" class="view">
   <div class="toolbar">
     <button class="btn active" id="dm-all" onclick="setDemoFilter('all')">Todas</button>
+    <button class="btn" id="dm-conf" onclick="setDemoFilter('porconfirmar')">⏳ Por confirmar</button>
     <button class="btn" id="dm-prox" onclick="setDemoFilter('proxima')">⬤ Próximas</button>
     <button class="btn" id="dm-real" onclick="setDemoFilter('realizada')">✓ Realizadas</button>
     <button class="btn" id="dm-visita" onclick="setDemoFilter('visita')">👀 Visitas</button>
@@ -255,10 +209,10 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
     <button class="btn" id="dm-presentacion" onclick="setDemoFilter('presentacion')">📊 Presentaciones</button>
     <button class="btn btn-primary" style="margin-left:auto" onclick="openNewDemoModal()">+ Nueva demo</button>
   </div>
+  <div id="demos-porconfirmar-section"></div>
   <div id="demos-proximas-section"></div>
   <div id="demos-realizadas-section"></div>
 </div>
-
 <div id="view-formaciones" class="view">
   <div class="toolbar">
     <button class="btn active" id="fm-all" onclick="setFormFilter('all')">Todas</button>
@@ -269,7 +223,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   <div id="form-proximas-section"></div>
   <div id="form-realizadas-section"></div>
 </div>
-
 <div id="view-acciones" class="view">
   <div class="toolbar">
     <button class="btn active" id="af-all" onclick="setAccFilter('all')">Todas</button>
@@ -279,7 +232,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   </div>
   <div class="table-wrap"><div id="acc-list"></div></div>
 </div>
-
 <div id="view-comisiones" class="view">
   <div class="toolbar">
     <button class="btn active" id="com-all" onclick="setComFilter('all')">Todas</button>
@@ -300,10 +252,8 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   </div>
   <div id="com-totals"></div>
 </div>
-
 <div id="view-kpis" class="view">
   <div class="kpi-grid" id="kpi-grid"></div>
-
   <div style="font-size:15px;font-weight:700;margin-bottom:14px;margin-top:4px">
     ✅ Ventas cerradas
     <span style="font-size:12px;font-weight:400;color:#888;margin-left:8px">Solo proformas con estado Ganado</span>
@@ -318,7 +268,6 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
       <tfoot id="ventas-tfoot"></tfoot>
     </table>
   </div>
-
   <div style="font-size:15px;font-weight:700;margin-bottom:14px">📦 Cartera histórica (pre-CRM)</div>
   <div class="table-wrap">
     <table>
@@ -329,151 +278,12 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   <br>
   <button class="btn btn-primary" onclick="openNewCarteraModal()">+ Añadir cliente a cartera</button>
 </div>
-
-<!-- MODAL -->
 <div class="modal-bg" id="modal-bg">
   <div class="modal" id="modal-inner"></div>
 </div>
-
 <script>
-// ===================== DEFAULT DATA =====================
-const DEFAULT = {
-  pipeline: [
-    {id:1,  name:"Frio Muñoz",              sub:"Murcia",                    tipo:"Distribuidor",   prioridad:"—",    stage:0, zona:"Murcia"},
-    {id:2,  name:"Cerdà Obrador",           sub:"Baleares",                  tipo:"Distribuidor",   prioridad:"Media",stage:0, zona:"Baleares"},
-    {id:3,  name:"Mercagroc",               sub:"Mallorca",                  tipo:"Distribuidor",   prioridad:"Media",stage:0, zona:"Baleares"},
-    {id:4,  name:"Cristadela",              sub:"Menorca",                   tipo:"Distribuidor",   prioridad:"Alta", stage:0, zona:"Baleares"},
-    {id:5,  name:"Benejam Refrigeración",   sub:"Menorca",                   tipo:"Distribuidor",   prioridad:"Alta", stage:0, zona:"Baleares"},
-    {id:6,  name:"Pilsa",                   sub:"Andalucía",                 tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"Andalucía"},
-    {id:7,  name:"Suministros Unic",        sub:"Sevilla",                   tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"Andalucía"},
-    {id:8,  name:"Gas I Fred",              sub:"Ibiza",                     tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"Baleares"},
-    {id:9,  name:"Servitel",                sub:"Pendiente fechas",          tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"—"},
-    {id:11, name:"ALVAREZ EQUIPMENT",       sub:"Palma",                     tipo:"Distribuidor",   prioridad:"Alta", stage:1, zona:"Baleares"},
-    {id:12, name:"Procuina",                sub:"Demo 13/05 · clientes 30/06",tipo:"Distribuidor",  prioridad:"Alta", stage:2, zona:"Cataluña"},
-    {id:13, name:"Antonio de Miguel SL",    sub:"Demo 25/05 Madrid",         tipo:"Distribuidor",   prioridad:"Alta", stage:2, zona:"Madrid"},
-    {id:14, name:"Oms I Vinyes",            sub:"Reunión 02/06 · demo pendiente",tipo:"Distribuidor",prioridad:"Alta",stage:2, zona:"Cataluña"},
-    {id:15, name:"Alvarez Group",           sub:"Demo 05/06 Mallorca",       tipo:"Distribuidor",   prioridad:"Alta", stage:2, zona:"Baleares"},
-    {id:28, name:"CBB Hostelería",          sub:"Demo 29/05 · Fernando",     tipo:"Distribuidor",   prioridad:"Alta", stage:2, zona:"Valencia"},
-    {id:29, name:"Hostel Group",            sub:"Demo 12/06 Barcelona",      tipo:"Distribuidor",   prioridad:"Alta", stage:2, zona:"Cataluña"},
-    {id:17, name:"Tomas Llobet",            sub:"PF-002 · proyecto sep",     tipo:"Distribuidor",   prioridad:"Media",stage:4, zona:"Cataluña"},
-    {id:18, name:"CHR Equipements",         sub:"Marruecos · A-5305 · 7u",   tipo:"Internacional",  prioridad:"Alta", stage:4, zona:"Marruecos"},
-    {id:19, name:"Montnegre Fitty",         sub:"Barcelona · A-5319",        tipo:"Cliente final",  prioridad:"Media",stage:4, zona:"Cataluña"},
-    {id:20, name:"Arrocería Samm",          sub:"Madrid · A-5317 · 5u",      tipo:"Cliente final",  prioridad:"Alta", stage:4, zona:"Madrid"},
-    {id:21, name:"Rizmo Restaurante",       sub:"Murcia · A-5331 · 4u",      tipo:"Cliente final",  prioridad:"Alta", stage:4, zona:"Murcia"},
-    {id:22, name:"Arroz de la Tomasa",      sub:"Navarra · A-5343 · 3u",     tipo:"Cliente final",  prioridad:"Alta", stage:4, zona:"Navarra"},
-    {id:23, name:"Cocineros Canarias",      sub:"PF-001 · 2u GO GP",         tipo:"Distribuidor",   prioridad:"Alta", stage:5, zona:"Canarias"},
-    {id:24, name:"Suministros Unic",        sub:"A-5352 · 2u · 5.593€",      tipo:"Distribuidor",   prioridad:"Alta", stage:5, zona:"Andalucía"},
-    {id:25, name:"Eskocia Wurm S.L.",       sub:"9u PRO GP · 34.560€",       tipo:"Cliente final",  prioridad:"Alta", stage:5, zona:"Canarias"},
-    {id:26, name:"MAFIVINOS",               sub:"A-5313 · 6u · perdido a competencia", tipo:"Distribuidor", prioridad:"Media", stage:6, zona:"Canarias"},
-  ],
-  distribuidores: [
-    {id:1,  nombre:"Pilsa", zona:"Andalucía", provincia:"Andalucía", tipo:"Mixto horeca", contacto:"Victor Madera", cargo:"Comercial", tel:"609057754", email:"v.madera@pilsa.com", prioridad:"Alta", estado:"contactado", notas:"Cliente ICC, potencial exportación. Multisede: Granada, Mallorca, Canarias, Barcelona, Madrid, Sevilla, México, RD, Maldivas..."},
-    {id:2,  nombre:"Suministros Unic", zona:"Andalucía", provincia:"Sevilla", tipo:"Maquinaria Horeca", contacto:"Jorge", cargo:"Comercial", tel:"627489819", email:"", prioridad:"Alta", estado:"contactado", notas:"Cliente ICC y Mimcook. Pendiente demo en Sevilla con comerciales y cliente final."},
-    {id:3,  nombre:"Frio Muñoz", zona:"Murcia", provincia:"Murcia", tipo:"Maquinaria Horeca", contacto:"—", cargo:"", tel:"", email:"info@friomunoz.com", prioridad:"—", estado:"no contactado", notas:""},
-    {id:4,  nombre:"Cerdà Obrador Alimentació", zona:"Baleares", provincia:"Baleares", tipo:"Alimentación horeca", contacto:"María", cargo:"Compras", tel:"971647911", email:"", prioridad:"Media", estado:"no contactado", notas:"Importantes en Baleares. Falta identificar decisor."},
-    {id:5,  nombre:"Gas I Fred", zona:"Baleares", provincia:"Ibiza", tipo:"Maquinaria horeca", contacto:"Jordi", cargo:"Comercial", tel:"696946940", email:"", prioridad:"Alta", estado:"contactado", notas:"Vendió 3-4 Mimcooks antes. Retomando. Correo enviado para demo."},
-    {id:6,  nombre:"ALVAREZ EQUIPMENT & SOLUTIONS", zona:"Baleares", provincia:"Palma", tipo:"Distribuidor horeca", contacto:"Antonia Ramis / Gabriel Griñán", cargo:"Comercial / Dir. Global Proyectos", tel:"971201800", email:"jitka.malkova@hbyalvarez.com", prioridad:"Alta", estado:"demo agendada", notas:"Mallorca, Canarias, RD. Demo 5 jun a las 13h."},
-    {id:7,  nombre:"Mercagroc", zona:"Baleares", provincia:"Mallorca", tipo:"Alimentación horeca", contacto:"—", cargo:"", tel:"971771769", email:"", prioridad:"Media", estado:"no contactado", notas:"Presencia local Mallorca. Validar fit horeca."},
-    {id:8,  nombre:"Cristadela", zona:"Baleares", provincia:"Menorca", tipo:"Suministros horeca", contacto:"—", cargo:"", tel:"971481382", email:"", prioridad:"Alta", estado:"no contactado", notas:"Prospección."},
-    {id:9,  nombre:"Benejam Refrigeración", zona:"Baleares", provincia:"Menorca", tipo:"Montaje cocinas", contacto:"Juanma", cargo:"Propietario", tel:"971380818", email:"", prioridad:"Alta", estado:"no contesta", notas:"Montó cocina a Café Balear (4 Mimcooks). Potencial colaboración."},
-    {id:10, nombre:"Cocineros Canarias", zona:"Canarias", provincia:"Canarias", tipo:"Horeca", contacto:"José Francisco", cargo:"Propietario", tel:"629157396", email:"canariascocinacb@gmail.com", prioridad:"Alta", estado:"pendiente de demo", notas:"Proforma ganada. Pendiente formación y feria en Canarias."},
-    {id:11, nombre:"Hotelgas", zona:"Canarias", provincia:"Tenerife", tipo:"Maquinaria horeca", contacto:"Laura Méndez", cargo:"Compras", tel:"667581941", email:"laura.mendez@hostelgastenerife.com", prioridad:"Media", estado:"no contactado", notas:"Cliente ICC previo. Identificar decisor."},
-    {id:12, nombre:"Oms y Viñes", zona:"Cataluña", provincia:"Barcelona", tipo:"Maquinaria horeca", contacto:"Toni Mestres", cargo:"Compras", tel:"671319968", email:"tmestres@oyv.es", prioridad:"Alta", estado:"pendiente de demo", notas:"Muy buen fit. Cliente ICC (sifones y cargas). Pendiente fechas demo en sus instalaciones."},
-    {id:13, nombre:"Equip Vic", zona:"Cataluña", provincia:"Vic", tipo:"Hoteles horeca", contacto:"Àngel Rierola", cargo:"Propietario", tel:"667676312", email:"info@equipvic.com", prioridad:"Alta", estado:"contactado", notas:"Especializado en hoteles. Pertenece a Hotelaria. 7 comerciales (3 Girona, 4 Vic). Quiere demo conjunta con comerciales y clientes."},
-    {id:14, nombre:"Tomas Llobet", zona:"Cataluña", provincia:"Tarragona", tipo:"Montajes / maquinaria horeca", contacto:"Kiko", cargo:"Propietario", tel:"670230435", email:"", prioridad:"Media", estado:"contactado", notas:"Activo. Trabaja con nosotros."},
-    {id:15, nombre:"La Cartuja (Bunzl)", zona:"Cataluña", provincia:"Tarragona", tipo:"Suministros hostelería / menaje", contacto:"Joana Amezcua", cargo:"Comercial", tel:"977330360 / 629080282", email:"joana.amezcua@bunzlspain.com", prioridad:"Media", estado:"no contactado", notas:""},
-    {id:16, nombre:"Hostel Group", zona:"Cataluña", provincia:"Barcelona", tipo:"Montaje de cocinas", contacto:"Eduard", cargo:"Propietario", tel:"", email:"", prioridad:"Media", estado:"contactado", notas:"Reunión de toma de contacto bien. Pendiente agendar demo."},
-    {id:17, nombre:"H-10 Hoteles", zona:"Cataluña", provincia:"Barcelona", tipo:"Cadena hoteles", contacto:"Nuria y Joan", cargo:"Directores operativos", tel:"", email:"", prioridad:"Alta", estado:"demo agendada", notas:"Demo 15 jun 11:00h en H10 Marina Barcelona. Asisten directores operativos de la cadena."},
-    {id:18, nombre:"Procuina Proyectos", zona:"Cataluña", provincia:"Girona", tipo:"Montaje cocinas", contacto:"Eduard", cargo:"Propietario", tel:"661926565", email:"", prioridad:"Alta", estado:"demo agendada", notas:"Demo 13/05 realizada. Zona Lloret de Mar / Blanes. Pendiente demo con su base de clientes."},
-    {id:19, nombre:"Complet Hotel", zona:"Cataluña", provincia:"Girona", tipo:"Hotel / partner potencial", contacto:"Dani", cargo:"Comercial", tel:"", email:"dani@complethotel.com", prioridad:"Media", estado:"contactado", notas:"Cliente histórico (2 GO en 2022). Validar si puede ser prescriptor o distribuidor local. Email enviado 5/5."},
-    {id:20, nombre:"Servitel", zona:"Madrid", provincia:"Madrid", tipo:"Integral horeca", contacto:"Juan Calderoni", cargo:"Propietario", tel:"629572474", email:"", prioridad:"Alta", estado:"contactado", notas:"Muy potente. Contacto Mahou. Interesados tb en Sete (F1 Madrid). Información enviada, pendiente agendar demo."},
-    {id:21, nombre:"Inhostel", zona:"Madrid", provincia:"Madrid", tipo:"Integral horeca", contacto:"—", cargo:"Propietario", tel:"607036318", email:"", prioridad:"Alta", estado:"no contactado", notas:"Cliente previo Mimcook. Explotar Madrid."},
-    {id:22, nombre:"Antonio de Miguel SL", zona:"Madrid", provincia:"Madrid", tipo:"Alimentación horeca", contacto:"David Sánchez", cargo:"Comercial", tel:"628708572", email:"dsanchez@antoniodemiguel.es", prioridad:"Alta", estado:"demo agendada", notas:"Demo 26/05 realizada. Asistieron comerciales de Madrid + grabación para el resto."},
-    {id:23, nombre:"DG3 Gastronomía SL", zona:"Valencia", provincia:"Valencia", tipo:"Horeca gastronómico", contacto:"David", cargo:"Propietario", tel:"647310903", email:"", prioridad:"Alta", estado:"demo agendada", notas:"Demo 6,7 y 8 julio. 15 cocineros/clientes cada día. Montar estrategia previa con Esteve."},
-    {id:24, nombre:"Original Paella", zona:"Valencia", provincia:"Valencia", tipo:"Menaje y material paellas", contacto:"Javier", cargo:"Propietario", tel:"662603982", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Mimcook antiguo pendiente de renovación. Tiene showcooking. Vendió en Hong Kong. Colabora en web. Acuerdo para nuevo Mimcook a cambio de demos."},
-    {id:25, nombre:"CBB Hostelería", zona:"Valencia", provincia:"L'Olleria", tipo:"Maquinaria, vajilla, mobiliario", contacto:"Vicente", cargo:"Propietario", tel:"659869766", email:"info@cbbhosteleria.es", prioridad:"Alta", estado:"demo agendada", notas:"Contacto de Fernando Reyes. Ha vendido NTGAS. Demo 29/05 con Fernando. Ojo solapamiento con Original Paella."},
-    {id:26, nombre:"Irual Distribución", zona:"Andalucía / Canarias", provincia:"Málaga / Canarias", tipo:"Porta paellas / menaje", contacto:"Raúl", cargo:"Propietario", tel:"607472565", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Delegación en Canarias. Fuerza en Málaga. Pendiente demo en mayo en Málaga y otra en Canarias."},
-    {id:27, nombre:"Exposervi", zona:"Levante", provincia:"Alicante", tipo:"Maquinaria horeca", contacto:"Pablo Alcalde", cargo:"Propietario", tel:"", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Les contacta Fernando Reyes. Email enviado por ICC."},
-    {id:28, nombre:"Ema Hostelería", zona:"Levante", provincia:"Alicante", tipo:"Menaje y equipamiento", contacto:"Ema Pujades", cargo:"Propietario", tel:"", email:"", prioridad:"Media", estado:"pendiente de demo", notas:"Demo con Fernando Reyes. Postpuesta de 28/05, pendiente confirmar próxima semana."},
-    {id:29, nombre:"Roig Profesional SL", zona:"Galicia", provincia:"Galicia", tipo:"Maquinaria", contacto:"Marcos", cargo:"Propietario", tel:"606394116", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Llamada 30/04. Pendiente configurar demo. Tienen que pedir Mimcook para las demos. Llamada finales de mayo."},
-    {id:30, nombre:"Jose Ignacio SL (IGR)", zona:"Asturias", provincia:"Oviedo", tipo:"Maquinaria", contacto:"Nacho", cargo:"Propietario", tel:"650946798", email:"", prioridad:"Alta", estado:"pendiente de demo", notas:"Ha vendido bastante. Demo conjunta pendiente. Llamada 18/05 al volver de vacaciones."},
-    {id:31, nombre:"Jesús Cantos Sánchez SL", zona:"Castilla-La Mancha", provincia:"Albacete", tipo:"Maquinaria industrial hostelería", contacto:"Jesús Cantos", cargo:"Propietario", tel:"670246640", email:"", prioridad:"Alta", estado:"contactado", notas:"Contacto de Fernando Reyes. Ya tiene clientes interesados. Whatsapp enviado 6/5."},
-    {id:32, nombre:"Exclusivas Manero SA", zona:"País Vasco", provincia:"País Vasco", tipo:"Maquinaria hostelería", contacto:"Txema", cargo:"Propietario", tel:"943454309 / 610575024", email:"txema@exclusivasmanero.com", prioridad:"Alta", estado:"no contactado", notas:""},
-    {id:33, nombre:"Comercial Hostelera del Norte", zona:"País Vasco", provincia:"Donosti", tipo:"Maquinaria hostelería", contacto:"Belén", cargo:"Propietario", tel:"902215066", email:"belen@comercialhostelera.com", prioridad:"Media", estado:"no contactado", notas:""},
-    {id:34, nombre:"Frinoxtel", zona:"Navarra", provincia:"Navarra", tipo:"Maquinaria", contacto:"Javier Malón", cargo:"Propietario", tel:"", email:"", prioridad:"Alta", estado:"contactado", notas:"Han pedido proforma. Hacer seguimiento y agendar demo."},
-    {id:35, nombre:"Hoalve", zona:"Castilla y León", provincia:"León", tipo:"—", contacto:"Luis Lopez", cargo:"Propietario", tel:"", email:"llopez@hoalve.es / cgarcia@hoalve.es", prioridad:"Alta", estado:"no contactado", notas:"Compran a ICC sifones y cargas de gas."},
-    {id:36, nombre:"Comeca Importação e Exportação SA", zona:"Portugal", provincia:"Portugal", tipo:"Maquinaria Horeca", contacto:"—", cargo:"", tel:"+351 219155600", email:"horeca@comeca.pt", prioridad:"Alta", estado:"contactado", notas:""},
-  ],
-  proformas: [
-    {id:1,  num:"PF-001",  cliente:"Cocineros Canarias",              contacto:"José Francisco",  tel:"629157396",  provincia:"Canarias",   tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GP", unidades:2,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Ganado",        proximoPaso:"Seguimiento pago",                                          fecha:"22/04/2026", notas:"Cliente ICC. Pendiente fabricación/envío. Posible demo y formación.", convertida:true},
-    {id:2,  num:"PF-002",  cliente:"Tomas Llobet",                    contacto:"Kiko",             tel:"670230435",  provincia:"Tarragona",  tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GN", unidades:12, precioUnit:"2796.5",  responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar en noviembre",                                       fecha:"22/04/2026", notas:"Proyecto hasta septiembre. 12u GO GN a precio distribuidor.", fechaSeguimiento:"01/11/2026"},
-    {id:3,  num:"A-5352",  cliente:"Suministros Unic",                contacto:"Jorge Gómez",     tel:"627489819",  provincia:"Cádiz",      tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GP", unidades:2,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Ganado",        proximoPaso:"Activar canal",                                             fecha:"15/04/2026", notas:"Activar como canal, no solo venta puntual.", convertida:true},
-    {id:4,  num:"A-5313",  cliente:"MAFIVINOS",                       contacto:"Matías",           tel:"675862287",  provincia:"Canarias",   tipo:"Distribuidor",   modelo:"GO + PRO", tipoGas:"GN", unidades:6,  precioUnit:"",        totalManual:"",      responsable:"Felipe", estado:"Perdida",       proximoPaso:"Recuperación jun",                                          fecha:"09/03/2026", notas:"Compró a la competencia."},
-    {id:5,  num:"A-5305",  cliente:"CHR EQUIPEMENTS SARL",            contacto:"Mohamed",          tel:"",           provincia:"Marruecos",  tipo:"Internacional",  modelo:"PRO + GO", tipoGas:"GP", unidades:7,  precioUnit:"",        totalManual:"25275", responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento email",   fecha:"26/02/2026", notas:"2 PRO GP (3.890€) + 5 GO GP (3.499€). Sin respuesta por email. Total 25.275€."},
-    {id:6,  num:"A-5319",  cliente:"Montnegre Fitty / Fiftyrest",     contacto:"Joan Cinto",       tel:"623966292",  provincia:"Barcelona",  tipo:"Cliente final",  modelo:"GO",       tipoGas:"GP", unidades:1,  precioUnit:"3499",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"12/03/2026", notas:"Validar interés actual."},
-    {id:7,  num:"A-5317",  cliente:"Arrocería Samm, S.L.",            contacto:"Sergio",           tel:"667787536",  provincia:"Madrid",     tipo:"Cliente final",  modelo:"GO",       tipoGas:"GP", unidades:5,  precioUnit:"3499",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"11/03/2026", notas:"5u GO GP según PDF. Volumen potencial interesante."},
-    {id:8,  num:"A-5331",  cliente:"Rizmo Restaurante",               contacto:"Santiago Navarro", tel:"615293642",  provincia:"Murcia",     tipo:"Cliente final",  modelo:"GO + PRO", tipoGas:"GN", unidades:4,  precioUnit:"",        totalManual:"17590", responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"18/03/2026", notas:"2 GO GN (3.995€) + 2 PRO GN (4.800€). Total 17.590€. Lead web Mimcook."},
-    {id:9,  num:"A-5343",  cliente:"Arroz de la Tomasa",              contacto:"Fernando Nuñez",   tel:"651730950",  provincia:"Navarra",    tipo:"Cliente final",  modelo:"GO",       tipoGas:"GP", unidades:3,  precioUnit:"3795.25", responsable:"Felipe", estado:"Ganado",        proximoPaso:"Llamar el lunes 15/6 para pagar (Ana Ruiz)", fecha:"08/04/2026", notas:"Argumento de volumen para cierre.", fechaSeguimiento:"15/06/2026", convertida:true},
-    {id:50, num:"A-5347",  cliente:"Rostisseria Yaya Juana",          contacto:"Victor",           tel:"",           provincia:"Barcelona",  tipo:"Cliente final",  modelo:"PRO",      tipoGas:"GN", unidades:1,  precioUnit:"4800",    responsable:"Felipe", estado:"Perdida",       proximoPaso:"Seguimiento financiación", fecha:"10/04/2026", notas:"Documentación enviada para aprobación financiación."},
-    {id:51, num:"A-5354",  cliente:"Frinoxtel",                       contacto:"Javier Malón",     tel:"651895922",  provincia:"Navarra",    tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GN", unidades:2,  precioUnit:"2796.5",  responsable:"Felipe", estado:"En negociación", proximoPaso:"Llamar",              fecha:"17/04/2026", notas:"Ya cliente ICC. Su manera de trabajar: esperan a que el cliente les pida algo."},
-    {id:52, num:"A-5359",  cliente:"Roig Profesional, S.L.",          contacto:"Marcos",           tel:"606394116",  provincia:"Galicia",    tipo:"Distribuidor",   modelo:"GO",       tipoGas:"GP", unidades:1,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Perdida",       proximoPaso:"Dice que no lo va a comprar hasta que no tenga clientes", fecha:"04/05/2026", notas:"Demo Mimcook para sus instalaciones. 1u GO GP precio distribuidor."},
-    {id:53, num:"A-5360",  cliente:"Grupo La Olla",                   contacto:"Ramón",            tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"GO",       tipoGas:"GN", unidades:8,  precioUnit:"3995",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar a Ramón", fecha:"05/05/2026", notas:"8u GO GN. Cliente fiscal por determinar. 31.960€ bruto."},
-    {id:54, num:"A-5361",  cliente:"Bonobo Playa, S.L.",              contacto:"",                 tel:"",           provincia:"Cartagena",  tipo:"Cliente final",  modelo:"GO + PRO", tipoGas:"GP", unidades:9,  precioUnit:"",        totalManual:"35253", responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento entrega", fecha:"06/05/2026", notas:"6u GO GP (dto 10%) + 3u PRO GP (dto 5%). Total 35.253€. Entrega mediados junio 2026.", fechaSeguimiento:"01/09/2026"},
-    {id:55, num:"A-5369",  cliente:"EFEN-Hotelaria, S.A.",            contacto:"",                 tel:"",           provincia:"Portugal",   tipo:"Internacional",  modelo:"PRO",      tipoGas:"GP", unidades:4,  precioUnit:"4800",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar a Enric y preguntar",  fecha:"12/05/2026", notas:"4u PRO GP. Cliente Portugal.", contacto:"Enric"},
-    {id:56, num:"A-5372",  cliente:"Aeroso Fun, S.L.",                contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"PRO",      tipoGas:"GP", unidades:1,  precioUnit:"4800",    responsable:"Felipe", estado:"En negociación", proximoPaso:"Seguimiento llamar en septiembre. 1 mimcook con reserva 150€ feria", fecha:"15/05/2026", notas:"1u PRO GP.", fechaSeguimiento:"01/09/2026"},
-    {id:57, num:"A-5377",  cliente:"Rest. El Nuevo Varadero",         contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"GO",       tipoGas:"GN", unidades:3,  precioUnit:"3995",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar a Jordi",              fecha:"26/05/2026", notas:"3u GO GN. 11.985€.", contacto:"Jordi"},
-    {id:58, num:"A-5380",  cliente:"Piccola Gestión Hostelería, S.L.",contacto:"",                 tel:"",           provincia:"—",          tipo:"Cliente final",  modelo:"PRO",      tipoGas:"GP", unidades:6,  precioUnit:"4800",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Llamar",              fecha:"27/05/2026", notas:"6u PRO GP. 28.800€. Cliente de Suministros Unic (David)."},
-    {id:59, num:"A-5381",  cliente:"Suministros Unic, S.L.",          contacto:"Jorge",            tel:"627489819",  provincia:"Cádiz",      tipo:"Distribuidor",   modelo:"PRO",      tipoGas:"GP", unidades:6,  precioUnit:"3360",    responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento",         fecha:"28/05/2026", fechaSeguimiento:"22/06/2026", notas:"6u PRO GP precio distribuidor (3.360€/u). 20.160€."},
-    {id:60, num:"A-5388",  cliente:"Rent Hostelería Mallorca, S.L.",  contacto:"",                 tel:"",           provincia:"Mallorca",   tipo:"Cliente final",  modelo:"GO",       tipoGas:"GP", unidades:1,  precioUnit:"2796.5",  responsable:"Felipe", estado:"Enviada",       proximoPaso:"Seguimiento",         fecha:"11/06/2026", notas:"1u GO GP. Precio distribuidor."},
-  ],
-  demos: [
-    {id:1,  nombre:"Procuina",                          provincia:"Barcelona", zona:"Cataluña",  tipo:"Distribuidor",  contacto:"Eduard",         tel:"661926565",  tipoOp:"demo_interna",   notas:"Demo interna realizada el 13/05 en sus instalaciones. Zona Lloret de Mar / Blanes.", fecha:"13/05/2026", manuallyRealized:true},
-    {id:13, nombre:"Café Balear",                       provincia:"Menorca",   zona:"Baleares",  tipo:"Cliente final", contacto:"Josep",           tel:"",           tipoOp:"formacion",      notas:"Formación realizada el 14/05 por la mañana en Menorca.", fecha:"14/05/2026", manuallyRealized:true},
-    {id:2,  nombre:"Antonio de Miguel SL",              provincia:"Madrid",    zona:"Madrid",    tipo:"Distribuidor",  contacto:"David Sánchez",  tel:"628708572",  tipoOp:"demo_clientes",  notas:"Demo realizada el 25/05 en evento Finca Astible. Asistieron comerciales de Madrid + grabación.", fecha:"25/05/2026", manuallyRealized:true},
-    {id:3,  nombre:"CBB Hostelería",                    provincia:"Valencia",  zona:"Valencia",  tipo:"Distribuidor",  contacto:"Vicente",        tel:"659869766",  tipoOp:"demo_interna",   notas:"Demo realizada el 29/05 por Fernando Reyes en sus instalaciones.", fecha:"29/05/2026", manuallyRealized:true},
-    {id:4,  nombre:"Oms I Vinyes",                      provincia:"Barcelona", zona:"Cataluña",  tipo:"Distribuidor",  contacto:"Toni",           tel:"671319968",  tipoOp:"presentacion",   notas:"Reunión 02/06 a las 11:00h. A la espera de confirmar demo para sus comerciales.", fecha:"02/06/2026", manuallyRealized:true},
-    {id:5,  nombre:"Alvarez Group",                     provincia:"Palma",     zona:"Baleares",  tipo:"Distribuidor",  contacto:"Gabriel Griñán", tel:"971201800",  tipoOp:"demo_clientes",  notas:"Demo realizada el 05/06 a todo el equipo comercial en Mallorca. Email enviado a directores comerciales para acordar estrategia. Pendiente respuesta.", fecha:"05/06/2026", manuallyRealized:true},
-    {id:14, nombre:"Albi (Carlos Maldonado)",           provincia:"Madrid",    zona:"Madrid",    tipo:"Cliente final", contacto:"Carlos Maldonado",tel:"",           tipoOp:"formacion",      notas:"Formación para colectividades el 09/06. Van a comprar más Mimcooks para más establecimientos. Seguimiento en septiembre.", fecha:"09/06/2026", manuallyRealized:true},
-    {id:6,  nombre:"Tonet Paellas",                     provincia:"Madrid",    zona:"Madrid",    tipo:"Cliente final", contacto:"Tonet",           tel:"",           tipoOp:"demo_clientes",  notas:"Demo el 08/06 en restaurante de cliente en Madrid. Va a comprar en noviembre. Llamarle en noviembre.", fecha:"08/06/2026", manuallyRealized:true},
-    {id:7,  nombre:"Hostel Group",                      provincia:"Barcelona", zona:"Cataluña",  tipo:"Distribuidor",  contacto:"Eduard",          tel:"",           tipoOp:"demo_interna",   notas:"Demo interna el viernes 12/06 a las 12:30h en sus instalaciones en Barcelona.", fecha:"12/06/2026", manuallyRealized:true},
-    {id:8,  nombre:"H-10 Hoteles",                      provincia:"Barcelona", zona:"Cataluña",  tipo:"Cliente final", contacto:"Nuria y Joan",    tel:"",           tipoOp:"demo_clientes",  notas:"Demo el lunes 15/06 a las 11:00h con directores operativos de la cadena H-10 en Barcelona.", fecha:"15/06/2026"},
-    {id:11, nombre:"El Buen Yantar (Original Paella)",  provincia:"Madrid",    zona:"Madrid",    tipo:"Cliente final", contacto:"",                tel:"",           tipoOp:"demo_clientes",  notas:"Demo a cliente final del distribuidor Original Paella. Miércoles 17/06 a las 12:30h en el restaurante El Buen Yantar, Madrid. Hacer seguimiento post-demo.", fecha:"17/06/2026"},
-    {id:9,  nombre:"Procuina (clientes finales)",       provincia:"Barcelona", zona:"Cataluña",  tipo:"Distribuidor",  contacto:"Eduard",          tel:"661926565",  tipoOp:"demo_clientes",  notas:"Demo con clientes finales de Procuina el 30/06 a las 09:00h.", fecha:"30/06/2026"},
-    {id:12, nombre:"Foodie Culture (Hostel Group)",     provincia:"Barcelona", zona:"Cataluña",  tipo:"Distribuidor",  contacto:"Eduard",          tel:"",           tipoOp:"demo_clientes",  notas:"Evento Foodie Culture en Barcelona. Lunes 6 de julio a las 18:00h. Vamos con Hostel Group.", fecha:"06/07/2026"},
-    {id:10, nombre:"DG3 Gastronomía SL",                provincia:"Valencia",  zona:"Valencia",  tipo:"Distribuidor",  contacto:"David",           tel:"647310903",  tipoOp:"demo_clientes",  notas:"Demo 3 días: 13, 14 y 15 de julio. 15 cocineros/clientes cada día. Montar estrategia previa con Esteve.", fecha:"13/07/2026"},
-  ],
-  acciones: [
-    {id:1, accion:"Demo presencial con Socarrat", cliente:"Socarrat", responsable:"David Gomis", estado:"Pendiente", fecha:"27/04/2026", notas:""},
-    {id:2, accion:"Llamar a David post-demo (Socarrat)", cliente:"Socarrat", responsable:"Felipe", estado:"Pendiente", fecha:"27/04/2026", notas:""},
-    {id:3, accion:"Llamar a Servitel - Juan Calderoni", cliente:"Servitel", responsable:"Felipe", estado:"En marcha", fecha:"27/04/2026", notas:"Llamada hecha 27/04, pendiente fechas reunión."},
-    {id:4, accion:"Hablar con Ana Ruiz sobre Original Paella", cliente:"Original Paella", responsable:"Felipe", estado:"En marcha", fecha:"27/04/2026", notas:"Pendiente nº de serie para enviar a fábrica."},
-    {id:5, accion:"Contactar Alvarez Group", cliente:"ALVAREZ EQUIPMENT", responsable:"Felipe", estado:"Pendiente", fecha:"25/04/2026", notas:"Validar potencial Baleares, Canarias y República Dominicana."},
-    {id:6, accion:"Llamar a Mercagroc", cliente:"Mercagroc", responsable:"Felipe", estado:"Pendiente", fecha:"25/04/2026", notas:"Presencia local Mallorca. Validar fit horeca."},
-    {id:7, accion:"Llamar a Cerdà Obrador Alimentació", cliente:"Cerdà Obrador", responsable:"Felipe", estado:"Pendiente", fecha:"25/04/2026", notas:"Importantes en Baleares. Falta decisor."},
-    {id:8, accion:"Seguimiento Cocineros Canarias", cliente:"Cocineros Canarias", responsable:"Felipe", estado:"Pendiente", fecha:"27/04/2026", notas:"Confirmar agenda feria Canarias y formación."},
-    {id:9, accion:"Seguimiento cliente Socarrat", cliente:"Socarrat", responsable:"Felipe", estado:"Pendiente", fecha:"29/04/2026", notas:""},
-    {id:10, accion:"Llamar a Oscar Alagón para agendar demo Mimcook", cliente:"Oscar Alagón", responsable:"Felipe", estado:"Pendiente", fecha:"01/07/2026", notas:"Llamada el miércoles 1 de julio a las 10:00h para agendar demo."},
-    {id:11, accion:"Seguimiento post-demo El Buen Yantar (Original Paella)", cliente:"El Buen Yantar", responsable:"Felipe", estado:"Pendiente", fecha:"19/06/2026", notas:"Demo el 17/06. Llamar 2 días después para ver cómo fue y si hay interés de compra."},
-  ],
-  cartera: [
-    {id:1, cliente:"Eskocia Wurm S.L.", provincia:"Canarias", zona:"Canarias", producto:"Mimcook PRO GP", unidades:9, importe:34560, año:"2026", distribuidor:"Directo"},
-    {id:2, cliente:"Suministros Unic, S.L.", provincia:"Cádiz", zona:"Andalucía", producto:"Mimcook GO GP", unidades:2, importe:5593, año:"2026", distribuidor:"Suministros Unic"},
-    {id:3, cliente:"Maui Mojácar Beach Club", provincia:"Almería", zona:"Andalucía", producto:"GO y PRO", unidades:6, importe:0, año:"2026", distribuidor:"Exposervi"},
-    {id:4, cliente:"NOARUIZ SLU (La Cocina de Noa)", provincia:"Almería", zona:"Andalucía", producto:"Mimcook PRO GP", unidades:1, importe:0, año:"2025", distribuidor:"Irual"},
-    {id:5, cliente:"Ovidio Playa SL", provincia:"Málaga", zona:"Andalucía", producto:"GO Y PRO", unidades:6, importe:0, año:"2025", distribuidor:"—"},
-    {id:6, cliente:"HOGAR HOTEL DIAZ SL", provincia:"Murcia", zona:"Andalucía", producto:"Mimcook PRO GP", unidades:6, importe:0, año:"2024", distribuidor:"—"},
-    {id:7, cliente:"BRASSERIE EL POAL SL", provincia:"Córdoba", zona:"Andalucía", producto:"GO", unidades:1, importe:0, año:"2024", distribuidor:"Pilsa"},
-  ],
-  comisiones: [
-    {id:201, cliente:"Eskocia Wurm S.L.", fechaCierre:"14/04/2026", modelo:"PRO GP", unidades:9, importeVenta:34560, pctComision:"", importeComision:"", cobrada:"no", fechaCobro:"", notas:"Descuento excepcional por volumen. Cliente estratégico Canarias."},
-    {id:202, cliente:"Suministros Unic (Maria Trifulca)", fechaCierre:"27/04/2026", modelo:"GO GP", unidades:2, importeVenta:5593, pctComision:"", importeComision:"", cobrada:"no", fechaCobro:"", notas:"Albarán A64155. Precio distribuidor."},
-  ],
-  formaciones: [
-    {id:301, cliente:"Café Balear", provincia:"Menorca", zona:"Baleares", contacto:"Josep", tel:"", fecha:"14/05/2026", modelo:"GO", notas:"Formación realizada el jueves 14/05 por la mañana en Menorca.", seguimiento:"", fechaSeguimiento:"", estado:"realizada"},
-    {id:302, cliente:"Albi (Carlos Maldonado)", provincia:"Madrid", zona:"Madrid", contacto:"Carlos Maldonado", tel:"", fecha:"09/06/2026", modelo:"PRO", notas:"Formación para colectividades. Van a comprar más Mimcooks para más establecimientos.", seguimiento:"Llamar en septiembre para cierre de nuevas unidades.", fechaSeguimiento:"01/09/2026", estado:"realizada"},
-  ]
-};
-
+// ===================== DEFAULT DATA (datos actuales del usuario) =====================
+const DEFAULT = {"pipeline": [{"id": 1, "name": "Frio Muñoz", "sub": "Murcia", "tipo": "Distribuidor", "prioridad": "—", "stage": 0, "zona": "Murcia"}, {"id": 2, "name": "Cerdà Obrador", "sub": "Baleares", "tipo": "Distribuidor", "prioridad": "Media", "stage": 0, "zona": "Baleares"}, {"id": 3, "name": "Mercagroc", "sub": "Mallorca", "tipo": "Distribuidor", "prioridad": "Media", "stage": 0, "zona": "Baleares"}, {"id": 4, "name": "Cristadela", "sub": "Menorca", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 0, "zona": "Baleares"}, {"id": 5, "name": "Benejam Refrigeración", "sub": "Menorca", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 0, "zona": "Baleares"}, {"id": 6, "name": "Pilsa", "sub": "Andalucía", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 1, "zona": "Andalucía"}, {"id": 7, "name": "Suministros Unic", "sub": "Sevilla", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 1, "zona": "Andalucía"}, {"id": 8, "name": "Gas I Fred", "sub": "Ibiza", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 1, "zona": "Baleares"}, {"id": 9, "name": "Servitel", "sub": "Pendiente fechas", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 1, "zona": "—"}, {"id": 11, "name": "ALVAREZ EQUIPMENT", "sub": "Palma", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 1, "zona": "Baleares"}, {"id": 12, "name": "Procuina", "sub": "Demo 13/05 · clientes 30/06", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 2, "zona": "Cataluña"}, {"id": 13, "name": "Antonio de Miguel SL", "sub": "Demo 25/05 Madrid", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 2, "zona": "Madrid"}, {"id": 14, "name": "Oms I Vinyes", "sub": "Reunión 02/06 · demo pendiente", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 2, "zona": "Cataluña"}, {"id": 15, "name": "Alvarez Group", "sub": "Demo 05/06 Mallorca", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 2, "zona": "Baleares"}, {"id": 28, "name": "CBB Hostelería", "sub": "Demo 29/05 · Fernando", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 2, "zona": "Valencia"}, {"id": 29, "name": "Hostel Group", "sub": "Demo interna hoy con el equipo de Hostelgroup en sus instalaciones", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 2, "zona": "Cataluña", "fechaDemoInterna": "12/06/2026"}, {"id": 17, "name": "Tomas Llobet", "sub": "PF-002 · proyecto sep", "tipo": "Distribuidor", "prioridad": "Media", "stage": 4, "zona": "Cataluña"}, {"id": 18, "name": "CHR Equipements", "sub": "Marruecos · A-5305 · 7u", "tipo": "Internacional", "prioridad": "Alta", "stage": 4, "zona": "Marruecos"}, {"id": 19, "name": "Montnegre Fitty", "sub": "Barcelona · A-5319", "tipo": "Cliente final", "prioridad": "Media", "stage": 4, "zona": "Cataluña"}, {"id": 20, "name": "Arrocería Samm", "sub": "Madrid · A-5317 · 5u", "tipo": "Cliente final", "prioridad": "Alta", "stage": 4, "zona": "Madrid"}, {"id": 21, "name": "Rizmo Restaurante", "sub": "Murcia · A-5331 · 4u", "tipo": "Cliente final", "prioridad": "Alta", "stage": 4, "zona": "Murcia"}, {"id": 22, "name": "Arroz de la Tomasa", "sub": "Navarra · A-5343 · 3u", "tipo": "Cliente final", "prioridad": "Alta", "stage": 4, "zona": "Navarra"}, {"id": 23, "name": "Cocineros Canarias", "sub": "PF-001 · 2u GO GP", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 5, "zona": "Canarias"}, {"id": 24, "name": "Suministros Unic", "sub": "A-5352 · 2u · 5.593€", "tipo": "Distribuidor", "prioridad": "Alta", "stage": 5, "zona": "Andalucía"}, {"id": 25, "name": "Eskocia Wurm S.L.", "sub": "9u PRO GP · 34.560€", "tipo": "Cliente final", "prioridad": "Alta", "stage": 5, "zona": "Canarias"}, {"id": 26, "name": "MAFIVINOS", "sub": "A-5313 · 6u · perdido a competencia", "tipo": "Distribuidor", "prioridad": "Media", "stage": 6, "zona": "Canarias"}], "distribuidores": [{"id": 1, "nombre": "Pilsa", "zona": "Andalucía", "provincia": "Andalucía", "tipo": "Mixto horeca", "contacto": "Victor Madera", "cargo": "Comercial", "tel": "609057754", "email": "v.madera@pilsa.com", "prioridad": "Alta", "estado": "contactado", "notas": "Cliente ICC, potencial exportación. Multisede: Granada, Mallorca, Canarias, Barcelona, Madrid, Sevilla, México, RD, Maldivas..."}, {"id": 2, "nombre": "Suministros Unic", "zona": "Andalucía", "provincia": "Sevilla", "tipo": "Maquinaria Horeca", "contacto": "Jorge", "cargo": "Comercial", "tel": "627489819", "email": "", "prioridad": "Alta", "estado": "contactado", "notas": "Cliente ICC y Mimcook. Pendiente demo en Sevilla con comerciales y cliente final."}, {"id": 3, "nombre": "Frio Muñoz", "zona": "Murcia", "provincia": "Murcia", "tipo": "Maquinaria Horeca", "contacto": "—", "cargo": "", "tel": "", "email": "info@friomunoz.com", "prioridad": "—", "estado": "no contactado", "notas": ""}, {"id": 4, "nombre": "Cerdà Obrador Alimentació", "zona": "Baleares", "provincia": "Baleares", "tipo": "Alimentación horeca", "contacto": "María", "cargo": "Compras", "tel": "971647911", "email": "", "prioridad": "Media", "estado": "no contactado", "notas": "Importantes en Baleares. Falta identificar decisor."}, {"id": 5, "nombre": "Gas I Fred", "zona": "Baleares", "provincia": "Ibiza", "tipo": "Maquinaria horeca", "contacto": "Jordi", "cargo": "Comercial", "tel": "696946940", "email": "", "prioridad": "Alta", "estado": "contactado", "notas": "Vendió 3-4 Mimcooks antes. Retomando. Correo enviado para demo."}, {"id": 6, "nombre": "ALVAREZ EQUIPMENT & SOLUTIONS", "zona": "Baleares", "provincia": "Palma", "tipo": "Distribuidor horeca", "contacto": "Antonia Ramis / Gabriel Griñán", "cargo": "Comercial / Dir. Global Proyectos", "tel": "971201800", "email": "jitka.malkova@hbyalvarez.com", "prioridad": "Alta", "estado": "demo agendada", "notas": "Mallorca, Canarias, RD. Demo 5 jun a las 13h."}, {"id": 7, "nombre": "Mercagroc", "zona": "Baleares", "provincia": "Mallorca", "tipo": "Alimentación horeca", "contacto": "—", "cargo": "", "tel": "971771769", "email": "", "prioridad": "Media", "estado": "no contactado", "notas": "Presencia local Mallorca. Validar fit horeca."}, {"id": 8, "nombre": "Cristadela", "zona": "Baleares", "provincia": "Menorca", "tipo": "Suministros horeca", "contacto": "—", "cargo": "", "tel": "971481382", "email": "", "prioridad": "Alta", "estado": "no contactado", "notas": "Prospección."}, {"id": 9, "nombre": "Benejam Refrigeración", "zona": "Baleares", "provincia": "Menorca", "tipo": "Montaje cocinas", "contacto": "Juanma", "cargo": "Propietario", "tel": "971380818", "email": "", "prioridad": "Alta", "estado": "no contesta", "notas": "Montó cocina a Café Balear (4 Mimcooks). Potencial colaboración."}, {"id": 10, "nombre": "Cocineros Canarias", "zona": "Canarias", "provincia": "Canarias", "tipo": "Horeca", "contacto": "José Francisco", "cargo": "Propietario", "tel": "629157396", "email": "canariascocinacb@gmail.com", "prioridad": "Alta", "estado": "pendiente de demo", "notas": "Proforma ganada. Pendiente formación y feria en Canarias."}, {"id": 11, "nombre": "Hotelgas", "zona": "Canarias", "provincia": "Tenerife", "tipo": "Maquinaria horeca", "contacto": "Laura Méndez", "cargo": "Compras", "tel": "667581941", "email": "laura.mendez@hostelgastenerife.com", "prioridad": "Media", "estado": "no contactado", "notas": "Cliente ICC previo. Identificar decisor."}, {"id": 12, "nombre": "Oms y Viñes", "zona": "Cataluña", "provincia": "Barcelona", "tipo": "Maquinaria horeca", "contacto": "Toni Mestres", "cargo": "Compras", "tel": "671319968", "email": "tmestres@oyv.es", "prioridad": "Alta", "estado": "pendiente de demo", "notas": "Muy buen fit. Cliente ICC (sifones y cargas). Pendiente fechas demo en sus instalaciones."}, {"id": 13, "nombre": "Equip Vic", "zona": "Cataluña", "provincia": "Vic", "tipo": "Hoteles horeca", "contacto": "Àngel Rierola", "cargo": "Propietario", "tel": "667676312", "email": "info@equipvic.com", "prioridad": "Alta", "estado": "contactado", "notas": "Especializado en hoteles. Pertenece a Hotelaria. 7 comerciales (3 Girona, 4 Vic). Quiere demo conjunta con comerciales y clientes."}, {"id": 14, "nombre": "Tomas Llobet", "zona": "Cataluña", "provincia": "Tarragona", "tipo": "Montajes / maquinaria horeca", "contacto": "Kiko", "cargo": "Propietario", "tel": "670230435", "email": "", "prioridad": "Media", "estado": "contactado", "notas": "Activo. Trabaja con nosotros."}, {"id": 15, "nombre": "La Cartuja (Bunzl)", "zona": "Cataluña", "provincia": "Tarragona", "tipo": "Suministros hostelería / menaje", "contacto": "Joana Amezcua", "cargo": "Comercial", "tel": "977330360 / 629080282", "email": "joana.amezcua@bunzlspain.com", "prioridad": "Media", "estado": "no contactado", "notas": ""}, {"id": 16, "nombre": "Hostel Group", "zona": "Cataluña", "provincia": "Barcelona", "tipo": "Montaje de cocinas", "contacto": "Eduard", "cargo": "Propietario", "tel": "", "email": "", "prioridad": "Media", "estado": "contactado", "notas": "Reunión de toma de contacto bien. Pendiente agendar demo."}, {"id": 17, "nombre": "H-10 Hoteles", "zona": "Cataluña", "provincia": "Barcelona", "tipo": "Cadena hoteles", "contacto": "Nuria y Joan", "cargo": "Directores operativos", "tel": "", "email": "", "prioridad": "Alta", "estado": "demo agendada", "notas": "Demo 15 jun 11:00h en H10 Marina Barcelona. Asisten directores operativos de la cadena."}, {"id": 18, "nombre": "Procuina Proyectos", "zona": "Cataluña", "provincia": "Girona", "tipo": "Montaje cocinas", "contacto": "Eduard", "cargo": "Propietario", "tel": "661926565", "email": "", "prioridad": "Alta", "estado": "demo agendada", "notas": "Demo 13/05 realizada. Zona Lloret de Mar / Blanes. Pendiente demo con su base de clientes."}, {"id": 19, "nombre": "Complet Hotel", "zona": "Cataluña", "provincia": "Girona", "tipo": "Hotel / partner potencial", "contacto": "Dani", "cargo": "Comercial", "tel": "", "email": "dani@complethotel.com", "prioridad": "Media", "estado": "contactado", "notas": "Cliente histórico (2 GO en 2022). Validar si puede ser prescriptor o distribuidor local. Email enviado 5/5."}, {"id": 20, "nombre": "Servitel", "zona": "Madrid", "provincia": "Madrid", "tipo": "Integral horeca", "contacto": "Juan Calderoni", "cargo": "Propietario", "tel": "629572474", "email": "", "prioridad": "Alta", "estado": "contactado", "notas": "Muy potente. Contacto Mahou. Interesados tb en Sete (F1 Madrid). Información enviada, pendiente agendar demo."}, {"id": 21, "nombre": "Inhostel", "zona": "Madrid", "provincia": "Madrid", "tipo": "Integral horeca", "contacto": "—", "cargo": "Propietario", "tel": "607036318", "email": "", "prioridad": "Alta", "estado": "no contactado", "notas": "Cliente previo Mimcook. Explotar Madrid."}, {"id": 22, "nombre": "Antonio de Miguel SL", "zona": "Madrid", "provincia": "Madrid", "tipo": "Alimentación horeca", "contacto": "David Sánchez", "cargo": "Comercial", "tel": "628708572", "email": "dsanchez@antoniodemiguel.es", "prioridad": "Alta", "estado": "demo agendada", "notas": "Demo 26/05 realizada. Asistieron comerciales de Madrid + grabación para el resto."}, {"id": 23, "nombre": "DG3 Gastronomía SL", "zona": "Valencia", "provincia": "Valencia", "tipo": "Horeca gastronómico", "contacto": "David", "cargo": "Propietario", "tel": "647310903", "email": "", "prioridad": "Alta", "estado": "demo agendada", "notas": "Demo 6,7 y 8 julio. 15 cocineros/clientes cada día. Montar estrategia previa con Esteve."}, {"id": 24, "nombre": "Original Paella", "zona": "Valencia", "provincia": "Valencia", "tipo": "Menaje y material paellas", "contacto": "Javier", "cargo": "Propietario", "tel": "662603982", "email": "", "prioridad": "Alta", "estado": "pendiente de demo", "notas": "Mimcook antiguo pendiente de renovación. Tiene showcooking. Vendió en Hong Kong. Colabora en web. Acuerdo para nuevo Mimcook a cambio de demos."}, {"id": 25, "nombre": "CBB Hostelería", "zona": "Valencia", "provincia": "L'Olleria", "tipo": "Maquinaria, vajilla, mobiliario", "contacto": "Vicente", "cargo": "Propietario", "tel": "659869766", "email": "info@cbbhosteleria.es", "prioridad": "Alta", "estado": "demo agendada", "notas": "Contacto de Fernando Reyes. Ha vendido NTGAS. Demo 29/05 con Fernando. Ojo solapamiento con Original Paella."}, {"id": 26, "nombre": "Irual Distribución", "zona": "Andalucía / Canarias", "provincia": "Málaga / Canarias", "tipo": "Porta paellas / menaje", "contacto": "Raúl", "cargo": "Propietario", "tel": "607472565", "email": "", "prioridad": "Alta", "estado": "pendiente de demo", "notas": "Delegación en Canarias. Fuerza en Málaga. Pendiente demo en mayo en Málaga y otra en Canarias."}, {"id": 27, "nombre": "Exposervi", "zona": "Levante", "provincia": "Alicante", "tipo": "Maquinaria horeca", "contacto": "Pablo Alcalde", "cargo": "Propietario", "tel": "", "email": "", "prioridad": "Alta", "estado": "pendiente de demo", "notas": "Les contacta Fernando Reyes. Email enviado por ICC."}, {"id": 28, "nombre": "Ema Hostelería", "zona": "Levante", "provincia": "Alicante", "tipo": "Menaje y equipamiento", "contacto": "Ema Pujades", "cargo": "Propietario", "tel": "", "email": "", "prioridad": "Media", "estado": "pendiente de demo", "notas": "Demo con Fernando Reyes. Postpuesta de 28/05, pendiente confirmar próxima semana."}, {"id": 29, "nombre": "Roig Profesional SL", "zona": "Galicia", "provincia": "Galicia", "tipo": "Maquinaria", "contacto": "Marcos", "cargo": "Propietario", "tel": "606394116", "email": "", "prioridad": "Alta", "estado": "pendiente de demo", "notas": "Llamada 30/04. Pendiente configurar demo. Tienen que pedir Mimcook para las demos. Llamada finales de mayo."}, {"id": 30, "nombre": "Jose Ignacio SL (IGR)", "zona": "Asturias", "provincia": "Oviedo", "tipo": "Maquinaria", "contacto": "Nacho", "cargo": "Propietario", "tel": "650946798", "email": "", "prioridad": "Alta", "estado": "pendiente de demo", "notas": "Ha vendido bastante. Demo conjunta pendiente. Llamada 18/05 al volver de vacaciones."}, {"id": 31, "nombre": "Jesús Cantos Sánchez SL", "zona": "Castilla-La Mancha", "provincia": "Albacete", "tipo": "Maquinaria industrial hostelería", "contacto": "Jesús Cantos", "cargo": "Propietario", "tel": "670246640", "email": "", "prioridad": "Alta", "estado": "contactado", "notas": "Contacto de Fernando Reyes. Ya tiene clientes interesados. Whatsapp enviado 6/5."}, {"id": 32, "nombre": "Exclusivas Manero SA", "zona": "País Vasco", "provincia": "País Vasco", "tipo": "Maquinaria hostelería", "contacto": "Txema", "cargo": "Propietario", "tel": "943454309 / 610575024", "email": "txema@exclusivasmanero.com", "prioridad": "Alta", "estado": "no contactado", "notas": ""}, {"id": 33, "nombre": "Comercial Hostelera del Norte", "zona": "País Vasco", "provincia": "Donosti", "tipo": "Maquinaria hostelería", "contacto": "Belén", "cargo": "Propietario", "tel": "902215066", "email": "belen@comercialhostelera.com", "prioridad": "Media", "estado": "no contactado", "notas": ""}, {"id": 34, "nombre": "Frinoxtel", "zona": "Navarra", "provincia": "Navarra", "tipo": "Maquinaria", "contacto": "Javier Malón", "cargo": "Propietario", "tel": "", "email": "", "prioridad": "Alta", "estado": "contactado", "notas": "Han pedido proforma. Hacer seguimiento y agendar demo."}, {"id": 35, "nombre": "Hoalve", "zona": "Castilla y León", "provincia": "León", "tipo": "—", "contacto": "Luis Lopez", "cargo": "Propietario", "tel": "", "email": "llopez@hoalve.es / cgarcia@hoalve.es", "prioridad": "Alta", "estado": "no contactado", "notas": "Compran a ICC sifones y cargas de gas."}, {"id": 36, "nombre": "Comeca Importação e Exportação SA", "zona": "Portugal", "provincia": "Portugal", "tipo": "Maquinaria Horeca", "contacto": "—", "cargo": "", "tel": "+351 219155600", "email": "horeca@comeca.pt", "prioridad": "Alta", "estado": "contactado", "notas": ""}], "proformas": [{"id": 1, "num": "PF-001", "cliente": "Cocineros Canarias", "contacto": "José Francisco", "tel": "629157396", "provincia": "Canarias", "tipo": "Distribuidor", "modelo": "GO", "tipoGas": "GP", "unidades": 2, "precioUnit": "2796.5", "responsable": "Felipe", "estado": "Ganado", "proximoPaso": "Seguimiento pago", "fecha": "22/04/2026", "notas": "Cliente ICC. Pendiente fabricación/envío. Posible demo y formación.", "convertida": true}, {"id": 2, "num": "PF-002", "cliente": "Tomas Llobet", "contacto": "Kiko", "tel": "670230435", "provincia": "Tarragona", "tipo": "Distribuidor", "modelo": "GO", "tipoGas": "GN", "unidades": 12, "precioUnit": "2796.5", "responsable": "Felipe", "estado": "Enviada", "proximoPaso": "Llamar en noviembre", "fecha": "22/04/2026", "notas": "Proyecto hasta septiembre. 12u GO GN a precio distribuidor.", "fechaSeguimiento": "01/11/2026"}, {"id": 3, "num": "A-5352", "cliente": "Suministros Unic", "contacto": "Jorge Gómez", "tel": "627489819", "provincia": "Cádiz", "tipo": "Distribuidor", "modelo": "GO", "tipoGas": "GP", "unidades": 2, "precioUnit": "2796.5", "responsable": "Felipe", "estado": "Ganado", "proximoPaso": "Activar canal", "fecha": "15/04/2026", "notas": "Activar como canal, no solo venta puntual.", "convertida": true}, {"id": 4, "num": "A-5313", "cliente": "MAFIVINOS", "contacto": "Matías", "tel": "675862287", "provincia": "Canarias", "tipo": "Distribuidor", "modelo": "GO + PRO", "tipoGas": "GN", "unidades": 6, "precioUnit": "", "totalManual": "", "responsable": "Felipe", "estado": "Perdida", "proximoPaso": "Recuperación jun", "fecha": "09/03/2026", "notas": "Compró a la competencia."}, {"id": 5, "num": "A-5305", "cliente": "CHR EQUIPEMENTS SARL", "contacto": "Mohamed", "tel": "", "provincia": "Marruecos", "tipo": "Internacional", "modelo": "PRO + GO", "tipoGas": "GP", "unidades": 7, "precioUnit": "", "totalManual": "25275", "responsable": "Felipe", "estado": "Perdida", "proximoPaso": "Seguimiento email", "fecha": "26/02/2026", "notas": "2 PRO GP (3.890€) + 5 GO GP (3.499€). Sin respuesta por email. Total 25.275€."}, {"id": 6, "num": "A-5319", "cliente": "Montnegre Fitty / Fiftyrest", "contacto": "Joan Cinto", "tel": "623966292", "provincia": "Barcelona", "tipo": "Cliente final", "modelo": "GO", "tipoGas": "GP", "unidades": 1, "precioUnit": "3499", "responsable": "Felipe", "estado": "Perdida", "proximoPaso": "Llamar", "fecha": "12/03/2026", "notas": "Validar interés actual."}, {"id": 7, "num": "A-5317", "cliente": "Arrocería Samm, S.L.", "contacto": "Sergio", "tel": "667787536", "provincia": "Madrid", "tipo": "Cliente final", "modelo": "GO", "tipoGas": "GP", "unidades": 5, "precioUnit": "3499", "responsable": "Felipe", "estado": "Perdida", "proximoPaso": "Llamar", "fecha": "11/03/2026", "notas": "5u GO GP según PDF. Volumen potencial interesante."}, {"id": 8, "num": "A-5331", "cliente": "Rizmo Restaurante", "contacto": "Santiago Navarro", "tel": "615293642", "provincia": "Murcia", "tipo": "Cliente final", "modelo": "GO + PRO", "tipoGas": "GN", "unidades": 4, "precioUnit": "", "totalManual": "17590", "responsable": "Felipe", "estado": "Enviada", "proximoPaso": "Llamar", "fecha": "18/03/2026", "notas": "2 GO GN (3.995€) + 2 PRO GN (4.800€). Total 17.590€. Lead web Mimcook."}, {"id": 9, "num": "A-5343", "cliente": "Arroz de la Tomasa", "contacto": "Fernando Nuñez", "tel": "651730950", "provincia": "Navarra", "tipo": "Cliente final", "modelo": "GO", "tipoGas": "GP", "unidades": 3, "precioUnit": "3795.25", "responsable": "Felipe", "estado": "Ganado", "proximoPaso": "Llamar el lunes 15/6 para pagar (Ana Ruiz)", "fecha": "08/04/2026", "notas": "Argumento de volumen para cierre.", "fechaSeguimiento": "25/06/2026", "convertida": true}, {"id": 50, "num": "A-5347", "cliente": "Rostisseria Yaya Juana", "contacto": "Victor", "tel": "", "provincia": "Barcelona", "tipo": "Cliente final", "modelo": "PRO", "tipoGas": "GN", "unidades": 1, "precioUnit": "4800", "responsable": "Felipe", "estado": "Perdida", "proximoPaso": "Seguimiento financiación", "fecha": "10/04/2026", "notas": "Documentación enviada para aprobación financiación."}, {"id": 51, "num": "A-5354", "cliente": "Frinoxtel", "contacto": "Javier Malón", "tel": "651895922", "provincia": "Navarra", "tipo": "Distribuidor", "modelo": "GO", "tipoGas": "GN", "unidades": 2, "precioUnit": "2796.5", "responsable": "Felipe", "estado": "En negociación", "proximoPaso": "Se le contactó el 11/06 y me comenta que el cliente está decidiendo si abre restaurante de arroces o de carnes....a la espera de respuesta", "fecha": "17/04/2026", "notas": "Ya cliente ICC. Su manera de trabajar: esperan a que el cliente les pida algo."}, {"id": 52, "num": "A-5359", "cliente": "Roig Profesional, S.L.", "contacto": "Marcos", "tel": "606394116", "provincia": "Galicia", "tipo": "Distribuidor", "modelo": "GO", "tipoGas": "GP", "unidades": 1, "precioUnit": "2796.5", "responsable": "Felipe", "estado": "Perdida", "proximoPaso": "Dice que no lo va a comprar hasta que no tenga clientes", "fecha": "04/05/2026", "notas": "Demo Mimcook para sus instalaciones. 1u GO GP precio distribuidor."}, {"id": 53, "num": "A-5360", "cliente": "Grupo La Olla", "contacto": "Ramón", "tel": "", "provincia": "—", "tipo": "Cliente final", "modelo": "GO", "tipoGas": "GN", "unidades": 8, "precioUnit": "3995", "responsable": "Felipe", "estado": "Enviada", "proximoPaso": "Llamar a Ramón", "fecha": "05/05/2026", "notas": "8u GO GN. Cliente fiscal por determinar. 31.960€ bruto."}, {"id": 54, "num": "A-5361", "cliente": "Bonobo Playa, S.L.", "contacto": "", "tel": "", "provincia": "Cartagena", "tipo": "Cliente final", "modelo": "GO + PRO", "tipoGas": "GP", "unidades": 9, "precioUnit": "", "totalManual": "35253", "responsable": "Felipe", "estado": "Enviada", "proximoPaso": "Seguimiento entrega", "fecha": "06/05/2026", "notas": "6u GO GP (dto 10%) + 3u PRO GP (dto 5%). Total 35.253€. Entrega mediados junio 2026.", "fechaSeguimiento": "01/09/2026"}, {"id": 55, "num": "A-5369", "cliente": "EFEN-Hotelaria, S.A.", "contacto": "Enric", "tel": "", "provincia": "Portugal", "tipo": "Internacional", "modelo": "PRO", "tipoGas": "GP", "unidades": 4, "precioUnit": "4800", "responsable": "Felipe", "estado": "Enviada", "proximoPaso": "Llamar a Enric y preguntar. he enviado un email el 11/06 y me comenta que el cliente está analizando. Que me darán respuesta", "fecha": "12/05/2026", "notas": "4u PRO GP. Cliente Portugal."}, {"id": 56, "num": "A-5372", "cliente": "Aeroso Fun, S.L.", "contacto": "", "tel": "", "provincia": "—", "tipo": "Cliente final", "modelo": "PRO", "tipoGas": "GP", "unidades": 1, "precioUnit": "4800", "responsable": "Felipe", "estado": "En negociación", "proximoPaso": "Seguimiento llamar en septiembre. 1 mimcook con reserva 150€ feria", "fecha": "15/05/2026", "notas": "1u PRO GP.", "fechaSeguimiento": "01/09/2026"}, {"id": 57, "num": "A-5377", "cliente": "Rest. El Nuevo Varadero", "contacto": "Jordi", "tel": "", "provincia": "—", "tipo": "Cliente final", "modelo": "GO", "tipoGas": "GN", "unidades": 3, "precioUnit": "3995", "responsable": "Felipe", "estado": "Enviada", "proximoPaso": "Llamar a Jordi", "fecha": "26/05/2026", "notas": "3u GO GN. 11.985€.", "convertida": true}, {"id": 59, "num": "A-5381", "cliente": "Suministros Unic, S.L.", "contacto": "Jorge", "tel": "627489819", "provincia": "Cádiz", "tipo": "Distribuidor", "modelo": "PRO", "tipoGas": "GP", "unidades": 6, "precioUnit": "3360", "responsable": "Felipe", "estado": "Enviada", "proximoPaso": "Seguimiento", "fecha": "28/05/2026", "fechaSeguimiento": "22/06/2026", "notas": "6u PRO GP precio distribuidor (3.360€/u). 20.160€."}, {"id": 60, "num": "A-5388", "cliente": "Rent Hostelería Mallorca, S.L.", "contacto": "", "tel": "", "provincia": "Mallorca", "tipo": "Cliente final", "modelo": "GO", "tipoGas": "GP", "unidades": 1, "precioUnit": "2796.5", "responsable": "Felipe", "estado": "Enviada", "proximoPaso": "Seguimiento", "fecha": "11/06/2026", "notas": "1u GO GP. Precio distribuidor."}, {"id": 308, "num": "2600484", "fecha": "15/06/2026", "cliente": "NASS 1994 SL", "contacto": "", "tel": "698737586", "provincia": "Barcelona", "tipo": "Distribuidor", "modelo": "PRO", "tipoGas": "GN", "unidades": 1, "precioUnit": "4800", "estado": "Enviada", "responsable": "Felipe", "proximoPaso": "llamar semana que viene", "fechaSeguimiento": "22/06/2026", "notas": "Se le ha hecho seguimiento hoy 16/06/2026 esperando respuesta whatsapp"}, {"id": 309, "num": "A61719464", "fecha": "16/06/2026", "cliente": "CANDIDO", "contacto": "CANDIDO", "tel": "695392982", "provincia": "MENORCA", "tipo": "Cliente final", "modelo": "GO", "tipoGas": "GP", "unidades": 3, "precioUnit": "3595.5", "estado": "Enviada", "responsable": "Felipe", "proximoPaso": "", "fechaSeguimiento": "", "notas": "PROFORMA ENVIADA"}], "demos": [{"id": 1, "nombre": "Procuina", "provincia": "Barcelona", "zona": "Cataluña", "tipo": "Distribuidor", "contacto": "Eduard", "tel": "661926565", "tipoOp": "demo_interna", "notas": "Demo interna realizada el 13/05 en sus instalaciones. Zona Lloret de Mar / Blanes.", "fecha": "13/05/2026", "manuallyRealized": true}, {"id": 13, "nombre": "Café Balear", "provincia": "Menorca", "zona": "Baleares", "tipo": "Cliente final", "contacto": "Josep", "tel": "", "tipoOp": "formacion", "notas": "Formación realizada el 14/05 por la mañana en Menorca.", "fecha": "14/05/2026", "manuallyRealized": true}, {"id": 2, "nombre": "Antonio de Miguel SL", "provincia": "Madrid", "zona": "Madrid", "tipo": "Distribuidor", "contacto": "David Sánchez", "tel": "628708572", "tipoOp": "demo_clientes", "notas": "Demo realizada el 25/05 en evento Finca Astible. Asistieron comerciales de Madrid + grabación.", "fecha": "25/05/2026", "manuallyRealized": true}, {"id": 3, "nombre": "CBB Hostelería", "provincia": "Valencia", "zona": "Valencia", "tipo": "Distribuidor", "contacto": "Vicente", "tel": "659869766", "tipoOp": "demo_interna", "notas": "Demo realizada el 29/05 por Fernando Reyes en sus instalaciones.", "fecha": "29/05/2026", "manuallyRealized": true}, {"id": 4, "nombre": "Oms I Vinyes", "provincia": "Barcelona", "zona": "Cataluña", "tipo": "Distribuidor", "contacto": "Toni", "tel": "671319968", "tipoOp": "presentacion", "notas": "Reunión 02/06 a las 11:00h. A la espera de confirmar demo para sus comerciales.", "fecha": "02/06/2026", "manuallyRealized": true}, {"id": 5, "nombre": "Alvarez Group", "provincia": "Palma", "zona": "Baleares", "tipo": "Distribuidor", "contacto": "Gabriel Griñán", "tel": "971201800", "tipoOp": "demo_clientes", "notas": "Demo realizada el 05/06 a todo el equipo comercial en Mallorca. Email enviado a directores comerciales para acordar estrategia. Pendiente respuesta.", "fecha": "05/06/2026", "manuallyRealized": true}, {"id": 14, "nombre": "Albi (Carlos Maldonado)", "provincia": "Madrid", "zona": "Madrid", "tipo": "Cliente final", "contacto": "Carlos Maldonado", "tel": "", "tipoOp": "formacion", "notas": "Formación para colectividades el 09/06. Van a comprar más Mimcooks para más establecimientos. Seguimiento en septiembre.", "fecha": "09/06/2026", "manuallyRealized": true}, {"id": 6, "nombre": "Tonet Paellas", "provincia": "Madrid", "zona": "Madrid", "tipo": "Cliente final", "contacto": "Tonet", "tel": "", "tipoOp": "demo_clientes", "notas": "Demo el 08/06 en restaurante de cliente en Madrid. Va a comprar en noviembre. Llamarle en noviembre.", "fecha": "08/06/2026", "manuallyRealized": true}, {"id": 7, "nombre": "Hostel Group", "provincia": "Barcelona", "zona": "Cataluña", "tipo": "Distribuidor", "contacto": "Eduard", "tel": "", "tipoOp": "demo_interna", "notas": "Demo interna el viernes 12/06 a las 12:30h en sus instalaciones en Barcelona.", "fecha": "12/06/2026", "manuallyRealized": true}, {"id": 8, "nombre": "H-10 Hoteles", "provincia": "Barcelona", "zona": "Cataluña", "tipo": "Cliente final", "contacto": "Nuria y Joan", "tel": "", "tipoOp": "demo_clientes", "notas": "Demo el lunes 15/06 a las 11:00h con directores operativos de la cadena H-10 en Barcelona. Hotel H10 Marina", "fecha": "15/06/2026", "manuallyRealized": true, "observaciones": "estuvo bien la demo, Joan el director de operaciones de los hoteles vacacionales...dijo de hacer prueba piloto en uno de los hoteles en canarias \"el Conquistador\" le he enviado un correo haciendole la propuesta"}, {"id": 11, "nombre": "El Buen Yantar (Original Paella)", "provincia": "Madrid", "zona": "Madrid", "tipo": "Cliente final", "contacto": "", "tel": "", "tipoOp": "demo_clientes", "notas": "Demo a cliente final del distribuidor Original Paella. Miércoles 17/06 a las 12:30h en el restaurante El Buen Yantar, Madrid. Hacer seguimiento post-demo.", "fecha": "17/06/2026"}, {"id": 9, "nombre": "Procuina (clientes finales)", "provincia": "Barcelona", "zona": "Cataluña", "tipo": "Distribuidor", "contacto": "Eduard", "tel": "661926565", "tipoOp": "demo_clientes", "notas": "Demo con clientes finales de Procuina el 30/06 a las 09:00h.", "fecha": "30/06/2026"}, {"id": 12, "nombre": "Foodie Culture (Hostel Group)", "provincia": "Barcelona", "zona": "Cataluña", "tipo": "Distribuidor", "contacto": "Eduard", "tel": "", "tipoOp": "demo_clientes", "notas": "Evento Foodie Culture en Barcelona. Lunes 6 de julio a las 18:00h. Vamos con Hostel Group.", "fecha": "06/07/2026"}, {"id": 10, "nombre": "DG3 Gastronomía SL", "provincia": "Valencia", "zona": "Valencia", "tipo": "Distribuidor", "contacto": "David", "tel": "647310903", "tipoOp": "demo_clientes", "notas": "Demo 3 días: 13, 14 y 15 de julio. 15 cocineros/clientes cada día. Montar estrategia previa con Esteve.", "fecha": "13/07/2026"}], "acciones": [{"id": 307, "accion": "Seguimiento post-demo H-10 Hoteles", "cliente": "H-10 Hoteles", "responsable": "Felipe", "fecha": "27/06/2026", "estado": "Pendiente", "notas": ""}, {"id": 306, "accion": "German seguimiento NTGas", "cliente": "Cliente final", "responsable": "Felipe", "fecha": "15/06/2026", "estado": "Pendiente", "notas": "Tiene restaurante en Sevilla y quería ver los mimcooks porque también le ofrecieron NTGAS. Llamada de seguimiento"}, {"id": 3, "accion": "Llamar a Servitel - Juan Calderoni", "cliente": "Servitel", "responsable": "Felipe", "estado": "En marcha", "fecha": "27/04/2026", "notas": "Llamada hecha 27/04, pendiente fechas reunión."}, {"id": 4, "accion": "Hablar con Ana Ruiz sobre Original Paella", "cliente": "Original Paella", "responsable": "Felipe", "estado": "En marcha", "fecha": "27/04/2026", "notas": "Pendiente nº de serie para enviar a fábrica."}, {"id": 5, "accion": "Contactar Alvarez Group", "cliente": "ALVAREZ EQUIPMENT", "responsable": "Felipe", "estado": "Completado", "fecha": "25/04/2026", "notas": "Validar potencial Baleares, Canarias y República Dominicana."}, {"id": 10, "accion": "Llamar a Oscar Alagón para agendar demo Mimcook", "cliente": "Oscar Alagón", "responsable": "Felipe", "estado": "Pendiente", "fecha": "01/07/2026", "notas": "Llamada el miércoles 1 de julio a las 10:00h para agendar demo."}, {"id": 11, "accion": "Seguimiento post-demo El Buen Yantar (Original Paella)", "cliente": "El Buen Yantar", "responsable": "Felipe", "estado": "Pendiente", "fecha": "19/06/2026", "notas": "Demo el 17/06. Llamar 2 días después para ver cómo fue y si hay interés de compra."}], "cartera": [{"id": 1, "cliente": "Eskocia Wurm S.L.", "provincia": "Canarias", "zona": "Canarias", "producto": "Mimcook PRO GP", "unidades": 9, "importe": 34560, "año": "2026", "distribuidor": "Directo"}, {"id": 2, "cliente": "Suministros Unic, S.L.", "provincia": "Cádiz", "zona": "Andalucía", "producto": "Mimcook GO GP", "unidades": 2, "importe": 5593, "año": "2026", "distribuidor": "Suministros Unic"}, {"id": 3, "cliente": "Maui Mojácar Beach Club", "provincia": "Almería", "zona": "Andalucía", "producto": "GO y PRO", "unidades": 6, "importe": 0, "año": "2026", "distribuidor": "Exposervi"}, {"id": 4, "cliente": "NOARUIZ SLU (La Cocina de Noa)", "provincia": "Almería", "zona": "Andalucía", "producto": "Mimcook PRO GP", "unidades": 1, "importe": 0, "año": "2025", "distribuidor": "Irual"}, {"id": 5, "cliente": "Ovidio Playa SL", "provincia": "Málaga", "zona": "Andalucía", "producto": "GO Y PRO", "unidades": 6, "importe": 0, "año": "2025", "distribuidor": "—"}, {"id": 6, "cliente": "HOGAR HOTEL DIAZ SL", "provincia": "Murcia", "zona": "Andalucía", "producto": "Mimcook PRO GP", "unidades": 6, "importe": 0, "año": "2024", "distribuidor": "—"}, {"id": 7, "cliente": "BRASSERIE EL POAL SL", "provincia": "Córdoba", "zona": "Andalucía", "producto": "GO", "unidades": 1, "importe": 0, "año": "2024", "distribuidor": "Pilsa"}, {"id": 303, "cliente": "Rest. El Nuevo Varadero", "provincia": "—", "zona": "—", "producto": "Mimcook GO GN", "unidades": 3, "importe": 11985, "año": "2026", "distribuidor": "Directo"}], "comisiones": [{"id": 201, "cliente": "Eskocia Wurm S.L.", "fechaCierre": "14/04/2026", "modelo": "PRO GP", "unidades": 9, "importeVenta": 34560, "pctComision": "4", "importeComision": "", "cobrada": "si", "fechaCobro": "", "notas": "Descuento excepcional por volumen. Cliente estratégico Canarias."}, {"id": 202, "cliente": "Suministros Unic (Maria Trifulca)", "fechaCierre": "27/04/2026", "modelo": "GO GP", "unidades": 2, "importeVenta": 5593, "pctComision": "2", "importeComision": "", "cobrada": "no", "fechaCobro": "", "notas": "Albarán A64155. Precio distribuidor."}, {"id": 304, "cliente": "Arroz de la Tomasa", "fechaCierre": "01/05/2026", "modelo": "Go", "unidades": 3, "importeVenta": 11385.75, "pctComision": "4", "importeComision": "", "cobrada": "no", "fechaCobro": "", "notas": "Falta por pagar una parte"}, {"id": 305, "cliente": "Cocineros Canarias", "fechaCierre": "22/04/2026", "modelo": "go", "unidades": 2, "importeVenta": "5593", "pctComision": "2", "importeComision": "", "cobrada": "no", "fechaCobro": "", "notas": "Paelleros vendidos de la feria alimentaria. preguntar a Anna por proforma para verificar el precio final de venta"}, {"id": 310, "cliente": "Inversiones Candido", "fechaCierre": "", "modelo": "GO", "unidades": 3, "importeVenta": "10786.5", "pctComision": "4", "importeComision": "", "cobrada": "no", "fechaCobro": "", "notas": "Pendiente de si se le puede hacer un 10% de descuento"}], "formaciones": [{"id": 301, "cliente": "Café Balear", "provincia": "Menorca", "zona": "Baleares", "contacto": "Josep", "tel": "", "fecha": "14/05/2026", "modelo": "GO", "notas": "Formación realizada el jueves 14/05 por la mañana en Menorca.", "seguimiento": "Todo perfecto, llamar el año que viene a ver si quiere comprar más para el hotel que gestiona", "fechaSeguimiento": "", "estado": "realizada"}, {"id": 302, "cliente": "Albi (Carlos Maldonado)", "provincia": "Madrid", "zona": "Madrid", "contacto": "Carlos Maldonado", "tel": "", "fecha": "09/06/2026", "modelo": "PRO", "notas": "Formación para colectividades. Van a comprar más Mimcooks para más establecimientos.", "seguimiento": "Llamar en septiembre para cierre de nuevas unidades.", "fechaSeguimiento": "01/09/2026", "estado": "realizada"}]};
 // ===================== STATE =====================
 let state = {};
 let distFilter = 'all', pfFilter = 'all', accFilter = 'all', demoFilter = 'all', comFilter = 'all', formFilter = 'all';
@@ -482,19 +292,19 @@ let nextId = 100;
 function fixDuplicateIds(arr) {
   const seen = new Set();
   return arr.map(item => {
-    if (seen.has(item.id)) {
-      item = { ...item, id: ++nextId };
-    }
+    if (seen.has(item.id)) { item = { ...item, id: ++nextId }; }
     seen.add(item.id);
     return item;
   });
 }
 
 function loadState() {
-  // Clear old localStorage versions to avoid conflicts
   localStorage.removeItem('mimcook_crm_v2');
+  localStorage.removeItem('mimcook_crm_v3');
+  localStorage.removeItem('mimcook_crm_v4');
+  localStorage.removeItem('mimcook_crm_v5');
   try {
-    const saved = localStorage.getItem('mimcook_crm_v5');
+    const saved = localStorage.getItem('mimcook_crm_v6');
     if (saved) {
       state = JSON.parse(saved);
       if (!state.comisiones) state.comisiones = [];
@@ -522,12 +332,22 @@ function loadState() {
 }
 
 function saveState() {
-  localStorage.setItem('mimcook_crm_v5', JSON.stringify(state));
+  localStorage.setItem('mimcook_crm_v6', JSON.stringify(state));
   const ind = document.getElementById('save-ind');
   ind.style.display = 'block';
   clearTimeout(ind._t);
   ind._t = setTimeout(() => ind.style.display = 'none', 2000);
   updateHeader();
+}
+
+function exportBackup() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const fecha = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `mimcook_backup_${fecha}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function updateHeader() {
@@ -537,7 +357,6 @@ function updateHeader() {
 }
 
 // ===================== STAGES =====================
-// stage mapping: 0=Identificado(hidden), 1=Contactado, 2=Demo, 3=PlanComerciales(hidden), 4=Proforma, 5=Ganado, 6=Perdido, 7=Formacion(moved to own tab)
 const STAGES = [
   {id:1, name:"📞 Contactado"},
   {id:2, name:"🎬 Demo"},
@@ -548,7 +367,6 @@ const STAGES = [
 
 // ===================== KANBAN =====================
 let dragId = null;
-
 function renderKanban() {
   const container = document.getElementById('kanban');
   container.innerHTML = '';
@@ -592,11 +410,7 @@ function renderKanban() {
     container.appendChild(col);
   });
 }
-
-function dragStart(e, id) {
-  dragId = id;
-  setTimeout(() => e.target.classList.add('dragging'), 0);
-}
+function dragStart(e, id) { dragId = id; setTimeout(() => e.target.classList.add('dragging'), 0); }
 function dragEnd(e) { e.target.classList.remove('dragging'); }
 function dragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
 function dragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
@@ -617,7 +431,6 @@ function deleteCard(id) {
 // ===================== DISTRIBUIDORES =====================
 const ESTADOS_DIST = ['no contactado','contactado','En marcha','pendiente de demo','demo agendada','demo realizada','no contesta'];
 const PRIORIDADES = ['Alta','Media','Baja','—'];
-
 function renderDistribuidores() {
   const q = (document.getElementById('dist-search').value||'').toLowerCase();
   const tbody = document.getElementById('dist-tbody');
@@ -649,7 +462,6 @@ function renderDistribuidores() {
       <td><button class="btn btn-danger" onclick="deleteDist(${d.id})">✕</button></td>
     </tr>`).join('');
 }
-
 function updateDist(id, field, value) {
   const d = state.distribuidores.find(x => x.id === id);
   if (d) { d[field] = value.trim(); saveState(); }
@@ -668,7 +480,6 @@ function setDistFilter(val) {
 
 // ===================== PROFORMAS =====================
 const ESTADOS_PF = ['Enviada','Ganado','Perdida','En negociación'];
-
 function renderProformas() {
   const q = (document.getElementById('pf-search').value||'').toLowerCase();
   const tbody = document.getElementById('pf-tbody');
@@ -677,11 +488,7 @@ function renderProformas() {
     const filt = pfFilter==='all' || p.estado===pfFilter;
     return match && filt;
   }).sort((a, b) => {
-    const parseDate = d => {
-      if (!d) return 0;
-      const p = d.split('/');
-      return p.length === 3 ? new Date(+p[2], +p[1]-1, +p[0]).getTime() : 0;
-    };
+    const parseDate = d => { if (!d) return 0; const p = d.split('/'); return p.length === 3 ? new Date(+p[2], +p[1]-1, +p[0]).getTime() : 0; };
     return parseDate(b.fecha) - parseDate(a.fecha);
   });
   tbody.innerHTML = rows.map(p => {
@@ -708,7 +515,7 @@ function renderProformas() {
       <td><span class="editable" contenteditable="true" onblur="updatePFNum(${p.id},'unidades',this.textContent)" style="text-align:center;display:block;font-weight:600">${p.unidades}</span></td>
       <td><span class="editable" contenteditable="true" onblur="updatePFNum(${p.id},'precioUnit',this.textContent)">${p.precioUnit||''}</span></td>
       <td style="font-weight:700;color:${total?'#1a1a1a':'#aaa'}">
-        <span class="editable" contenteditable="true" 
+        <span class="editable" contenteditable="true"
           onblur="updatePFNum(${p.id},'totalManual',this.textContent.replace('€','').replace('.','').replace(',','.'))"
           title="Editable — escribe el total si hay modelos mixtos"
           style="display:block;min-width:80px">${totalStr}</span>
@@ -729,7 +536,7 @@ function renderProformas() {
       <td>
         ${(() => {
           const fs = p.fechaSeguimiento;
-          if (!fs) return `<span class="editable" contenteditable="true" onblur="updatePF(${p.id},'fechaSeguimiento',this.textContent)" data-placeholder="DD/MM/AAAA" style="font-size:11px;color:#bbb;display:block;min-width:80px" data-placeholder="—">—</span>`;
+          if (!fs) return `<span class="editable" contenteditable="true" onblur="updatePF(${p.id},'fechaSeguimiento',this.textContent)" style="font-size:11px;color:#bbb;display:block;min-width:80px">—</span>`;
           const today2 = new Date(); today2.setHours(0,0,0,0);
           const parts2 = fs.split('/');
           const d2 = parts2.length===3 ? new Date(+parts2[2],+parts2[1]-1,+parts2[0]) : null;
@@ -749,42 +556,50 @@ function renderProformas() {
 }
 
 function convertProformaToSale(p) {
-  if (p.convertida) return; // already processed
+  if (p.convertida) return;
   p.convertida = true;
-  const total = (p.precioUnit && p.unidades) ? (+p.precioUnit * +p.unidades) : 0;
-
-  // 1. Add to cartera
-  state.cartera.push({
-    id: ++nextId,
-    cliente: p.cliente,
-    provincia: p.provincia || '—',
-    zona: '—',
-    producto: `Mimcook ${p.modelo||''} ${p.tipoGas||''}`.trim(),
-    unidades: +p.unidades || 0,
-    importe: total,
-    año: new Date().getFullYear().toString(),
-    distribuidor: p.tipo === 'Distribuidor' ? p.cliente : 'Directo',
-  });
-
-  // 2. Auto-create comisión if responsable is Felipe
-  const resp = (p.responsable||'').toLowerCase().trim();
-  if (resp === 'felipe' || resp === 'felipe (propietario)') {
-    if (!state.comisiones) state.comisiones = [];
+  const total = p.totalManual ? +p.totalManual : (p.precioUnit && p.unidades) ? (+p.precioUnit * +p.unidades) : 0;
+  if (!(state.cartera||[]).some(c => c.num === p.num)) {
+    state.cartera.push({
+      id: ++nextId, num: p.num, cliente: p.cliente, provincia: p.provincia || '—', zona: '—',
+      producto: `Mimcook ${p.modelo||''} ${p.tipoGas||''}`.trim(),
+      unidades: +p.unidades || 0, importe: total,
+      año: new Date().getFullYear().toString(),
+      distribuidor: p.tipo === 'Distribuidor' ? p.cliente : 'Directo',
+    });
+  }
+  if (!state.comisiones) state.comisiones = [];
+  if (!state.comisiones.some(c => c.num === p.num)) {
     state.comisiones.push({
-      id: ++nextId,
-      cliente: p.cliente,
-      fechaCierre: p.fecha || '',
+      id: ++nextId, num: p.num, cliente: p.cliente, fechaCierre: p.fecha || '',
       modelo: `${p.modelo||''} ${p.tipoGas||''}`.trim(),
-      unidades: +p.unidades || 0,
-      importeVenta: total,
-      pctComision: '',
-      importeComision: '',
-      cobrada: 'no',
-      fechaCobro: '',
-      notas: `Auto-generada desde proforma ${p.num}`,
+      unidades: +p.unidades || 0, importeVenta: total,
+      pctComision: '', importeComision: '', cobrada: 'no', fechaCobro: '',
+      notas: `Desde proforma ${p.num}`,
     });
   }
   saveState();
+}
+
+function syncComisionesFromProformas() {
+  if (!state.comisiones) state.comisiones = [];
+  let changed = false;
+  state.proformas.forEach(p => {
+    if (p.estado !== 'Ganado') return;
+    if (!state.comisiones.some(c => c.num === p.num)) {
+      const total = p.totalManual ? +p.totalManual : (p.precioUnit && p.unidades) ? (+p.precioUnit * +p.unidades) : 0;
+      state.comisiones.push({
+        id: ++nextId, num: p.num, cliente: p.cliente, fechaCierre: p.fecha || '',
+        modelo: `${p.modelo||''} ${p.tipoGas||''}`.trim(),
+        unidades: +p.unidades || 0, importeVenta: total,
+        pctComision: '', importeComision: '', cobrada: 'no', fechaCobro: '',
+        notas: `Desde proforma ${p.num}`,
+      });
+      p.convertida = true;
+      changed = true;
+    }
+  });
+  if (changed) saveState();
 }
 
 function updatePF(id, field, value) {
@@ -792,7 +607,6 @@ function updatePF(id, field, value) {
   if (!p) return;
   const prevEstado = p.estado;
   p[field] = value.trim();
-  // Trigger auto-conversion when marking as Ganado
   if (field === 'estado' && value === 'Ganado' && prevEstado !== 'Ganado') {
     convertProformaToSale(p);
     renderKPIs();
@@ -820,7 +634,6 @@ function setPFFilter(val) {
 // ===================== DEMOS =====================
 function isDatePast(dateStr) {
   if (!dateStr) return false;
-  // Format: DD/MM/AAAA or DD/MM/AAAA HH:MM
   const [datePart, timePart] = dateStr.split(' ');
   const parts = datePart.split('/');
   if (parts.length !== 3) return false;
@@ -828,96 +641,72 @@ function isDatePast(dateStr) {
   const d = new Date(+parts[2], +parts[1]-1, +parts[0], h||23, m||59);
   return d < new Date();
 }
-
 function demoCardId(d) { return typeof d.id === 'string' ? `'${d.id}'` : d.id; }
-
-function demoCard(d, past) {
-  const TIPO_LABELS = {
-    visita: '👀 Visita cliente',
-    demo_interna: '🎬 Demo interna',
-    demo_clientes: '🍽️ Demo clientes finales',
-    formacion: '🎓 Formación',
-    presentacion: '📊 Presentación',
-    demo: '🎬 Demo',
-  };
+function demoCard(d, past, porConfirmar) {
+  const TIPO_LABELS = { visita: '👀 Visita cliente', demo_interna: '🎬 Demo interna', demo_clientes: '🍽️ Demo clientes finales', formacion: '🎓 Formación', presentacion: '📊 Presentación', demo: '🎬 Demo' };
   const label = TIPO_LABELS[d.tipoOp] || d.tipoOp;
-  return `<div class="demo-card ${d.tipoOp||''} ${past?'pasada':''}">`+`
+  return `<div class="demo-card ${d.tipoOp||''} ${past?'pasada':''}" style="${porConfirmar?'border-left-color:#f5c842;border-style:dashed':''}">`+`
     ${d.fromPipeline
       ? `<span style="position:absolute;top:10px;right:10px;font-size:10px;color:#9ca3af;background:#f3f4f6;border-radius:4px;padding:1px 5px">📋 Pipeline</span>`
       : `<button class="card-del-btn" onclick="deleteDemo(${d.id})">✕</button>`}
     <span class="demo-type ${d.tipoOp}">${label}</span>
     ${past
       ? `<span style="font-size:10px;color:#9ca3af;margin-left:6px">✓ Realizada${d.manuallyRealized?' (manual)':''}</span>`
-      : `<span style="font-size:10px;color:#22c55e;margin-left:6px">⬤ Próxima</span>`}
+      : porConfirmar
+        ? `<span style="font-size:10px;color:#b45309;margin-left:6px;font-weight:700">⏳ Por confirmar</span>`
+        : `<span style="font-size:10px;color:#22c55e;margin-left:6px">⬤ Próxima</span>`}
     <div class="demo-name">${d.nombre}</div>
-    <div class="demo-date">📅 ${d.fecha} · ${d.zona||d.provincia||''}</div>
+    <div class="demo-date">📅 ${d.fecha||'(sin fecha)'} ${porConfirmar&&d.fecha?'<span style="color:#b45309;font-size:10px">tentativa</span>':''} · ${d.zona||d.provincia||''}</div>
     ${d.contacto?`<div style="font-size:12px;color:#888;margin-bottom:6px">👤 ${d.contacto}${d.tel?' · '+d.tel:''}</div>`:''}
     <div style="margin-bottom:8px">
       <div style="font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#999;font-weight:600;margin-bottom:4px">📝 Notas</div>
-      <div class="editable" contenteditable="true"
-        onblur="updateDemoField(${demoCardId(d)},'notas',this.textContent)"
+      <div class="editable" contenteditable="true" onblur="updateDemoField(${demoCardId(d)},'notas',this.textContent)"
         style="font-size:12px;color:#444;min-height:32px;line-height:1.6;display:block;background:#f9f9f9;border-radius:6px;padding:6px 8px;border:1px solid #ebebeb"
         data-placeholder="Añadir notas...">${d.notas||''}</div>
     </div>
     <div style="border-top:1px solid #f0f0f0;padding-top:8px;margin-top:4px">
-      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#999;font-weight:600;margin-bottom:4px">
-        ${past?'💬 Observaciones post-demo':'💬 Observaciones'}
-      </div>
-      <div class="editable" contenteditable="true"
-        onblur="updateDemoField(${demoCardId(d)},'observaciones',this.textContent)"
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#999;font-weight:600;margin-bottom:4px">${past?'💬 Observaciones post-demo':'💬 Observaciones'}</div>
+      <div class="editable" contenteditable="true" onblur="updateDemoField(${demoCardId(d)},'observaciones',this.textContent)"
         style="font-size:12px;color:#444;min-height:40px;line-height:1.6;display:block;background:${past?'#fffbeb':'#f9f9f9'};border-radius:6px;padding:6px 8px;border:1px solid ${past?'#fde68a':'#ebebeb'}"
         data-placeholder="${past?'¿Cómo fue? ¿Próximos pasos?':'Añadir observaciones...'}">${d.observaciones||''}</div>
     </div>
     <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
-      ${!past
-        ? `<button onclick="markRealized(${typeof d.id==='string'?`'${d.id}'`:d.id},true)" style="flex:1;padding:6px 10px;background:#f0f9e8;color:#2d7a2d;border:1px solid #bbf7d0;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">✓ Marcar realizada</button>`
+      ${porConfirmar
+        ? `<button onclick="confirmDemo(${d.id})" style="flex:1;padding:6px 10px;background:#f0f9e8;color:#2d7a2d;border:1px solid #bbf7d0;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">✓ Confirmar fecha</button>
+           <button onclick="markRealized(${d.id},true)" style="flex:1;padding:6px 10px;background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;border-radius:6px;cursor:pointer;font-size:11px">Marcar realizada</button>`
+        : !past
+        ? `<button onclick="markRealized(${typeof d.id==='string'?`'${d.id}'`:d.id},true)" style="flex:1;padding:6px 10px;background:#f0f9e8;color:#2d7a2d;border:1px solid #bbf7d0;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">✓ Marcar realizada</button>
+           ${!d.fromPipeline?`<button onclick="markPorConfirmar(${d.id})" style="flex:1;padding:6px 10px;background:#fffbeb;color:#b45309;border:1px solid #fde68a;border-radius:6px;cursor:pointer;font-size:11px">⏳ Por confirmar</button>`:''}`
         : `<button onclick="markRealized(${typeof d.id==='string'?`'${d.id}'`:d.id},false)" style="flex:1;padding:6px 10px;background:#f3f4f6;color:#6b7280;border:1px solid #e5e7eb;border-radius:6px;cursor:pointer;font-size:11px">↩ Mover a pendientes</button>
            <button onclick="addFollowUpAction('${d.nombre.replace(/'/g,"\\'")}','${(d.zona||'').replace(/'/g,"\\'")}') " style="flex:1;padding:6px 10px;background:#fff3e0;color:#b45309;border:1px solid #fed7aa;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">➕ Crear acción</button>`
       }
     </div>
   </div>`;
 }
-
 function getAllDemoItems() {
   const ACT_TYPES = [
-    {field:'fechaVisita',      tipo:'visita'},
+    {field:'fechaVisita', tipo:'visita'},
     {field:'fechaDemoInterna', tipo:'demo_interna'},
     {field:'fechaDemoClientes',tipo:'demo_clientes'},
-    {field:'fechaFormacion',   tipo:'formacion'},
+    {field:'fechaFormacion', tipo:'formacion'},
   ];
-
-  // Pipeline-derived items (source of truth for pipeline distributors)
   const pipelineItems = [];
   state.pipeline.forEach(card => {
     ACT_TYPES.forEach(({field, tipo}) => {
       if (card[field]) {
         pipelineItems.push({
-          id: `p${card.id}_${tipo}`,
-          nombre: card.name,
-          zona: card.zona || '—',
-          contacto: '', tel: '',
-          tipoOp: tipo,
-          fecha: card[field],
-          notas: card.sub || '',
-          observaciones: card[`obs_${tipo}`] || '',
-          manuallyRealized: card[`done_${tipo}`] || false,
-          fromPipeline: true,
-          pipelineId: card.id,
-          pipelineField: `obs_${tipo}`,
+          id: `p${card.id}_${tipo}`, nombre: card.name, zona: card.zona || '—',
+          contacto: '', tel: '', tipoOp: tipo, fecha: card[field], notas: card.sub || '',
+          observaciones: card[`obs_${tipo}`] || '', manuallyRealized: card[`done_${tipo}`] || false,
+          fromPipeline: true, pipelineId: card.id, pipelineField: `obs_${tipo}`,
         });
       }
     });
   });
-
-  // Standalone demos: only include if the name doesn't match any pipeline card
-  const pipelineNames = new Set(state.pipeline.map(c => c.name.toLowerCase().trim()));
-  const standaloneItems = state.demos
-    .filter(d => !pipelineNames.has((d.nombre||'').toLowerCase().trim()))
-    .map(d => ({...d, fromPipeline: false}));
-
+  // Standalone demos: always show ALL — pipeline and demos are independent
+  const standaloneItems = state.demos.map(d => ({...d, fromPipeline: false}));
   return [...pipelineItems, ...standaloneItems];
 }
-
 function parseDemoDate(dateStr) {
   if (!dateStr) return new Date(9999,0,1);
   const [datePart, timePart] = dateStr.split(' ');
@@ -926,11 +715,7 @@ function parseDemoDate(dateStr) {
   const [h, m] = timePart ? timePart.split(':').map(Number) : [0, 0];
   return new Date(+parts[2], +parts[1]-1, +parts[0], h||0, m||0);
 }
-
-function isRealized(d) {
-  return d.manuallyRealized || isDatePast(d.fecha);
-}
-
+function isRealized(d) { if (d.porConfirmar) return d.manuallyRealized || false; return d.manuallyRealized || isDatePast(d.fecha); }
 function markRealized(id, realized) {
   const sid = String(id);
   if (sid.startsWith('p')) {
@@ -944,7 +729,6 @@ function markRealized(id, realized) {
   }
   renderDemos();
 }
-
 function addFollowUpAction(nombre, zona) {
   openModal(`
     <h2>➕ Acción de seguimiento</h2>
@@ -954,8 +738,7 @@ function addFollowUpAction(nombre, zona) {
       <div class="field"><label>Cliente</label><input id="fa-cliente" value="${nombre}"></div>
       <div class="field"><label>Responsable</label><input id="fa-resp" value="Felipe"></div>
       <div class="field"><label>Fecha (DD/MM/AAAA)</label><input id="fa-fecha" placeholder="${new Date().toLocaleDateString('es-ES')}"></div>
-      <div class="field"><label>Estado</label>
-        <select id="fa-estado"><option>Pendiente</option><option>En marcha</option></select></div>
+      <div class="field"><label>Estado</label><select id="fa-estado"><option>Pendiente</option><option>En marcha</option></select></div>
       <div class="field full"><label>Notas</label><textarea id="fa-notas"></textarea></div>
     </div>
     <div class="modal-footer">
@@ -963,13 +746,11 @@ function addFollowUpAction(nombre, zona) {
       <button class="btn btn-primary" onclick="saveFollowUp()">Añadir a Acciones</button>
     </div>`);
 }
-
 function saveFollowUp() {
   const accion = document.getElementById('fa-accion').value.trim();
   if (!accion) return;
   state.acciones.unshift({
-    id: ++nextId,
-    accion,
+    id: ++nextId, accion,
     cliente: document.getElementById('fa-cliente').value.trim(),
     responsable: document.getElementById('fa-resp').value.trim(),
     fecha: document.getElementById('fa-fecha').value.trim() || new Date().toLocaleDateString('es-ES'),
@@ -977,63 +758,66 @@ function saveFollowUp() {
     notas: document.getElementById('fa-notas').value.trim(),
   });
   saveState(); closeModal(); renderAcciones();
-  // Switch to acciones tab
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelector('.tab:nth-child(6)').classList.add('active');
   document.getElementById('view-acciones').classList.add('active');
 }
-
 function renderDemos() {
+  const confSection = document.getElementById('demos-porconfirmar-section');
   const proxSection = document.getElementById('demos-proximas-section');
   const realSection = document.getElementById('demos-realizadas-section');
-
   const typeFilters = ['visita','demo_interna','demo_clientes','formacion','presentacion','demo'];
   let all = getAllDemoItems();
   if (typeFilters.includes(demoFilter)) all = all.filter(d => d.tipoOp === demoFilter);
-
-  // Split by realized status (auto or manual)
-  const prox = all.filter(d => !isRealized(d))
-    .sort((a,b) => parseDemoDate(a.fecha) - parseDemoDate(b.fecha)); // ← closest first
-  const real = all.filter(d =>  isRealized(d))
-    .sort((a,b) => parseDemoDate(b.fecha) - parseDemoDate(a.fecha)); // ← most recent first
-
-  const showProx = demoFilter !== 'realizada';
-  const showReal = demoFilter !== 'proxima';
-
+  // Por confirmar: demos con porConfirmar=true y no realizadas
+  const conf = all.filter(d => d.porConfirmar && !isRealized(d)).sort((a,b) => parseDemoDate(a.fecha) - parseDemoDate(b.fecha));
+  const prox = all.filter(d => !d.porConfirmar && !isRealized(d)).sort((a,b) => parseDemoDate(a.fecha) - parseDemoDate(b.fecha));
+  const real = all.filter(d => isRealized(d)).sort((a,b) => parseDemoDate(b.fecha) - parseDemoDate(a.fecha));
+  const showConf = demoFilter !== 'realizada' && demoFilter !== 'proxima';
+  const showProx = demoFilter !== 'realizada' && demoFilter !== 'porconfirmar';
+  const showReal = demoFilter !== 'proxima' && demoFilter !== 'porconfirmar';
+  confSection.innerHTML = showConf && conf.length ? `
+    <div style="font-size:13px;font-weight:700;color:#b45309;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <span style="width:8px;height:8px;border-radius:50%;background:#f5c842;display:inline-block"></span>
+      ⏳ Por confirmar (${conf.length}) <span style="font-weight:400;color:#aaa;font-size:11px">— pendiente que el cliente confirme</span>
+    </div>
+    <div class="demos-grid" style="margin-bottom:24px">${conf.map(d=>demoCard(d,false,true)).join('')}</div>` : '';
   proxSection.innerHTML = showProx && prox.length ? `
     <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:12px;display:flex;align-items:center;gap:8px">
       <span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>
       Próximas (${prox.length})
     </div>
     <div class="demos-grid" style="margin-bottom:24px">${prox.map(d=>demoCard(d,false)).join('')}</div>` : '';
-
   realSection.innerHTML = showReal && real.length ? `
     <div style="font-size:13px;font-weight:700;color:#6b7280;margin-bottom:12px;display:flex;align-items:center;gap:8px">
       <span style="width:8px;height:8px;border-radius:50%;background:#d1d5db;display:inline-block"></span>
       Realizadas (${real.length})
     </div>
     <div class="demos-grid">${real.map(d=>demoCard(d,true)).join('')}</div>` : '';
-
-  if (!prox.length && !real.length)
-    proxSection.innerHTML = '<div style="color:#aaa;font-size:13px;padding:20px">No hay resultados para este filtro.</div>';
+  if (!conf.length && !prox.length && !real.length)
+    confSection.innerHTML = '<div style="color:#aaa;font-size:13px;padding:20px">No hay resultados para este filtro.</div>';
 }
-
+function confirmDemo(id) {
+  const d = state.demos.find(x => x.id === +id);
+  if (d) { d.porConfirmar = false; saveState(); renderDemos(); }
+}
+function markPorConfirmar(id) {
+  const d = state.demos.find(x => x.id === +id);
+  if (d) { d.porConfirmar = true; saveState(); renderDemos(); }
+}
 function setDemoFilter(val) {
   demoFilter = val;
-  ['all','prox','real','visita','demo_interna','demo_clientes','form'].forEach(k => document.getElementById('dm-'+k)?.classList.remove('active'));
-  const map = {'all':'all','proxima':'prox','realizada':'real','formacion':'form'};
-  const key = map[val] || val;
-  document.getElementById('dm-'+key)?.classList.add('active');
+  ['all','conf','prox','real','visita','demo_interna','demo_clientes','form'].forEach(k => document.getElementById('dm-'+k)?.classList.remove('active'));
+  const map = {'all':'all','porconfirmar':'conf','proxima':'prox','realizada':'real','formacion':'form'};
+  document.getElementById('dm-'+(map[val] || val))?.classList.add('active');
   renderDemos();
 }
-
 function updateDemo(id, field, value) {
   const d = state.demos.find(x=>x.id===id);
   if (d) { d[field]=value.trim(); saveState(); }
 }
 function updateDemoField(id, field, value) {
-  // Pipeline-derived item: id is string like "p27_visita"
   if (typeof id === 'string' && id.startsWith('p')) {
     const parts = id.substring(1).split('_');
     const cardId = +parts[0];
@@ -1048,7 +832,6 @@ function updateDemoField(id, field, value) {
     updateDemo(+id, field, value);
   }
 }
-
 function deleteDemo(id) {
   if (!confirm('¿Eliminar demo?')) return;
   state.demos = state.demos.filter(x => x.id !== id);
@@ -1059,12 +842,9 @@ function deleteDemo(id) {
 function renderComisiones() {
   if (!state.comisiones) state.comisiones = [];
   const rows = state.comisiones.filter(c => comFilter==='all' || c.cobrada===comFilter);
-
-  const totalPendiente = state.comisiones.filter(c=>c.cobrada==='no')
-    .reduce((s,c)=>s+(+c.importeComision||0),0);
-  const totalCobrado = state.comisiones.filter(c=>c.cobrada==='si')
-    .reduce((s,c)=>s+(+c.importeComision||0),0);
-
+  const calcCom = c => (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
+  const totalPendiente = state.comisiones.filter(c=>c.cobrada==='no').reduce((s,c)=>s+calcCom(c),0);
+  const totalCobrado = state.comisiones.filter(c=>c.cobrada==='si').reduce((s,c)=>s+calcCom(c),0);
   document.getElementById('com-resumen').innerHTML = `
     <div class="kpi-card" style="min-width:160px">
       <div class="kpi-val" style="font-size:22px;color:#22c55e">${totalCobrado>0?totalCobrado.toLocaleString('es-ES',{maximumFractionDigits:0})+'€':'—'}</div>
@@ -1078,7 +858,6 @@ function renderComisiones() {
       <div class="kpi-val" style="font-size:22px">${state.comisiones.length}</div>
       <div class="kpi-label">Ventas registradas</div>
     </div>`;
-
   document.getElementById('com-tbody').innerHTML = rows.map(c => {
     const total = (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
     const totalStr = total ? total.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+'€' : '—';
@@ -1087,10 +866,8 @@ function renderComisiones() {
       <td><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'fechaCierre',this.textContent)">${c.fechaCierre||'—'}</span></td>
       <td><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'modelo',this.textContent)">${c.modelo||'—'}</span></td>
       <td style="text-align:center;font-weight:600"><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'unidades',this.textContent)">${c.unidades||'—'}</span></td>
-      <td><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'importeVenta',this.textContent)">${c.importeVenta?c.importeVenta.toLocaleString('es-ES')+'€':'—'}</span></td>
-      <td style="text-align:center">
-        <span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'pctComision',this.textContent)">${c.pctComision||''}</span>%
-      </td>
+      <td><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'importeVenta',this.textContent)">${c.importeVenta?(+c.importeVenta).toLocaleString('es-ES')+'€':'—'}</span></td>
+      <td style="text-align:center"><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'pctComision',this.textContent)">${c.pctComision||''}</span>%</td>
       <td style="font-weight:700">${totalStr}</td>
       <td>
         <select class="cell-select" onchange="updateCom(${c.id},'cobrada',this.value);renderComisiones()">
@@ -1103,19 +880,10 @@ function renderComisiones() {
       <td><button class="btn btn-danger" onclick="deleteCom(${c.id})">✕</button></td>
     </tr>`;
   }).join('');
-
-  // Totals summary
-  const sumCobrado   = state.comisiones.reduce((sum, c) => {
-    if (c.cobrada !== 'si') return sum;
-    return sum + ((c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0));
-  }, 0);
-  const sumPendiente = state.comisiones.reduce((sum, c) => {
-    if (c.cobrada === 'si') return sum;
-    return sum + ((c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0));
-  }, 0);
-  const sumGeneral   = sumCobrado + sumPendiente;
+  const sumCobrado = state.comisiones.reduce((sum, c) => c.cobrada !== 'si' ? sum : sum + calcCom(c), 0);
+  const sumPendiente = state.comisiones.reduce((sum, c) => c.cobrada === 'si' ? sum : sum + calcCom(c), 0);
+  const sumGeneral = sumCobrado + sumPendiente;
   const fmtC = n => n.toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2}) + '€';
-
   const summaryEl = document.getElementById('com-totals');
   if (summaryEl) {
     summaryEl.innerHTML = `
@@ -1135,7 +903,6 @@ function renderComisiones() {
       </div>`;
   }
 }
-
 function updateCom(id, field, value) {
   const c = state.comisiones.find(x=>x.id===id);
   if (c) { c[field]=value.trim(); saveState(); renderComisiones(); }
@@ -1166,8 +933,7 @@ function openNewComisionModal() {
       <div class="field"><label>Unidades</label><input id="nc3-uds" type="number" value="1"></div>
       <div class="field"><label>Importe venta (€)</label><input id="nc3-importe" type="number" step="0.01"></div>
       <div class="field"><label>% Comisión</label><input id="nc3-pct" type="number" step="0.01" placeholder="Ej: 5"></div>
-      <div class="field"><label>Cobrada</label>
-        <select id="nc3-cobrada"><option value="no">⏳ Pendiente</option><option value="si">✅ Cobrada</option></select></div>
+      <div class="field"><label>Cobrada</label><select id="nc3-cobrada"><option value="no">⏳ Pendiente</option><option value="si">✅ Cobrada</option></select></div>
       <div class="field"><label>Fecha cobro</label><input id="nc3-fechacobro" placeholder="DD/MM/AAAA"></div>
       <div class="field full"><label>Notas</label><textarea id="nc3-notas"></textarea></div>
     </div>
@@ -1217,7 +983,6 @@ function renderAcciones(highlightId) {
       </div>
       <button class="btn btn-danger accion-del" onclick="deleteAcc(${a.id})">✕</button>
     </div>`).join('');
-
   if (highlightId) {
     setTimeout(() => {
       const el = document.getElementById('accion-' + highlightId);
@@ -1227,15 +992,11 @@ function renderAcciones(highlightId) {
         el.style.background = '#fffbeb';
         el.style.borderLeft = '3px solid #f5c842';
         el.style.borderRadius = '6px';
-        setTimeout(() => {
-          el.style.background = '';
-          el.style.borderLeft = '';
-        }, 3000);
+        setTimeout(() => { el.style.background = ''; el.style.borderLeft = ''; }, 3000);
       }
     }, 100);
   }
 }
-
 function updateAcc(id, field, value) {
   const a = state.acciones.find(x => x.id === id);
   if (a) { a[field] = value.trim(); saveState(); }
@@ -1255,37 +1016,36 @@ function setAccFilter(val) {
 
 // ===================== KPIs =====================
 function fmt(n) { return (+n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-
 function renderKPIs() {
-  const pfGanadas  = state.proformas.filter(p => p.estado === 'Ganado');
+  const pfGanadas = state.proformas.filter(p => p.estado === 'Ganado');
   const pfEnviadas = state.proformas.filter(p => p.estado === 'Enviada').length;
-  const totalUds   = pfGanadas.reduce((s,p) => s+(+p.unidades||0), 0);
-  const totalEuros = pfGanadas.reduce((s,p) => s+((+p.precioUnit||0)*(+p.unidades||0)), 0);
+  const totalUds = pfGanadas.reduce((s,p) => s+(+p.unidades||0), 0);
+  const totalEuros = pfGanadas.reduce((s,p) => {
+    const t = p.totalManual ? +p.totalManual : (+p.precioUnit||0)*(+p.unidades||0);
+    return s + t;
+  }, 0);
   if (!state.comisiones) state.comisiones = [];
-  const comPend = state.comisiones.filter(c=>c.cobrada==='no').reduce((s,c)=>s+(+c.importeComision||0),0);
-  const comCob  = state.comisiones.filter(c=>c.cobrada==='si').reduce((s,c)=>s+(+c.importeComision||0),0);
+  const calcCom = c => (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
+  const comPend = state.comisiones.filter(c=>c.cobrada==='no').reduce((s,c)=>s+calcCom(c),0);
+  const comCob = state.comisiones.filter(c=>c.cobrada==='si').reduce((s,c)=>s+calcCom(c),0);
   const demNext = getAllDemoItems().filter(d=>!isDatePast(d.fecha)).length;
-
-  document.getElementById('hdr-pipeline').textContent  = state.pipeline.filter(p=>p.stage<5).length;
+  document.getElementById('hdr-pipeline').textContent = state.pipeline.filter(p=>p.stage<5).length;
   document.getElementById('hdr-proformas').textContent = pfEnviadas;
-  document.getElementById('hdr-ventas').textContent    = pfGanadas.length;
-
+  document.getElementById('hdr-ventas').textContent = pfGanadas.length;
   document.getElementById('kpi-grid').innerHTML = [
-    {val: pfGanadas.length,                        label:'Ventas cerradas',       sub:'Proformas ganadas',                color:'#2d7a2d'},
-    {val: totalUds+'u',                            label:'Unidades vendidas',      sub:'Total Mimcooks',                   color:'#1a1a1a'},
-    {val: totalEuros>0 ? fmt(totalEuros)+'€':'—',  label:'Facturación s/IVA',      sub:'Proformas con precio',             color:'#1a1a1a'},
-    {val: pfEnviadas,                              label:'Proformas activas',      sub:'Pendientes de cierre',             color:'#b45309'},
-    {val: comPend>0 ? fmt(comPend)+'€':'—',        label:'Comisiones pendientes',  sub:'Felipe — por cobrar',              color:'#b45309'},
-    {val: comCob>0  ? fmt(comCob)+'€':'—',         label:'Comisiones cobradas',    sub:'Felipe — recibidas',               color:'#2d7a2d'},
-    {val: state.distribuidores.length,             label:'Distribuidores',         sub:`${state.distribuidores.filter(d=>d.estado!=='no contactado').length} contactados`, color:'#1a1a1a'},
-    {val: demNext,                                 label:'Actividades próximas',   sub:'Visitas + demos + formación',      color:'#7c3aed'},
+    {val: pfGanadas.length, label:'Ventas cerradas', sub:'Proformas ganadas', color:'#2d7a2d'},
+    {val: totalUds+'u', label:'Unidades vendidas', sub:'Total Mimcooks', color:'#1a1a1a'},
+    {val: totalEuros>0 ? fmt(totalEuros)+'€':'—', label:'Facturación s/IVA', sub:'Proformas ganadas', color:'#1a1a1a'},
+    {val: pfEnviadas, label:'Proformas activas', sub:'Pendientes de cierre', color:'#b45309'},
+    {val: comPend>0 ? fmt(comPend)+'€':'—', label:'Comisiones pendientes', sub:'Felipe — por cobrar', color:'#b45309'},
+    {val: comCob>0 ? fmt(comCob)+'€':'—', label:'Comisiones cobradas', sub:'Felipe — recibidas', color:'#2d7a2d'},
+    {val: state.distribuidores.length, label:'Distribuidores', sub:`${state.distribuidores.filter(d=>d.estado!=='no contactado').length} contactados`, color:'#1a1a1a'},
+    {val: demNext, label:'Actividades próximas', sub:'Visitas + demos + formación', color:'#7c3aed'},
   ].map(k=>`<div class="kpi-card">
     <div class="kpi-val" style="color:${k.color};font-size:${String(k.val).length>7?'20px':'28px'}">${k.val}</div>
     <div class="kpi-label">${k.label}</div>
     <div class="kpi-sub">${k.sub}</div>
   </div>`).join('');
-
-  // Ventas cerradas table — derived directly from proformas ganadas
   const vtbody = document.getElementById('ventas-tbody');
   const vtfoot = document.getElementById('ventas-tfoot');
   if (pfGanadas.length === 0) {
@@ -1293,7 +1053,7 @@ function renderKPIs() {
     vtfoot.innerHTML = '';
   } else {
     vtbody.innerHTML = pfGanadas.map(p => {
-      const total = (+p.precioUnit||0) * (+p.unidades||0);
+      const total = p.totalManual ? +p.totalManual : (+p.precioUnit||0) * (+p.unidades||0);
       return `<tr>
         <td style="white-space:nowrap;color:#888;font-size:12px">${p.fecha||'—'}</td>
         <td><strong>${p.cliente}</strong></td>
@@ -1301,7 +1061,7 @@ function renderKPIs() {
         <td style="font-weight:600">${p.modelo||'—'}</td>
         <td>${p.tipoGas||'—'}</td>
         <td style="text-align:center;font-weight:700;font-size:15px">${p.unidades||'—'}</td>
-        <td style="text-align:right">${p.precioUnit ? fmt(+p.precioUnit)+'€' : '<span style="color:#ccc">sin precio</span>'}</td>
+        <td style="text-align:right">${p.precioUnit ? fmt(+p.precioUnit)+'€' : '<span style="color:#ccc">—</span>'}</td>
         <td style="text-align:right;font-weight:700;color:${total>0?'#2d7a2d':'#aaa'};font-size:${total>0?'14px':'12px'}">${total>0 ? fmt(total)+'€' : '—'}</td>
         <td style="font-size:12px;color:#888">${p.responsable||'—'}</td>
       </tr>`;
@@ -1314,8 +1074,6 @@ function renderKPIs() {
       <td></td>
     </tr>`;
   }
-
-  // Cartera histórica
   document.getElementById('cartera-tbody').innerHTML = state.cartera.map(c=>`
     <tr>
       <td><span class="editable" contenteditable="true" onblur="updateCartera(${c.id},'cliente',this.textContent)">${c.cliente}</span></td>
@@ -1328,7 +1086,6 @@ function renderKPIs() {
       <td><button class="btn btn-danger" onclick="deleteCartera(${c.id})">✕</button></td>
     </tr>`).join('');
 }
-
 function updateCartera(id, field, value) {
   const c = state.cartera.find(x=>x.id===id);
   if (c) { c[field]=value.trim(); saveState(); }
@@ -1353,15 +1110,10 @@ function openNewCardModal(defaultStage=0) {
     <div class="field-group">
       <div class="field full"><label>Nombre</label><input id="nc-name" placeholder="Nombre del cliente/distribuidor"></div>
       <div class="field full"><label>Info adicional</label><input id="nc-sub" placeholder="Zona, referencia..."></div>
-      <div class="field"><label>Tipo</label>
-        <select id="nc-tipo"><option>Distribuidor</option><option>Cliente final</option><option>Internacional</option></select></div>
-      <div class="field"><label>Prioridad</label>
-        <select id="nc-prio"><option>Alta</option><option>Media</option><option>Baja</option><option>—</option></select></div>
+      <div class="field"><label>Tipo</label><select id="nc-tipo"><option>Distribuidor</option><option>Cliente final</option><option>Internacional</option></select></div>
+      <div class="field"><label>Prioridad</label><select id="nc-prio"><option>Alta</option><option>Media</option><option>Baja</option><option>—</option></select></div>
       <div class="field"><label>Zona</label><input id="nc-zona" placeholder="Ej: Cataluña"></div>
-      <div class="field"><label>Etapa</label>
-        <select id="nc-stage">
-          ${STAGES.map(s=>`<option value="${s.id}" ${s.id===defaultStage?'selected':''}>${s.name}</option>`).join('')}
-        </select></div>
+      <div class="field"><label>Etapa</label><select id="nc-stage">${STAGES.map(s=>`<option value="${s.id}" ${s.id===defaultStage?'selected':''}>${s.name}</option>`).join('')}</select></div>
     </div>
     <div style="border-top:1px solid #f0f0f0;padding-top:14px;margin-top:4px">
       <div style="font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:10px">📅 Actividades <span style="font-weight:400;color:#aaa">(opcional)</span></div>
@@ -1377,7 +1129,6 @@ function openNewCardModal(defaultStage=0) {
       <button class="btn btn-primary" onclick="saveNewCard()">Guardar</button>
     </div>`);
 }
-
 function saveNewCard() {
   const name = document.getElementById('nc-name').value.trim();
   if (!name) { alert('El nombre es obligatorio'); return; }
@@ -1388,14 +1139,13 @@ function saveNewCard() {
     prioridad: document.getElementById('nc-prio').value,
     zona: document.getElementById('nc-zona').value.trim() || '—',
     stage: +document.getElementById('nc-stage').value,
-    fechaVisita:       document.getElementById('nc-visita').value.trim(),
-    fechaDemoInterna:  document.getElementById('nc-demoint').value.trim(),
+    fechaVisita: document.getElementById('nc-visita').value.trim(),
+    fechaDemoInterna: document.getElementById('nc-demoint').value.trim(),
     fechaDemoClientes: document.getElementById('nc-democli').value.trim(),
-    fechaFormacion:    document.getElementById('nc-form').value.trim(),
+    fechaFormacion: document.getElementById('nc-form').value.trim(),
   });
   saveState(); closeModal(); renderKanban(); renderDemos();
 }
-
 function openEditCardModal(id) {
   const c = state.pipeline.find(x=>x.id===id);
   if (!c) return;
@@ -1404,15 +1154,10 @@ function openEditCardModal(id) {
     <div class="field-group">
       <div class="field full"><label>Nombre</label><input id="ec-name" value="${c.name}"></div>
       <div class="field full"><label>Info adicional</label><input id="ec-sub" value="${c.sub}"></div>
-      <div class="field"><label>Tipo</label>
-        <select id="ec-tipo">
-          ${['Distribuidor','Cliente final','Internacional'].map(t=>`<option ${t===c.tipo?'selected':''}>${t}</option>`).join('')}
-        </select></div>
-      <div class="field"><label>Prioridad</label>
-        <select id="ec-prio">${PRIORIDADES.map(p=>`<option ${p===c.prioridad?'selected':''}>${p}</option>`).join('')}</select></div>
+      <div class="field"><label>Tipo</label><select id="ec-tipo">${['Distribuidor','Cliente final','Internacional'].map(t=>`<option ${t===c.tipo?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="field"><label>Prioridad</label><select id="ec-prio">${PRIORIDADES.map(p=>`<option ${p===c.prioridad?'selected':''}>${p}</option>`).join('')}</select></div>
       <div class="field"><label>Zona</label><input id="ec-zona" value="${c.zona}"></div>
-      <div class="field"><label>Etapa</label>
-        <select id="ec-stage">${STAGES.map(s=>`<option value="${s.id}" ${s.id===c.stage?'selected':''}>${s.name}</option>`).join('')}</select></div>
+      <div class="field"><label>Etapa</label><select id="ec-stage">${STAGES.map(s=>`<option value="${s.id}" ${s.id===c.stage?'selected':''}>${s.name}</option>`).join('')}</select></div>
     </div>
     <div style="border-top:1px solid #f0f0f0;padding-top:14px;margin-top:4px">
       <div style="font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:10px">📅 Actividades — aparecen automáticamente en Demos</div>
@@ -1429,7 +1174,6 @@ function openEditCardModal(id) {
       <button class="btn btn-primary" onclick="saveEditCard(${id})">Guardar</button>
     </div>`);
 }
-
 function saveEditCard(id) {
   const c = state.pipeline.find(x=>x.id===id);
   if (!c) return;
@@ -1445,7 +1189,6 @@ function saveEditCard(id) {
   c.fechaFormacion = document.getElementById('ec-form').value.trim();
   saveState(); closeModal(); renderKanban(); renderDemos();
 }
-
 function openNewDistModal() {
   openModal(`
     <h2>➕ Nuevo distribuidor</h2>
@@ -1458,10 +1201,8 @@ function openNewDistModal() {
       <div class="field"><label>Cargo</label><input id="nd-cargo"></div>
       <div class="field"><label>Teléfono</label><input id="nd-tel"></div>
       <div class="field"><label>Email</label><input id="nd-email"></div>
-      <div class="field"><label>Prioridad</label>
-        <select id="nd-prio">${PRIORIDADES.map(p=>`<option>${p}</option>`).join('')}</select></div>
-      <div class="field"><label>Estado</label>
-        <select id="nd-estado">${ESTADOS_DIST.map(e=>`<option>${e}</option>`).join('')}</select></div>
+      <div class="field"><label>Prioridad</label><select id="nd-prio">${PRIORIDADES.map(p=>`<option>${p}</option>`).join('')}</select></div>
+      <div class="field"><label>Estado</label><select id="nd-estado">${ESTADOS_DIST.map(e=>`<option>${e}</option>`).join('')}</select></div>
       <div class="field full"><label>Notas</label><textarea id="nd-notas"></textarea></div>
     </div>
     <div class="modal-footer">
@@ -1469,7 +1210,6 @@ function openNewDistModal() {
       <button class="btn btn-primary" onclick="saveNewDist()">Guardar</button>
     </div>`);
 }
-
 function saveNewDist() {
   const nombre = document.getElementById('nd-nombre').value.trim();
   if (!nombre) { alert('Nombre obligatorio'); return; }
@@ -1488,7 +1228,6 @@ function saveNewDist() {
   });
   saveState(); closeModal(); renderDistribuidores();
 }
-
 function openNewPFModal() {
   openModal(`
     <h2>➕ Nueva proforma</h2>
@@ -1499,18 +1238,13 @@ function openNewPFModal() {
       <div class="field"><label>Contacto</label><input id="np-contacto"></div>
       <div class="field"><label>Teléfono</label><input id="np-tel"></div>
       <div class="field"><label>Provincia</label><input id="np-prov"></div>
-      <div class="field"><label>Tipo cliente</label>
-        <select id="np-tipo"><option>Distribuidor</option><option>Cliente final</option><option>Internacional</option></select></div>
-      <div class="field"><label>Modelo</label>
-        <select id="np-modelo"><option>GO</option><option>PRO</option><option>GO + PRO</option><option>PRO + GO</option></select></div>
-      <div class="field"><label>Tipo de gas</label>
-        <select id="np-gas"><option value="GP">GP – Gas Propano</option><option value="GN">GN – Gas Natural</option><option value="">Sin especificar</option></select></div>
+      <div class="field"><label>Tipo cliente</label><select id="np-tipo"><option>Distribuidor</option><option>Cliente final</option><option>Internacional</option></select></div>
+      <div class="field"><label>Modelo</label><select id="np-modelo"><option>GO</option><option>PRO</option><option>GO + PRO</option><option>PRO + GO</option></select></div>
+      <div class="field"><label>Tipo de gas</label><select id="np-gas"><option value="GP">GP – Gas Propano</option><option value="GN">GN – Gas Natural</option><option value="">Sin especificar</option></select></div>
       <div class="field"><label>Unidades</label><input id="np-uds" type="number" value="1" min="1"></div>
       <div class="field"><label>Precio unitario (€ s/IVA)</label><input id="np-precio" type="number" step="0.01" placeholder="Ej: 2796.50"></div>
-      <div class="field"><label>Estado</label>
-        <select id="np-estado">${ESTADOS_PF.map(e=>`<option>${e}</option>`).join('')}</select></div>
-      <div class="field"><label>Responsable</label>
-        <select id="np-resp"><option>Felipe</option><option>Esteve</option><option>Fernando</option><option>Otro</option></select></div>
+      <div class="field"><label>Estado</label><select id="np-estado">${ESTADOS_PF.map(e=>`<option>${e}</option>`).join('')}</select></div>
+      <div class="field"><label>Responsable</label><select id="np-resp"><option>Felipe</option><option>Esteve</option><option>Fernando</option><option>Otro</option></select></div>
       <div class="field"><label>Próximo paso</label><input id="np-paso"></div>
       <div class="field"><label>📅 Llamar el (DD/MM/AAAA)</label><input id="np-fseg" placeholder="Ej: 01/09/2026" style="border-color:#f5c842"></div>
       <div class="field full"><label>Notas</label><textarea id="np-notas"></textarea></div>
@@ -1520,7 +1254,6 @@ function openNewPFModal() {
       <button class="btn btn-primary" onclick="saveNewPF()">Guardar</button>
     </div>`);
 }
-
 function saveNewPF() {
   const cliente = document.getElementById('np-cliente').value.trim();
   if (!cliente) { alert('Cliente obligatorio'); return; }
@@ -1545,17 +1278,13 @@ function saveNewPF() {
   });
   saveState(); closeModal(); renderProformas();
 }
-
 function openNewDemoModal() {
-  const pipelineOptions = state.pipeline
-    .map(c => `<option value="${c.id}">${c.name} (${c.zona})</option>`)
-    .join('');
+  const pipelineOptions = state.pipeline.map(c => `<option value="${c.id}">${c.name} (${c.zona})</option>`).join('');
   openModal(`
     <h2>➕ Nueva actividad</h2>
     <p style="font-size:12px;color:#888;margin-bottom:14px">Si el distribuidor está en el pipeline, selecciónalo y la fecha se añade directamente a su tarjeta.</p>
     <div class="field-group">
-      <div class="field full">
-        <label>Distribuidor / Cliente del pipeline</label>
+      <div class="field full"><label>Distribuidor / Cliente del pipeline</label>
         <select id="nd2-pipeline" onchange="toggleStandalone(this.value)">
           <option value="">— No está en el pipeline (entrada manual) —</option>
           ${pipelineOptions}
@@ -1573,7 +1302,11 @@ function openNewDemoModal() {
           <option value="formacion">🎓 Formación</option>
           <option value="presentacion">📊 Presentación</option>
         </select></div>
-      <div class="field"><label>Fecha y hora</label><input id="nd2-fecha" placeholder="DD/MM/AAAA HH:MM"></div>
+      <div class="field"><label>Fecha y hora ${''}</label><input id="nd2-fecha" placeholder="DD/MM/AAAA HH:MM (opcional si por confirmar)"></div>
+      <div class="field full" style="flex-direction:row;align-items:center;gap:8px">
+        <input type="checkbox" id="nd2-porconfirmar" style="width:auto">
+        <label for="nd2-porconfirmar" style="text-transform:none;font-weight:500;cursor:pointer">⏳ Por confirmar — el cliente aún tiene que confirmar la fecha</label>
+      </div>
       <div class="field full"><label>Notas</label><textarea id="nd2-notas"></textarea></div>
     </div>
     <div class="modal-footer">
@@ -1581,19 +1314,16 @@ function openNewDemoModal() {
       <button class="btn btn-primary" onclick="saveNewDemo()">Guardar</button>
     </div>`);
 }
-
 function toggleStandalone(val) {
   document.getElementById('nd2-standalone-fields').style.display = val ? 'none' : '';
 }
-
 function saveNewDemo() {
   const pipelineId = +document.getElementById('nd2-pipeline').value;
   const tipo = document.getElementById('nd2-tipo').value;
   const fecha = document.getElementById('nd2-fecha').value.trim();
   const notas = document.getElementById('nd2-notas').value.trim();
-
-  if (pipelineId) {
-    // Link to pipeline card — save directly on the card
+  const porConfirmar = document.getElementById('nd2-porconfirmar').checked;
+  if (pipelineId && !porConfirmar) {
     const card = state.pipeline.find(x => x.id === pipelineId);
     if (!card) return;
     const fieldMap = {visita:'fechaVisita', demo_interna:'fechaDemoInterna', demo_clientes:'fechaDemoClientes', formacion:'fechaFormacion'};
@@ -1602,18 +1332,22 @@ function saveNewDemo() {
     if (notas) card.sub = notas;
     saveState(); closeModal(); renderKanban(); renderDemos();
   } else {
-    // Standalone entry (for contacts not in pipeline)
-    const nombre = document.getElementById('nd2-nombre').value.trim();
+    // Manual demo (or pipeline name but marked por-confirmar → store as standalone demo)
+    let nombre = document.getElementById('nd2-nombre').value.trim();
+    let zona = document.getElementById('nd2-zona').value.trim() || '—';
+    if (pipelineId) {
+      const card = state.pipeline.find(x => x.id === pipelineId);
+      if (card) { nombre = card.name; zona = card.zona || '—'; }
+    }
     if (!nombre) { alert('Introduce un nombre o selecciona un distribuidor del pipeline'); return; }
     state.demos.push({
-      id: ++nextId, nombre, fecha, tipoOp: tipo,
-      zona: document.getElementById('nd2-zona').value.trim() || '—',
+      id: ++nextId, nombre, fecha, tipoOp: tipo, zona,
       contacto: '', tel: '', notas, tipo: 'Distribuidor', provincia: '',
+      porConfirmar: porConfirmar || false,
     });
     saveState(); closeModal(); renderDemos();
   }
 }
-
 function openNewAccModal() {
   openModal(`
     <h2>➕ Nueva acción</h2>
@@ -1622,8 +1356,7 @@ function openNewAccModal() {
       <div class="field"><label>Cliente</label><input id="na-cliente"></div>
       <div class="field"><label>Responsable</label><input id="na-resp" value="Felipe"></div>
       <div class="field"><label>Fecha</label><input id="na-fecha" placeholder="DD/MM/AAAA"></div>
-      <div class="field"><label>Estado</label>
-        <select id="na-estado"><option>Pendiente</option><option>En marcha</option><option>Completado</option></select></div>
+      <div class="field"><label>Estado</label><select id="na-estado"><option>Pendiente</option><option>En marcha</option><option>Completado</option></select></div>
       <div class="field full"><label>Notas</label><textarea id="na-notas"></textarea></div>
     </div>
     <div class="modal-footer">
@@ -1631,7 +1364,6 @@ function openNewAccModal() {
       <button class="btn btn-primary" onclick="saveNewAcc()">Guardar</button>
     </div>`);
 }
-
 function saveNewAcc() {
   const accion = document.getElementById('na-accion').value.trim();
   if (!accion) { alert('Acción obligatoria'); return; }
@@ -1645,7 +1377,6 @@ function saveNewAcc() {
   });
   saveState(); closeModal(); renderAcciones();
 }
-
 function openNewCarteraModal() {
   openModal(`
     <h2>➕ Añadir a cartera</h2>
@@ -1656,7 +1387,7 @@ function openNewCarteraModal() {
       <div class="field full"><label>Producto</label><input id="nc2-prod" placeholder="Ej: Mimcook GO GP"></div>
       <div class="field"><label>Unidades</label><input id="nc2-uds" type="number" value="1"></div>
       <div class="field"><label>Importe (€)</label><input id="nc2-imp" type="number"></div>
-      <div class="field"><label>Año</label><input id="nc2-año" value="2026"></div>
+      <div class="field"><label>Año</label><input id="nc2-ano" value="2026"></div>
       <div class="field"><label>Distribuidor</label><input id="nc2-dist" placeholder="O 'Directo'"></div>
     </div>
     <div class="modal-footer">
@@ -1664,7 +1395,6 @@ function openNewCarteraModal() {
       <button class="btn btn-primary" onclick="saveNewCartera()">Guardar</button>
     </div>`);
 }
-
 function saveNewCartera() {
   const cliente = document.getElementById('nc2-cliente').value.trim();
   if (!cliente) { alert('Cliente obligatorio'); return; }
@@ -1675,7 +1405,7 @@ function saveNewCartera() {
     producto: document.getElementById('nc2-prod').value.trim(),
     unidades: +document.getElementById('nc2-uds').value || 1,
     importe: +document.getElementById('nc2-imp').value || 0,
-    año: document.getElementById('nc2-año').value.trim(),
+    año: document.getElementById('nc2-ano').value.trim(),
     distribuidor: document.getElementById('nc2-dist').value.trim() || '—',
   });
   saveState(); closeModal(); renderKPIs();
@@ -1687,23 +1417,16 @@ function renderFormaciones() {
   const proxSection = document.getElementById('form-proximas-section');
   const realSection = document.getElementById('form-realizadas-section');
   if (!proxSection) return;
-
   let all = state.formaciones.slice();
-  if (formFilter === 'proxima') all = all.filter(f => f.estado !== 'realizada' || !isDatePast(f.fecha));
+  if (formFilter === 'proxima') all = all.filter(f => f.estado !== 'realizada' && !isDatePast(f.fecha));
   if (formFilter === 'realizada') all = all.filter(f => f.estado === 'realizada' || isDatePast(f.fecha));
-
-  const prox = all.filter(f => f.estado !== 'realizada' && !isDatePast(f.fecha))
-    .sort((a,b) => parseDemoDate(a.fecha) - parseDemoDate(b.fecha));
-  const real = all.filter(f => f.estado === 'realizada' || isDatePast(f.fecha))
-    .sort((a,b) => parseDemoDate(b.fecha) - parseDemoDate(a.fecha));
-
+  const prox = all.filter(f => f.estado !== 'realizada' && !isDatePast(f.fecha)).sort((a,b) => parseDemoDate(a.fecha) - parseDemoDate(b.fecha));
+  const real = all.filter(f => f.estado === 'realizada' || isDatePast(f.fecha)).sort((a,b) => parseDemoDate(b.fecha) - parseDemoDate(a.fecha));
   const card = (f, past) => `
     <div class="demo-card formacion ${past?'pasada':''}" id="formacion-${f.id}">
       <button class="card-del-btn" onclick="deleteFormacion(${f.id})">✕</button>
       <span class="demo-type formacion">🎓 Formación</span>
-      ${past
-        ? `<span style="font-size:10px;color:#9ca3af;margin-left:6px">✓ Realizada</span>`
-        : `<span style="font-size:10px;color:#22c55e;margin-left:6px">⬤ Próxima</span>`}
+      ${past ? `<span style="font-size:10px;color:#9ca3af;margin-left:6px">✓ Realizada</span>` : `<span style="font-size:10px;color:#22c55e;margin-left:6px">⬤ Próxima</span>`}
       <div class="demo-name">${f.cliente}</div>
       <div class="demo-date">📅 ${f.fecha} · ${f.zona||f.provincia||''}</div>
       ${f.contacto?`<div style="font-size:12px;color:#888;margin-bottom:6px">👤 ${f.contacto}${f.tel?' · '+f.tel:''}</div>`:''}
@@ -1723,25 +1446,21 @@ function renderFormaciones() {
       </div>
       ${!past?`<button onclick="markFormacionRealizada(${f.id})" style="width:100%;margin-top:10px;padding:6px 10px;background:#f3e8ff;color:#7c3aed;border:1px solid #ddd6fe;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600">✓ Marcar realizada</button>`:''}
     </div>`;
-
   proxSection.innerHTML = (formFilter !== 'realizada') && prox.length ? `
     <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:12px;display:flex;align-items:center;gap:8px">
       <span style="width:8px;height:8px;border-radius:50%;background:#7c3aed;display:inline-block"></span>
       Próximas (${prox.length})
     </div>
     <div class="demos-grid" style="margin-bottom:24px">${prox.map(f=>card(f,false)).join('')}</div>` : '';
-
   realSection.innerHTML = (formFilter !== 'proxima') && real.length ? `
     <div style="font-size:13px;font-weight:700;color:#6b7280;margin-bottom:12px;display:flex;align-items:center;gap:8px">
       <span style="width:8px;height:8px;border-radius:50%;background:#d1d5db;display:inline-block"></span>
       Realizadas (${real.length})
     </div>
     <div class="demos-grid">${real.map(f=>card(f,true)).join('')}</div>` : '';
-
   if (!prox.length && !real.length)
     proxSection.innerHTML = '<div style="color:#aaa;font-size:13px;padding:20px">No hay formaciones registradas.</div>';
 }
-
 function setFormFilter(val) {
   formFilter = val;
   ['all','prox','real'].forEach(k => document.getElementById('fm-'+k)?.classList.remove('active'));
@@ -1749,7 +1468,6 @@ function setFormFilter(val) {
   document.getElementById('fm-'+(map[val]||val))?.classList.add('active');
   renderFormaciones();
 }
-
 function markFormacionRealizada(id) {
   const f = state.formaciones.find(x=>x.id===id);
   if (f) { f.estado = 'realizada'; saveState(); renderFormaciones(); }
@@ -1763,7 +1481,6 @@ function deleteFormacion(id) {
   state.formaciones = state.formaciones.filter(x=>x.id!==id);
   saveState(); renderFormaciones();
 }
-
 function openNewFormacionModal() {
   openModal(`
     <h2>🎓 Nueva formación</h2>
@@ -1774,10 +1491,8 @@ function openNewFormacionModal() {
       <div class="field"><label>Teléfono</label><input id="nf-tel"></div>
       <div class="field"><label>Provincia</label><input id="nf-prov"></div>
       <div class="field"><label>Zona</label><input id="nf-zona"></div>
-      <div class="field"><label>Modelo Mimcook</label>
-        <select id="nf-modelo"><option>GO</option><option>PRO</option><option>GO + PRO</option><option>Otro</option></select></div>
-      <div class="field"><label>Estado</label>
-        <select id="nf-estado"><option value="pendiente">Pendiente</option><option value="realizada">Realizada</option></select></div>
+      <div class="field"><label>Modelo Mimcook</label><select id="nf-modelo"><option>GO</option><option>PRO</option><option>GO + PRO</option><option>Otro</option></select></div>
+      <div class="field"><label>Estado</label><select id="nf-estado"><option value="pendiente">Pendiente</option><option value="realizada">Realizada</option></select></div>
       <div class="field full"><label>Notas</label><textarea id="nf-notas"></textarea></div>
       <div class="field"><label>Seguimiento</label><input id="nf-seg" placeholder="Qué hacer de seguimiento"></div>
       <div class="field"><label>Fecha seguimiento</label><input id="nf-fseg" placeholder="DD/MM/AAAA"></div>
@@ -1787,7 +1502,6 @@ function openNewFormacionModal() {
       <button class="btn btn-primary" onclick="saveNewFormacion()">Guardar</button>
     </div>`);
 }
-
 function saveNewFormacion() {
   const cliente = document.getElementById('nf-cliente').value.trim();
   if (!cliente) { alert('Cliente obligatorio'); return; }
@@ -1807,90 +1521,59 @@ function saveNewFormacion() {
   saveState(); closeModal(); renderFormaciones();
 }
 
-// ===================== NOTIFICACIONES (CAMPANITA) =====================
+// ===================== NOTIFICACIONES =====================
 function toggleNotifPanel() {
   const panel = document.getElementById('notif-panel');
   const overlay = document.getElementById('notif-overlay');
   const open = panel.style.display !== 'none';
-  if (open) {
-    panel.style.display = 'none';
-    overlay.style.display = 'none';
-  } else {
-    // Render fresh before showing
-    renderProformaAlerts();
-    overlay.style.display = 'block';
-    panel.style.display = 'block';
-    panel.style.zIndex = '1000';
-    overlay.style.zIndex = '999';
-  }
+  if (open) { panel.style.display = 'none'; overlay.style.display = 'none'; }
+  else { renderProformaAlerts(); overlay.style.display = 'block'; panel.style.display = 'block'; panel.style.zIndex = '1000'; overlay.style.zIndex = '999'; }
 }
 function closeNotifPanel() {
   document.getElementById('notif-panel').style.display = 'none';
   document.getElementById('notif-overlay').style.display = 'none';
 }
-
 function renderProformaAlerts() {
   const badge = document.getElementById('bell-badge');
-  const list  = document.getElementById('notif-list');
+  const list = document.getElementById('notif-list');
   const countLabel = document.getElementById('notif-count-label');
   if (!badge || !list) return;
-
   const today = new Date(); today.setHours(0,0,0,0);
   const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate()+1);
   const notifs = [];
-
-  // 1. Demos hoy o mañana
   const allDemos = typeof getAllDemoItems === 'function' ? getAllDemoItems() : [];
   allDemos.forEach(d => {
     if (!d.fecha) return;
     const dd = parseDemoDate(d.fecha); dd.setHours(0,0,0,0);
     if (dd >= today && dd <= tomorrow && !isRealized(d)) {
       const esHoy = dd.getTime() === today.getTime();
-      notifs.push({
-        tipo: 'demo',
-        icono: '🎬',
-        color: '#166534',
-        bg: '#f0fdf4',
-        border: '#86efac',
+      notifs.push({ icono:'🎬', color:'#166534', bg:'#f0fdf4', border:'#86efac',
         titulo: esHoy ? `Demo HOY — ${d.nombre}` : `Demo mañana — ${d.nombre}`,
         detalle: `${d.fecha} · ${d.zona || d.provincia || ''}`,
-        accion: () => { closeNotifPanel(); showTab('demos', document.querySelector('[onclick*="\'demos\'"]')); }
-      });
+        accion: () => { closeNotifPanel(); showTab('demos', document.querySelectorAll('.tab')[3]); } });
     }
   });
-
-  // 2. Formaciones hoy o mañana
   (state.formaciones||[]).forEach(f => {
     if (!f.fecha || f.estado === 'realizada') return;
     const fd = parseDemoDate(f.fecha); fd.setHours(0,0,0,0);
     if (fd >= today && fd <= tomorrow) {
       const esHoy = fd.getTime() === today.getTime();
       const fid = f.id;
-      notifs.push({
-        tipo: 'formacion',
-        icono: '🎓',
-        color: '#6b21a8',
-        bg: '#faf5ff',
-        border: '#d8b4fe',
+      notifs.push({ icono:'🎓', color:'#6b21a8', bg:'#faf5ff', border:'#d8b4fe',
         titulo: esHoy ? `Formación HOY — ${f.cliente}` : `Formación mañana — ${f.cliente}`,
         detalle: `${f.fecha} · ${f.zona || f.provincia || ''}`,
-        accion: () => { closeNotifPanel(); showTab('formaciones', document.querySelector('[onclick*="\'formaciones\'"]')); highlightFormacion(fid); }
-      });
+        accion: () => { closeNotifPanel(); showTab('formaciones', document.querySelectorAll('.tab')[4]); highlightFormacion(fid); } });
     }
   });
-
-  // 3. Proformas: notificar según fechaSeguimiento (si está definida) o +2 días sin fecha
   state.proformas.filter(p => {
     if (p.estado !== 'Enviada' || !p.fecha) return false;
     const today2 = new Date(); today2.setHours(0,0,0,0);
     if (p.fechaSeguimiento) {
-      // Tiene fecha de seguimiento definida — notificar cuando llegue
       const pts = p.fechaSeguimiento.split('/');
       if (pts.length !== 3) return false;
       const fs = new Date(+pts[2], +pts[1]-1, +pts[0]); fs.setHours(0,0,0,0);
       return fs <= today2;
     } else {
-      // Sin fecha definida — notificar a los 2 días
       const pts = p.fecha.split('/');
       if (pts.length !== 3) return false;
       const sent = new Date(+pts[2], +pts[1]-1, +pts[0]); sent.setHours(0,0,0,0);
@@ -1899,60 +1582,30 @@ function renderProformaAlerts() {
   }).forEach(p => {
     const today2 = new Date(); today2.setHours(0,0,0,0);
     let dias = '';
-    if (p.fechaSeguimiento) {
-      dias = `Seguimiento: ${p.fechaSeguimiento}`;
-    } else {
-      const pts = p.fecha.split('/');
-      const sent = new Date(+pts[2], +pts[1]-1, +pts[0]);
-      dias = `Sin respuesta ${Math.floor((today2-sent)/86400000)}d`;
-    }
+    if (p.fechaSeguimiento) { dias = `Seguimiento: ${p.fechaSeguimiento}`; }
+    else { const pts = p.fecha.split('/'); const sent = new Date(+pts[2], +pts[1]-1, +pts[0]); dias = `Sin respuesta ${Math.floor((today2-sent)/86400000)}d`; }
     const pid = p.id;
-    notifs.push({
-      tipo: 'proforma',
-      icono: '⚠️',
-      color: '#854d0e',
-      bg: '#fefce8',
-      border: '#fde047',
-      titulo: `Llamar a ${p.cliente}`,
-      detalle: `${p.num} · ${dias} · ${p.proximoPaso||''}`,
-      accion: () => { closeNotifPanel(); showTab('proformas', document.querySelector('[onclick*="\'proformas\'"]')); highlightProforma(pid); }
-    });
+    notifs.push({ icono:'⚠️', color:'#854d0e', bg:'#fefce8', border:'#fde047',
+      titulo: `Llamar a ${p.cliente}`, detalle: `${p.num} · ${dias} · ${p.proximoPaso||''}`,
+      accion: () => { closeNotifPanel(); showTab('proformas', document.querySelectorAll('.tab')[2]); highlightProforma(pid); } });
   });
-
-  // 4. Seguimientos de formaciones con fecha hoy o pasada
   (state.formaciones||[]).forEach(f => {
     if (!f.fechaSeguimiento || !f.seguimiento) return;
     const fs = parseDemoDate(f.fechaSeguimiento); fs.setHours(0,0,0,0);
     if (fs <= today) {
       const fid = f.id;
-      notifs.push({
-        tipo: 'seguimiento',
-        icono: '🔁',
-        color: '#1e40af',
-        bg: '#eff6ff',
-        border: '#93c5fd',
-        titulo: `Seguimiento pendiente — ${f.cliente}`,
-        detalle: f.seguimiento,
-        accion: () => { closeNotifPanel(); showTab('formaciones', document.querySelector('[onclick*="\'formaciones\'"]')); highlightFormacion(fid); }
-      });
+      notifs.push({ icono:'🔁', color:'#1e40af', bg:'#eff6ff', border:'#93c5fd',
+        titulo: `Seguimiento pendiente — ${f.cliente}`, detalle: f.seguimiento,
+        accion: () => { closeNotifPanel(); showTab('formaciones', document.querySelectorAll('.tab')[4]); highlightFormacion(fid); } });
     }
   });
-
-  // Render badge
-  if (notifs.length > 0) {
-    badge.style.display = 'block';
-    badge.textContent = notifs.length;
-  } else {
-    badge.style.display = 'none';
-  }
-
+  if (notifs.length > 0) { badge.style.display = 'block'; badge.textContent = notifs.length; }
+  else { badge.style.display = 'none'; }
   countLabel.textContent = notifs.length ? `${notifs.length} pendiente${notifs.length>1?'s':''}` : '';
-
   if (!notifs.length) {
     list.innerHTML = `<div style="padding:24px 16px;text-align:center;color:#aaa;font-size:13px">✅ Todo al día, no hay alertas</div>`;
     return;
   }
-
   list.innerHTML = notifs.map((n, i) => `
     <div onclick="notifActions[${i}]()" style="padding:12px 16px;border-bottom:1px solid #f0f0f0;cursor:pointer;display:flex;gap:12px;align-items:flex-start;background:white;transition:background 0.12s"
       onmouseover="this.style.background='#fafafa'" onmouseout="this.style.background='white'">
@@ -1963,8 +1616,6 @@ function renderProformaAlerts() {
       </div>
       <span style="font-size:11px;color:#bbb;flex-shrink:0">›</span>
     </div>`).join('');
-
-  // Store actions separately (can't inline functions in onclick with complex closures)
   window.notifActions = notifs.map(n => n.accion);
 }
 
@@ -1978,21 +1629,14 @@ function highlightRow(el) {
   el.style.borderRadius = '4px';
   setTimeout(() => { el.style.background = ''; el.style.outline = ''; }, 3000);
 }
-
 function highlightProforma(id) {
   setTimeout(() => {
     const rows = document.querySelectorAll('#pf-tbody tr');
-    // Find row that contains the proforma id via data or text match
     const pf = state.proformas.find(x => x.id === id);
     if (!pf) return;
-    rows.forEach(row => {
-      if (row.textContent.includes(pf.num) || row.textContent.includes(pf.cliente)) {
-        highlightRow(row);
-      }
-    });
+    rows.forEach(row => { if (row.textContent.includes(pf.num) || row.textContent.includes(pf.cliente)) highlightRow(row); });
   }, 150);
 }
-
 function highlightFormacion(id) {
   setTimeout(() => {
     const el = document.getElementById('formacion-' + id);
@@ -2027,35 +1671,14 @@ loadState();
 if (!state.comisiones) state.comisiones = [];
 if (!state.formaciones) state.formaciones = [];
 
-// Migration: merge DEFAULT formaciones if missing
-const existingFormClientes = new Set((state.formaciones||[]).map(f=>f.cliente.toLowerCase().trim()));
-DEFAULT.formaciones.forEach(def => {
-  if (!existingFormClientes.has(def.cliente.toLowerCase().trim())) {
-    state.formaciones.push({...def, id: ++nextId});
-  }
-});
-
-// Migration: add missing distributors from DEFAULT (by name, case-insensitive)
-const existingDistNames = new Set(state.distribuidores.map(d => d.nombre.toLowerCase().trim()));
-let distAdded = false;
-DEFAULT.distribuidores.forEach(def => {
-  if (!existingDistNames.has(def.nombre.toLowerCase().trim())) {
-    state.distribuidores.push({...def, id: ++nextId});
-    distAdded = true;
-  }
-});
-if (distAdded) saveState();
-
-// Migration: process any Ganado proformas not yet converted
 let migrated = false;
 state.proformas.forEach(p => {
   if (!p.responsable) p.responsable = 'Felipe';
-  if (p.estado === 'Ganado' && !p.convertida) {
-    convertProformaToSale(p);
-    migrated = true;
-  }
+  if (p.estado === 'Ganado' && !p.convertida) { convertProformaToSale(p); migrated = true; }
 });
 if (migrated) saveState();
+
+syncComisionesFromProformas();
 
 renderKanban();
 renderDistribuidores();
