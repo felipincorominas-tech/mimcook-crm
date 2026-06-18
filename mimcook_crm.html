@@ -188,7 +188,8 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
     <button class="btn" id="pf-env" onclick="setPFFilter('Enviada')">Enviadas</button>
     <button class="btn" id="pf-gan" onclick="setPFFilter('Ganado')">Ganadas</button>
     <button class="btn" id="pf-per" onclick="setPFFilter('Perdida')">Perdidas</button>
-    <button class="btn btn-primary" style="margin-left:auto" onclick="openNewPFModal()">+ Nueva proforma</button>
+    <button class="btn" style="margin-left:auto;background:#fef9e7;border-color:#f5c842" onclick="openImportPFModal()">📋 Importar de PDF</button>
+    <button class="btn btn-primary" onclick="openNewPFModal()">+ Nueva proforma</button>
   </div>
   <div class="table-wrap" style="min-width:0">
     <table style="min-width:1200px">
@@ -243,9 +244,13 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   <div class="table-wrap">
     <table>
       <thead><tr>
-        <th>Cliente</th><th>Fecha cierre</th><th>Modelo</th><th>Uds</th>
-        <th>Importe venta (€)</th><th>% Comisión</th><th>Comisión (€)</th>
-        <th>Cobrada</th><th>Fecha cobro</th><th>Notas</th><th></th>
+        <th>Cliente</th><th>Fecha</th><th>Modelo</th><th>Uds</th>
+        <th title="Precio tarifa oficial">PVP/ud</th>
+        <th title="PVP -30%">Precio distrib.</th>
+        <th title="Precio real al que se vendió (unitario)">Precio venta/ud</th>
+        <th title="Descuento sobre PVP">Dto.</th>
+        <th>Total venta (€)</th><th>% Com.</th><th>Comisión (€)</th>
+        <th>Cobrada</th><th>Notas</th><th></th>
       </tr></thead>
       <tbody id="com-tbody"></tbody>
     </table>
@@ -573,7 +578,7 @@ function convertProformaToSale(p) {
     state.comisiones.push({
       id: ++nextId, num: p.num, cliente: p.cliente, fechaCierre: p.fecha || '',
       modelo: `${p.modelo||''} ${p.tipoGas||''}`.trim(),
-      unidades: +p.unidades || 0, importeVenta: total,
+      unidades: +p.unidades || 0, importeVenta: total, precioVenta: (+p.unidades ? total/+p.unidades : 0),
       pctComision: '', importeComision: '', cobrada: 'no', fechaCobro: '',
       notas: `Desde proforma ${p.num}`,
     });
@@ -591,7 +596,7 @@ function syncComisionesFromProformas() {
       state.comisiones.push({
         id: ++nextId, num: p.num, cliente: p.cliente, fechaCierre: p.fecha || '',
         modelo: `${p.modelo||''} ${p.tipoGas||''}`.trim(),
-        unidades: +p.unidades || 0, importeVenta: total,
+        unidades: +p.unidades || 0, importeVenta: total, precioVenta: (+p.unidades ? total/+p.unidades : 0),
         pctComision: '', importeComision: '', cobrada: 'no', fechaCobro: '',
         notas: `Desde proforma ${p.num}`,
       });
@@ -842,7 +847,11 @@ function deleteDemo(id) {
 function renderComisiones() {
   if (!state.comisiones) state.comisiones = [];
   const rows = state.comisiones.filter(c => comFilter==='all' || c.cobrada===comFilter);
-  const calcCom = c => (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
+  const calcCom = c => {
+    const totalVenta = (+c.precioVenta||0) * (+c.unidades||0);
+    if (totalVenta && c.pctComision) return totalVenta * +c.pctComision / 100;
+    return (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
+  };
   const totalPendiente = state.comisiones.filter(c=>c.cobrada==='no').reduce((s,c)=>s+calcCom(c),0);
   const totalCobrado = state.comisiones.filter(c=>c.cobrada==='si').reduce((s,c)=>s+calcCom(c),0);
   document.getElementById('com-resumen').innerHTML = `
@@ -859,23 +868,39 @@ function renderComisiones() {
       <div class="kpi-label">Ventas registradas</div>
     </div>`;
   document.getElementById('com-tbody').innerHTML = rows.map(c => {
-    const total = (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
-    const totalStr = total ? total.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+'€' : '—';
+    // PVP oficial según modelo (detecta GO o PRO en el texto del modelo)
+    const PVP = { GO: 3995, PRO: 4800 };
+    const modeloUp = (c.modelo||'').toUpperCase();
+    const pvp = modeloUp.includes('PRO') ? PVP.PRO : modeloUp.includes('GO') ? PVP.GO : 0;
+    const precioDistrib = pvp ? pvp * 0.70 : 0; // PVP -30%
+    // precioVenta = precio real unitario al que se vendió
+    const precioVenta = +c.precioVenta || 0;
+    const uds = +c.unidades || 0;
+    const totalVenta = precioVenta * uds;
+    // descuento sobre PVP
+    const dto = (pvp && precioVenta) ? ((1 - precioVenta/pvp) * 100) : null;
+    // comisión = total venta * %
+    const comision = (totalVenta && c.pctComision) ? (totalVenta * +c.pctComision / 100) : 0;
+    const fmtE = n => n ? n.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+'€' : '—';
+    const fmt0 = n => n ? n.toLocaleString('es-ES',{maximumFractionDigits:0})+'€' : '—';
     return `<tr>
       <td><strong><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'cliente',this.textContent)">${c.cliente}</span></strong></td>
-      <td><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'fechaCierre',this.textContent)">${c.fechaCierre||'—'}</span></td>
-      <td><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'modelo',this.textContent)">${c.modelo||'—'}</span></td>
+      <td style="font-size:12px"><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'fechaCierre',this.textContent)">${c.fechaCierre||'—'}</span></td>
+      <td><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'modelo',this.textContent)" data-placeholder="GO / PRO">${c.modelo||''}</span></td>
       <td style="text-align:center;font-weight:600"><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'unidades',this.textContent)">${c.unidades||'—'}</span></td>
-      <td><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'importeVenta',this.textContent)">${c.importeVenta?(+c.importeVenta).toLocaleString('es-ES')+'€':'—'}</span></td>
+      <td style="text-align:right;color:#888;font-size:12px">${pvp?fmt0(pvp):'—'}</td>
+      <td style="text-align:right;color:#1a6fa0;font-size:12px">${precioDistrib?fmt0(precioDistrib):'—'}</td>
+      <td style="text-align:right"><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'precioVenta',this.textContent)" data-placeholder="0" style="font-weight:600">${precioVenta?precioVenta.toLocaleString('es-ES'):''}</span></td>
+      <td style="text-align:center;font-weight:600;color:${dto>0?'#b45309':'#aaa'}">${dto!==null?dto.toFixed(1)+'%':'—'}</td>
+      <td style="font-weight:700;text-align:right">${fmtE(totalVenta)}</td>
       <td style="text-align:center"><span class="editable" contenteditable="true" onblur="updateComNum(${c.id},'pctComision',this.textContent)">${c.pctComision||''}</span>%</td>
-      <td style="font-weight:700">${totalStr}</td>
+      <td style="font-weight:700;color:#2d7a2d;text-align:right">${fmtE(comision)}</td>
       <td>
         <select class="cell-select" onchange="updateCom(${c.id},'cobrada',this.value);renderComisiones()">
-          <option value="no" ${c.cobrada==='no'?'selected':''}>⏳ Pendiente</option>
-          <option value="si" ${c.cobrada==='si'?'selected':''}>✅ Cobrada</option>
+          <option value="no" ${c.cobrada==='no'?'selected':''}>⏳ Pend.</option>
+          <option value="si" ${c.cobrada==='si'?'selected':''}>✅ Cobr.</option>
         </select>
       </td>
-      <td><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'fechaCobro',this.textContent)">${c.fechaCobro||'—'}</span></td>
       <td style="max-width:160px"><span class="editable" contenteditable="true" onblur="updateCom(${c.id},'notas',this.textContent)" style="font-size:12px;color:#555;display:block">${c.notas||''}</span></td>
       <td><button class="btn btn-danger" onclick="deleteCom(${c.id})">✕</button></td>
     </tr>`;
@@ -928,15 +953,17 @@ function openNewComisionModal() {
     <h2>💰 Nueva venta / comisión</h2>
     <div class="field-group">
       <div class="field full"><label>Cliente</label><input id="nc3-cliente"></div>
-      <div class="field"><label>Fecha cierre (DD/MM/AAAA)</label><input id="nc3-fecha"></div>
-      <div class="field"><label>Modelo</label><input id="nc3-modelo" placeholder="Ej: PRO GP"></div>
+      <div class="field"><label>Fecha (DD/MM/AAAA)</label><input id="nc3-fecha"></div>
+      <div class="field"><label>Modelo</label>
+        <select id="nc3-modelo"><option value="GO">GO (PVP 3.995€)</option><option value="PRO">PRO (PVP 4.800€)</option><option value="GO GP">GO GP</option><option value="GO GN">GO GN</option><option value="PRO GP">PRO GP</option><option value="PRO GN">PRO GN</option></select></div>
       <div class="field"><label>Unidades</label><input id="nc3-uds" type="number" value="1"></div>
-      <div class="field"><label>Importe venta (€)</label><input id="nc3-importe" type="number" step="0.01"></div>
-      <div class="field"><label>% Comisión</label><input id="nc3-pct" type="number" step="0.01" placeholder="Ej: 5"></div>
+      <div class="field"><label>Precio venta/ud (€)</label><input id="nc3-precioventa" type="number" step="0.01" placeholder="Precio real al cliente"></div>
+      <div class="field"><label>% Comisión</label><input id="nc3-pct" type="number" step="0.01" placeholder="4 = cliente final"></div>
       <div class="field"><label>Cobrada</label><select id="nc3-cobrada"><option value="no">⏳ Pendiente</option><option value="si">✅ Cobrada</option></select></div>
       <div class="field"><label>Fecha cobro</label><input id="nc3-fechacobro" placeholder="DD/MM/AAAA"></div>
       <div class="field full"><label>Notas</label><textarea id="nc3-notas"></textarea></div>
     </div>
+    <p style="font-size:11px;color:#888;margin-top:-4px">El PVP, precio distribuidor (−30%), descuento y comisión se calculan solos.</p>
     <div class="modal-footer">
       <button class="btn" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-primary" onclick="saveNewComision()">Guardar</button>
@@ -946,12 +973,15 @@ function saveNewComision() {
   const cliente = document.getElementById('nc3-cliente').value.trim();
   if (!cliente) { alert('Cliente obligatorio'); return; }
   if (!state.comisiones) state.comisiones = [];
+  const precioVenta = +document.getElementById('nc3-precioventa').value||0;
+  const uds = +document.getElementById('nc3-uds').value||1;
   state.comisiones.push({
     id: ++nextId, cliente,
     fechaCierre: document.getElementById('nc3-fecha').value.trim(),
     modelo: document.getElementById('nc3-modelo').value.trim(),
-    unidades: +document.getElementById('nc3-uds').value||1,
-    importeVenta: +document.getElementById('nc3-importe').value||0,
+    unidades: uds,
+    precioVenta: precioVenta,
+    importeVenta: precioVenta * uds,
     pctComision: document.getElementById('nc3-pct').value.trim(),
     importeComision: '',
     cobrada: document.getElementById('nc3-cobrada').value,
@@ -1025,7 +1055,11 @@ function renderKPIs() {
     return s + t;
   }, 0);
   if (!state.comisiones) state.comisiones = [];
-  const calcCom = c => (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
+  const calcCom = c => {
+    const totalVenta = (+c.precioVenta||0) * (+c.unidades||0);
+    if (totalVenta && c.pctComision) return totalVenta * +c.pctComision / 100;
+    return (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
+  };
   const comPend = state.comisiones.filter(c=>c.cobrada==='no').reduce((s,c)=>s+calcCom(c),0);
   const comCob = state.comisiones.filter(c=>c.cobrada==='si').reduce((s,c)=>s+calcCom(c),0);
   const demNext = getAllDemoItems().filter(d=>!isDatePast(d.fecha)).length;
@@ -1228,6 +1262,148 @@ function saveNewDist() {
   });
   saveState(); closeModal(); renderDistribuidores();
 }
+// ===================== IMPORTAR PROFORMA DESDE PDF =====================
+function openImportPFModal() {
+  openModal(`
+    <h2>📋 Importar proforma desde PDF</h2>
+    <p style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.5">
+      Abre el PDF de la proforma, selecciona todo el texto (Cmd+A), cópialo (Cmd+C) y pégalo aquí abajo (Cmd+V). El sistema detectará los datos automáticamente.
+    </p>
+    <div class="field full">
+      <label>Pega aquí el texto de la proforma</label>
+      <textarea id="imp-text" style="min-height:160px;font-family:monospace;font-size:11px" placeholder="PRESUPUESTO&#10;SERIE NÚMERO FECHA&#10;A 5.402 18-06-2026&#10;..."></textarea>
+    </div>
+    <div id="imp-preview" style="margin-top:14px"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn" onclick="parseImportPF()" style="background:#fef9e7;border-color:#f5c842">🔍 Detectar datos</button>
+    </div>`);
+}
+
+function parseImportPF() {
+  const text = document.getElementById('imp-text').value;
+  if (!text.trim()) { alert('Pega primero el texto de la proforma'); return; }
+
+  const parsed = { num:'', fecha:'', cliente:'', modelo:'', tipoGas:'', unidades:'', precioUnit:'', descuento:'', tipo:'Cliente final' };
+
+  // Nº proforma: "A 5.402" o "A5402" o "SERIE NÚMERO ... A 5.402"
+  let m = text.match(/\b([A-Z])\s*\.?\s*(\d[\d.]{2,})\b/);
+  if (m) parsed.num = (m[1] + '-' + m[2].replace(/\./g,'')).replace(/-$/,'');
+
+  // Fecha: DD-MM-AAAA o DD/MM/AAAA
+  m = text.match(/(\d{2})[-\/](\d{2})[-\/](\d{4})/);
+  if (m) parsed.fecha = `${m[1]}/${m[2]}/${m[3]}`;
+
+  // Modelo + gas: "Mimcook GO GN", "Mimcook PRO GP"
+  m = text.match(/Mimcook\s+(GO|PRO)\s*(GN|GP)?/i);
+  if (m) {
+    parsed.modelo = m[1].toUpperCase();
+    if (m[2]) parsed.tipoGas = m[2].toUpperCase();
+  }
+
+  // Línea de producto: CANT  PRECIO  DTO%  IMPORTE
+  // Ej: "7743 Mimcook GO GN 6 3.995,000 10,00 21.573,00"
+  m = text.match(/Mimcook\s+(?:GO|PRO)\s*(?:GN|GP)?\s+(\d+)\s+([\d.,]+)\s+([\d.,]+)\s+([\d.,]+)/i);
+  if (m) {
+    parsed.unidades = m[1];
+    parsed.precioUnit = m[2].replace(/\./g,'').replace(',','.').replace(/\.000$/,'');
+    // precio tipo 3.995,000 -> 3995
+    let precio = m[2].replace(/\./g,'').replace(',','.');
+    parsed.precioUnit = String(parseFloat(precio));
+    parsed.descuento = m[3].replace(',','.');
+  } else {
+    // Fallback: buscar cantidad y precio por separado
+    const mc = text.match(/Mimcook[^\n]*?\s(\d+)\s/i);
+    if (mc) parsed.unidades = mc[1];
+  }
+
+  // Cliente: línea con S.L. / S.A. / SL / SA que no sea ICC
+  const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
+  for (const line of lines) {
+    if (/INTERNATIONAL COOKING|COOKING CONCEPTS/i.test(line)) continue;
+    if (/\b(S\.?L\.?|S\.?A\.?U?\.?)\b/i.test(line) && line.length < 60 && !/BANK|DEUTSCHE|IBAN|CIF|C\.I\.F/i.test(line)) {
+      // limpiar prefijos
+      let c = line.replace(/^.*?\)\s*/,'').trim();
+      parsed.cliente = line;
+      break;
+    }
+  }
+
+  // Detectar si es distribuidor (precio con -30% = precio distribuidor)
+  // PVP GO=3995, PRO=4800. Si precio < PVP, puede ser distribuidor
+  const PVP = {GO:3995, PRO:4800};
+  if (parsed.modelo && parsed.precioUnit) {
+    const pvp = PVP[parsed.modelo];
+    const precio = parseFloat(parsed.precioUnit);
+    if (pvp && precio <= pvp*0.75) parsed.tipo = 'Distribuidor';
+  }
+
+  // Mostrar preview editable
+  showImportPreview(parsed);
+}
+
+function showImportPreview(p) {
+  const preview = document.getElementById('imp-preview');
+  preview.innerHTML = `
+    <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:14px;margin-bottom:8px">
+      <div style="font-size:12px;font-weight:700;color:#166534;margin-bottom:10px">✓ Datos detectados — revisa y corrige si hace falta</div>
+      <div class="field-group">
+        <div class="field"><label>Nº Proforma</label><input id="ip-num" value="${p.num||''}"></div>
+        <div class="field"><label>Fecha</label><input id="ip-fecha" value="${p.fecha||''}"></div>
+        <div class="field full"><label>Cliente</label><input id="ip-cliente" value="${(p.cliente||'').replace(/"/g,'&quot;')}"></div>
+        <div class="field"><label>Modelo</label>
+          <select id="ip-modelo">
+            ${['GO','PRO','GO + PRO','PRO + GO'].map(x=>`<option ${x===p.modelo?'selected':''}>${x}</option>`).join('')}
+          </select></div>
+        <div class="field"><label>Gas</label>
+          <select id="ip-gas">
+            ${['GP','GN',''].map(x=>`<option value="${x}" ${x===p.tipoGas?'selected':''}>${x||'—'}</option>`).join('')}
+          </select></div>
+        <div class="field"><label>Unidades</label><input id="ip-uds" type="number" value="${p.unidades||1}"></div>
+        <div class="field"><label>Precio/ud (€)</label><input id="ip-precio" value="${p.precioUnit||''}"></div>
+        <div class="field"><label>Tipo cliente</label>
+          <select id="ip-tipo">
+            ${['Cliente final','Distribuidor','Internacional'].map(x=>`<option ${x===p.tipo?'selected':''}>${x}</option>`).join('')}
+          </select></div>
+        <div class="field"><label>Descuento (%)</label><input id="ip-dto" value="${p.descuento||''}"></div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:6px" onclick="confirmImportPF()">✓ Añadir a Proformas</button>
+    </div>`;
+}
+
+function confirmImportPF() {
+  const cliente = document.getElementById('ip-cliente').value.trim();
+  if (!cliente) { alert('Falta el cliente'); return; }
+  const uds = +document.getElementById('ip-uds').value || 1;
+  const precio = document.getElementById('ip-precio').value.trim();
+  const dto = document.getElementById('ip-dto').value.trim();
+  state.proformas.push({
+    id: ++nextId,
+    num: document.getElementById('ip-num').value.trim() || 'PF-NEW',
+    fecha: document.getElementById('ip-fecha').value.trim(),
+    cliente,
+    contacto: '', tel: '',
+    provincia: '',
+    tipo: document.getElementById('ip-tipo').value,
+    modelo: document.getElementById('ip-modelo').value,
+    tipoGas: document.getElementById('ip-gas').value,
+    unidades: uds,
+    precioUnit: precio,
+    responsable: 'Felipe',
+    estado: 'Enviada',
+    proximoPaso: 'Seguimiento',
+    fechaSeguimiento: '',
+    notas: dto ? `Descuento aplicado: ${dto}%.` : '',
+  });
+  saveState(); closeModal(); renderProformas();
+  // Switch to proformas tab to show result
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab')[2].classList.add('active');
+  document.getElementById('view-proformas').classList.add('active');
+}
+
+
 function openNewPFModal() {
   openModal(`
     <h2>➕ Nueva proforma</h2>
@@ -1679,6 +1855,16 @@ state.proformas.forEach(p => {
 if (migrated) saveState();
 
 syncComisionesFromProformas();
+
+// Migración: calcular precioVenta para comisiones antiguas que no lo tienen
+state.comisiones.forEach(c => {
+  if (c.precioVenta === undefined || c.precioVenta === '') {
+    if (c.importeVenta && c.unidades) {
+      c.precioVenta = +c.importeVenta / +c.unidades;
+    }
+  }
+});
+saveState();
 
 renderKanban();
 renderDistribuidores();
