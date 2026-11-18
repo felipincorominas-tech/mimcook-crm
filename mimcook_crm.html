@@ -1177,8 +1177,8 @@ function renderKPIs() {
     if (totalVenta && c.pctComision) return totalVenta * +c.pctComision / 100;
     return (c.importeVenta && c.pctComision) ? (+c.importeVenta * +c.pctComision / 100) : (+c.importeComision||0);
   };
-  const comPend = state.comisiones.filter(c=>c.cobrada==='no').reduce((s,c)=>s+calcCom(c),0);
-  const comCob = state.comisiones.filter(c=>c.cobrada==='si').reduce((s,c)=>s+calcCom(c),0);
+  const comPend = state.comisiones.filter(c=>mcStatus(c)==='pendiente').reduce((s,c)=>s+mcCommission(c),0);
+  const comCob = state.comisiones.filter(c=>mcStatus(c)==='cobrada').reduce((s,c)=>s+mcCommission(c),0);
   const demNext = getAllDemoItems().filter(d=>!isDatePast(d.fecha)).length;
   document.getElementById('hdr-pipeline').textContent = state.pipeline.filter(p=>p.stage<5).length;
   document.getElementById('hdr-proformas').textContent = pfEnviadas;
@@ -2554,7 +2554,7 @@ const mcTotal = c => {
   return legacyPrice || mcNum(c.importeVenta);
 };
 const mcRate = c => mcChannel(c)==='demo'?0:(c.pctComision!==undefined && c.pctComision!==''?mcNum(c.pctComision):(mcChannel(c)==='distribuidor'?2:4));
-const mcCommission = c => mcChannel(c)==='demo'?0:(mcTotal(c)*mcRate(c)/100 || mcNum(c.importeComision));
+const mcCommission = c => mcChannel(c)==='demo'?0:((mcTotal(c) && c.pctComision!=='' && c.pctComision!==undefined) ? mcTotal(c)*mcRate(c)/100 : (mcNum(c.importeComision)||mcTotal(c)*mcRate(c)/100));
 function renderComisiones(){
   const records=state.comisiones||[], match=c=>comFilter==='all'||mcStatus(c)===comFilter;
   const sum=(status)=>records.filter(c=>mcStatus(c)===status).reduce((a,c)=>a+mcCommission(c),0);
@@ -2660,7 +2660,7 @@ function openNewComisionModal(id){
   set('base',c.descuentoBase===undefined?(channel==='final'?0:30):c.descuentoBase);
   set('volume',c.descuentoVolumen==='auto'?0:(c.descuentoVolumen||0));
   document.getElementById('mc-vol-auto').checked=c.descuentoVolumen===undefined||c.descuentoVolumen==='auto';
-  set('extra',c.descuentoExtra);set('manual',c.precioFinalManual);set('pct',c.pctComision===''?(channel==='distribuidor'?2:4):c.pctComision);
+  set('extra',c.descuentoExtra);set('manual',Array.isArray(c.productos)?c.precioFinalManual:mcTotal(c));set('pct',c.pctComision===''?(channel==='distribuidor'?2:4):c.pctComision);
   set('notas',c.notas);
   document.getElementById('mc-canal').addEventListener('change',mcChannelChange);
   ['base','pct'].forEach(key=>document.getElementById('mc-'+key).addEventListener('input',e=>{e.target.dataset.custom='1';mcRecalc();}));
