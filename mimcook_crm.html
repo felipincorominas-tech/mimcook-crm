@@ -2566,7 +2566,7 @@ function renderComisiones(){
   document.getElementById('com-tbody').innerHTML=records.filter(match).map(c=>{
     const products=mcProducts(c), channel=mcChannel(c),status=mcStatus(c);
     const models=products.map(p=>mcEsc(p.unidades)+' × '+mcEsc(p.modelo)+(p.gas?' '+mcEsc(p.gas):'')).join('<br>')||'—';
-    const disc=Array.isArray(c.productos)?(mcNum(c.descuentoBase)+'% base + '+(c.descuentoVolumen==='auto'||c.descuentoVolumen===undefined?'auto':mcNum(c.descuentoVolumen)+'%')+' volumen'+(mcNum(c.descuentoExtra)?' + '+mcNum(c.descuentoExtra)+'% extra':'')+(c.precioFinalManual!==''&&c.precioFinalManual!==undefined?' · Manual':''):'Histórico';
+    const disc=Array.isArray(c.productos) ? [mcNum(c.descuentoBase)+'% base', (c.descuentoVolumen==='auto'||c.descuentoVolumen===undefined?'auto':mcNum(c.descuentoVolumen)+'%')+' volumen', mcNum(c.descuentoExtra)?mcNum(c.descuentoExtra)+'% extra':'', c.precioFinalManual!==''&&c.precioFinalManual!==undefined?'Manual':''].filter(Boolean).join(' · ') : 'Histórico';
     const label={prevista:'📄 Prevista',pendiente:'⏳ Pendiente',cobrada:'✅ Cobrada',demo:'📦 DEMO'}[status]||status;
     return '<tr><td><strong>'+mcEsc(c.cliente)+'</strong>'+(c.num?'<div style="font-size:11px;color:#888">'+mcEsc(c.num)+'</div>':'')+'</td>'+
       '<td>'+mcEsc(c.fechaCierre||'—')+'</td><td>'+models+'</td><td>'+mcEsc(channel)+'</td>'+
