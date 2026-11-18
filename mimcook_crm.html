@@ -127,7 +127,7 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .field textarea { resize: vertical; min-height: 70px; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
 
-#view-comisiones #com-resumen{display:grid !important;grid-template-columns:repeat(4,minmax(190px,1fr));gap:16px !important}
+#view-comisiones #com-resumen{display:grid !important;grid-template-columns:repeat(3,minmax(190px,1fr));gap:16px !important}
 #view-comisiones #com-resumen .kpi-card{min-width:0 !important;padding:22px 24px}
 #view-comisiones #com-resumen .kpi-val{font-size:30px !important;line-height:1.25}
 #view-comisiones #com-resumen .kpi-label{font-size:13px}
@@ -272,6 +272,7 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 <div id="view-comisiones" class="view">
   <div class="toolbar">
     <button class="btn active" id="com-all" onclick="setComFilter('all')">Todas</button>
+    <button class="btn" id="com-res" onclick="setComFilter('reservada')">📅 Reservadas</button>
     <button class="btn" id="com-prev" onclick="setComFilter('prevista')">📄 Previstas</button>
     <button class="btn" id="com-pen" onclick="setComFilter('pendiente')">⏳ Por cobrar</button>
     <button class="btn" id="com-cob" onclick="setComFilter('cobrada')">✅ Cobradas</button>
@@ -2566,36 +2567,40 @@ const mcTotal = c => {
   const legacyPrice=mcNum(c.precioVenta)*mcNum(c.unidades);
   return legacyPrice || mcNum(c.importeVenta);
 };
+const mcAdvance = c => Math.min(mcTotal(c),Math.max(0,c.anticipoTipo==='importe'?mcNum(c.anticipoValor):mcTotal(c)*mcNum(c.anticipoValor)/100));
 const mcRate = c => mcChannel(c)==='demo'?0:(c.pctComision!==undefined && c.pctComision!==''?mcNum(c.pctComision):(mcChannel(c)==='distribuidor'?2:4));
 const mcCommission = c => mcChannel(c)==='demo'?0:((mcTotal(c) && c.pctComision!=='' && c.pctComision!==undefined) ? mcTotal(c)*mcRate(c)/100 : (mcNum(c.importeComision)||mcTotal(c)*mcRate(c)/100));
 function renderComisiones(){
   const records=state.comisiones||[], match=c=>comFilter==='all'||mcStatus(c)===comFilter;
   const sum=(status)=>records.filter(c=>mcStatus(c)===status).reduce((a,c)=>a+mcCommission(c),0);
   const demo=records.filter(c=>mcStatus(c)==='demo').reduce((a,c)=>a+mcUnits(c),0);
+  const reserved=records.filter(c=>mcStatus(c)==='reservada');
+  const reservedTotal=reserved.reduce((a,c)=>a+mcTotal(c),0);
+  const reservedAdvances=reserved.reduce((a,c)=>a+mcAdvance(c),0);
   document.getElementById('com-resumen').innerHTML=[
-    ['Previstas',mcMoney(sum('prevista'))],['Por cobrar',mcMoney(sum('pendiente'))],
+    ['Reservadas',mcMoney(reservedTotal)],['Anticipos recibidos',mcMoney(reservedAdvances)],['Previstas',mcMoney(sum('prevista'))],['Por cobrar',mcMoney(sum('pendiente'))],
     ['Cobradas',mcMoney(sum('cobrada'))],['Equipos DEMO',demo]
   ].map(x=>'<div class="kpi-card" style="min-width:170px"><div class="kpi-val" style="font-size:22px">'+x[1]+'</div><div class="kpi-label">'+x[0]+'</div></div>').join('');
   document.getElementById('com-tbody').innerHTML=records.filter(match).map(c=>{
     const products=mcProducts(c), channel=mcChannel(c),status=mcStatus(c);
     const models=products.map(p=>mcEsc(p.unidades)+' × '+mcEsc(p.modelo)+(p.gas?' '+mcEsc(p.gas):'')).join('<br>')||'—';
     const disc=Array.isArray(c.productos) ? [mcNum(c.descuentoBase)+'% base', (c.descuentoVolumen==='auto'||c.descuentoVolumen===undefined?'auto':mcNum(c.descuentoVolumen)+'%')+' volumen', mcNum(c.descuentoExtra)?mcNum(c.descuentoExtra)+'% extra':'', c.precioFinalManual!==''&&c.precioFinalManual!==undefined?'Manual':''].filter(Boolean).join(' · ') : 'Histórico';
-    const label={prevista:'📄 Prevista',pendiente:'⏳ Pendiente',cobrada:'✅ Cobrada',demo:'📦 DEMO'}[status]||status;
+    const label={reservada:'📅 Reservada',prevista:'📄 Prevista',pendiente:'⏳ Pendiente',cobrada:'✅ Cobrada',demo:'📦 DEMO'}[status]||status;
     return '<tr><td><strong>'+mcEsc(c.cliente)+'</strong>'+(c.num?'<div style="font-size:11px;color:#888">'+mcEsc(c.num)+'</div>':'')+'</td>'+
       '<td>'+mcEsc(c.fechaCierre||'—')+'</td><td>'+models+'</td><td>'+mcEsc(channel)+'</td>'+
       '<td style="font-size:11px">'+mcEsc(disc)+'</td><td style="font-weight:700">'+mcMoney(mcTotal(c))+'</td>'+
       '<td>'+mcRate(c)+'%</td><td style="font-weight:700;color:#2d7a2d">'+mcMoney(mcCommission(c))+'</td>'+
       '<td><select class="cell-select" onchange="mcSetStatus('+c.id+',this.value)">'+
-      [['prevista','📄 Prevista'],['pendiente','⏳ Por cobrar'],['cobrada','✅ Cobrada'],['demo','📦 DEMO']].map(o=>'<option value="'+o[0]+'" '+(status===o[0]?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></td>'+
-      '<td style="max-width:180px;font-size:12px">'+mcEsc(c.notas||'')+'</td>'+
+      [['reservada','📅 Reservada'],['prevista','📄 Prevista'],['pendiente','⏳ Por cobrar'],['cobrada','✅ Cobrada'],['demo','📦 DEMO']].map(o=>'<option value="'+o[0]+'" '+(status===o[0]?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></td>'+
+      '<td style="max-width:180px;font-size:12px">'+(status==='reservada'?'<div>Anticipo: '+mcMoney(mcAdvance(c))+'</div><div>Pendiente pedido: '+mcMoney(Math.max(0,mcTotal(c)-mcAdvance(c)))+'</div>':'')+mcEsc(c.notas||'')+'</td>'+
       '<td style="white-space:nowrap"><button class="btn" onclick="openNewComisionModal('+c.id+')">Editar</button> <button class="btn btn-danger" onclick="deleteCom('+c.id+')">✕</button></td></tr>';
   }).join('')||'<tr><td colspan="11" style="text-align:center;color:#888;padding:25px">No hay operaciones en esta categoría</td></tr>';
   document.getElementById('com-totals').innerHTML='';
 }
 function setComFilter(val){
   comFilter=val;
-  ['all','prev','pen','cob','demo'].forEach(k=>document.getElementById('com-'+k)?.classList.remove('active'));
-  const keys={all:'all',prevista:'prev',pendiente:'pen',cobrada:'cob',demo:'demo'};
+  ['all','res','prev','pen','cob','demo'].forEach(k=>document.getElementById('com-'+k)?.classList.remove('active'));
+  const keys={all:'all',reservada:'res',prevista:'prev',pendiente:'pen',cobrada:'cob',demo:'demo'};
   document.getElementById('com-'+keys[val])?.classList.add('active');
   renderComisiones();
 }
@@ -2622,7 +2627,7 @@ function mcAddLine(item){
 function mcFormData(){
   const val=id=>document.getElementById(id).value;
   const productos=[...document.querySelectorAll('#mc-lines .mc-line')].map(el=>({modelo:el.querySelector('.mc-modelo').value,gas:el.querySelector('.mc-gas').value,unidades:mcNum(el.querySelector('.mc-uds').value)}));
-  return {cliente:val('mc-cliente').trim(),num:val('mc-num').trim(),fechaCierre:val('mc-fecha'),fechaPrevista:val('mc-prevista'),fechaCobro:val('mc-cobro'),notas:val('mc-notas').trim(),
+  return {cliente:val('mc-cliente').trim(),num:val('mc-num').trim(),fechaCierre:val('mc-fecha'),fechaPrevista:val('mc-prevista'),fechaCobro:val('mc-cobro'),fechaFactura:val('mc-factura'),numeroFactura:val('mc-numfactura').trim(),anticipoTipo:val('mc-anticipo-tipo'),anticipoValor:mcNum(val('mc-anticipo')),fechaAnticipo:val('mc-fecha-anticipo'),fechaEntrega:val('mc-entrega'),notas:val('mc-notas').trim(),
     canal:val('mc-canal'),estadoComision:val('mc-estado'),tipoPago:val('mc-pago'),productos,
     descuentoBase:mcNum(val('mc-base')),descuentoVolumen:val('mc-vol-auto').checked?'auto':mcNum(val('mc-volume')),
     descuentoExtra:mcNum(val('mc-extra')),precioFinalManual:val('mc-manual').trim(),
@@ -2641,7 +2646,7 @@ function mcRecalc(){
   const result=document.getElementById('mc-preview');if(!result)return;
   const d=mcFormData(),base=mcBase(d),units=mcUnits(d);
   const vol=d.descuentoVolumen==='auto'?(d.canal==='distribuidor'?(units>=6?10:units>=3?5:0):0):d.descuentoVolumen;
-  result.textContent='Tarifa: '+mcMoney(base)+' · '+units+' equipos · Volumen: '+vol+'% · Venta final sin IVA: '+mcMoney(mcTotal(d))+' · Comisión: '+mcMoney(mcCommission(d));
+  result.textContent='Tarifa: '+mcMoney(base)+' · '+units+' equipos · Volumen: '+vol+'% · Venta final sin IVA: '+mcMoney(mcTotal(d))+' · Anticipo: '+mcMoney(mcAdvance(d))+' · Pendiente pedido: '+mcMoney(Math.max(0,mcTotal(d)-mcAdvance(d)))+' · Comisión estimada: '+mcMoney(mcCommission(d));
 }
 function openNewComisionModal(id){
   const previous=id?state.comisiones.find(c=>c.id===id):null;
@@ -2653,9 +2658,15 @@ function openNewComisionModal(id){
    '<div class="field"><label>Número de proforma (opcional)</label><input id="mc-num"></div>'+
    '<div class="field"><label>Fecha operación</label><input type="date" id="mc-fecha"></div>'+
    '<div class="field"><label>Canal</label><select id="mc-canal"><option value="final">Cliente final</option><option value="distribuidor">Distribuidor</option><option value="demo">Venta DEMO a distribuidor</option></select></div>'+
-   '<div class="field"><label>Estado de comisión</label><select id="mc-estado"><option value="prevista">Prevista / proforma enviada</option><option value="pendiente">Por cobrar</option><option value="cobrada">Cobrada</option><option value="demo">DEMO · sin comisión</option></select></div>'+
+   '<div class="field"><label>Estado de comisión</label><select id="mc-estado"><option value="reservada">Reservada · entrega futura</option><option value="prevista">Prevista / proforma enviada</option><option value="pendiente">Por cobrar</option><option value="cobrada">Cobrada</option><option value="demo">DEMO · sin comisión</option></select></div>'+
    '<div class="field"><label>Fecha prevista / cierre</label><input type="date" id="mc-prevista"></div>'+
-   '<div class="field"><label>Fecha de cobro comisión</label><input type="date" id="mc-cobro"></div>'+
+   '<div class="field"><label>Fecha de cobro comisión</label><input type="date" id="mc-cobro"></div>'+ 
+   '<div class="field"><label>Número de factura</label><input id="mc-numfactura" placeholder="Opcional"></div>'+ 
+   '<div class="field"><label>Fecha factura</label><input type="date" id="mc-factura"></div>'+ 
+   '<div class="field"><label>Entrega prevista (reserva)</label><input type="date" id="mc-entrega"></div>'+ 
+   '<div class="field"><label>Tipo anticipo</label><select id="mc-anticipo-tipo"><option value="porcentaje">Porcentaje (%)</option><option value="importe">Importe fijo (€)</option></select></div>'+ 
+   '<div class="field"><label>Anticipo recibido</label><input id="mc-anticipo" type="number" min="0" step="0.01" value="0"></div>'+ 
+   '<div class="field"><label>Fecha de anticipo</label><input type="date" id="mc-fecha-anticipo"></div>'+
    '<div class="field"><label>Condición de venta</label><select id="mc-pago"><option value="pendiente">Pendiente de pago / aceptación</option><option value="pagado">Cliente pagó</option><option value="riesgo">Riesgo aprobado por Dirección</option></select></div>'+
    '<div class="field full"><label>Equipos de esta operación (GO y PRO se suman para volumen)</label><div id="mc-lines"></div><button class="btn" type="button" onclick="mcAddLine()">+ Añadir modelo</button></div>'+
    '<div class="field"><label>Descuento base (%)</label><input id="mc-base" type="number" min="0" max="100" step="0.01"></div>'+
@@ -2669,7 +2680,7 @@ function openNewComisionModal(id){
   document.getElementById('modal-inner').classList.add('mc-modal');
   const set=(field,value)=>document.getElementById('mc-'+field).value=value==null?'':value;
   set('cliente',c.cliente);set('num',c.num);set('fecha',/^\d{4}-\d{2}-\d{2}$/.test(c.fechaCierre||'')?c.fechaCierre:'');
-  set('prevista',c.fechaPrevista);set('cobro',/^\d{4}-\d{2}-\d{2}$/.test(c.fechaCobro||'')?c.fechaCobro:'');
+  set('prevista',c.fechaPrevista);set('numfactura',c.numeroFactura);set('factura',c.fechaFactura);set('entrega',c.fechaEntrega);set('anticipo-tipo',c.anticipoTipo||'porcentaje');set('anticipo',c.anticipoValor||0);set('fecha-anticipo',c.fechaAnticipo);set('cobro',/^\d{4}-\d{2}-\d{2}$/.test(c.fechaCobro||'')?c.fechaCobro:'');
   set('canal',channel);set('estado',status);set('pago',c.tipoPago||'pendiente');
   set('base',c.descuentoBase===undefined?(channel==='final'?0:30):c.descuentoBase);
   set('volume',c.descuentoVolumen==='auto'?0:(c.descuentoVolumen||0));
@@ -2678,7 +2689,7 @@ function openNewComisionModal(id){
   set('notas',c.notas);
   document.getElementById('mc-canal').addEventListener('change',mcChannelChange);
   ['base','pct'].forEach(key=>document.getElementById('mc-'+key).addEventListener('input',e=>{e.target.dataset.custom='1';mcRecalc();}));
-  ['estado','pago','volume','vol-auto','extra','manual'].forEach(key=>document.getElementById('mc-'+key).addEventListener('input',mcRecalc));
+  ['estado','pago','volume','vol-auto','extra','manual','anticipo-tipo','anticipo'].forEach(key=>document.getElementById('mc-'+key).addEventListener('input',mcRecalc));
   const lines=mcProducts(c);(lines.length?lines:[{modelo:'GO',gas:'GP',unidades:1}]).forEach(mcAddLine);
   mcRecalc();
 }
@@ -2688,8 +2699,10 @@ function mcSave(id){
   if(!d.productos.length||d.productos.some(p=>!Number.isInteger(p.unidades)||p.unidades<1)){alert('Añade al menos una línea con unidades válidas.');return;}
   if([d.descuentoBase,d.descuentoExtra].some(v=>v<0||v>100)){alert('Los descuentos deben estar entre 0 y 100%.');return;}
   if(d.canal==='demo'){d.estadoComision='demo';d.pctComision=0;}
+  if(d.anticipoValor<0 || (d.anticipoTipo==='porcentaje' && d.anticipoValor>100)){alert('Comprueba el anticipo: debe ser positivo y, si es porcentaje, como máximo 100%.');return;}
+  if(d.estadoComision==='reservada' && mcAdvance(d)>mcTotal(d)){alert('El anticipo no puede superar el valor del pedido.');return;}
   else if(d.estadoComision==='demo'){alert('Selecciona un estado de comisión válido para esta venta.');return;}
-  if(d.estadoComision==='pendiente'&&d.tipoPago==='pendiente'&&!confirm('La venta aún figura sin pago ni riesgo aprobado. ¿Marcar igualmente la comisión como por cobrar?'))return;
+  // El estado 'Por cobrar' se elige manualmente al emitirse factura. Sin confirmaciones repetitivas.
   const old=id?state.comisiones.find(c=>c.id===id):null;
   if(old){Object.assign(old,d);}else{state.comisiones.push(Object.assign({id:++nextId},d));}
   const c=old||state.comisiones[state.comisiones.length-1];
