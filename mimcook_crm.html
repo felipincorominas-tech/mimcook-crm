@@ -305,6 +305,19 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Origen / Distribuidor</th><th>Fase</th><th>Equipos</th><th>Importe comercial</th><th>Potencial teórico</th><th>Cierre previsto</th><th>Próxima acción</th><th>Responsable</th><th></th></tr></thead><tbody id="op-tbody"></tbody></table></div>
 </div>
 <div id="view-ventas" class="view">
+<div id="anna-2026-block" style="margin-bottom:24px">
+  <h3 style="font-size:17px;margin:14px 0 8px">📋 Estadística de Anna · 2026</h3>
+  <p style="font-size:12px;color:#666;margin-bottom:12px">Unidades por cliente y referencia, extraídas del Excel de Administración. No representan necesariamente facturas ni fechas individuales; no se suman a las ventas verificadas de la sección inferior.</p>
+  <div id="anna-2026-resumen" class="kpi-grid"></div>
+  <div id="anna-2026-alerta" style="font-size:12px;padding:12px 14px;background:#fff8e6;border:1px solid #eeddae;border-radius:8px;margin-bottom:14px"></div>
+  <div class="toolbar">
+    <label style="font-size:12px;color:#666">Buscar cliente</label><input id="anna-2026-buscar" type="text" placeholder="Cliente..." oninput="crmRenderAnna2026()" style="border:1px solid #ddd;border-radius:7px;padding:7px">
+    <label style="font-size:12px;color:#666">Referencia</label>
+    <select id="anna-2026-sku" class="cell-select" onchange="crmRenderAnna2026()"><option value="all">Todas</option><option value="6512">6512 GO GP</option><option value="6513">6513 PRO GP</option><option value="7743">7743 GO GN</option><option value="7744">7744 PRO GN</option><option value="8755">8755 GO GP TURBO</option><option value="9757">9757 PRO GP TURBO</option><option value="9840">9840 PRO GN TURBO</option></select>
+  </div>
+  <div class="table-wrap" style="margin-bottom:20px"><table><thead><tr><th>Cliente según Administración</th><th>Referencia</th><th>Modelo</th><th>Gas</th><th>Unidades</th></tr></thead><tbody id="anna-2026-filas"></tbody></table></div>
+</div>
+
   <div class="toolbar">
     <span style="font-size:13px;color:#666">Histórico verificado · Ventas reales sin IVA · No incluye reservas, presupuestos ni comisiones</span>
     <button class="btn btn-primary" style="margin-left:auto" onclick="crmOpenVenta()">+ Registrar venta</button>
@@ -2861,11 +2874,36 @@ function crmSaveOperacion(id){
  const record=id?state.operaciones.find(v=>v.id===id):null;if(record)Object.assign(record,data);else state.operaciones.push({id:++nextId,...data});
  saveState();closeModal();crmRenderOperaciones();
 }
+
+/* Fuente histórica de Administración (hoja Hoja1, detalle por cliente).
+   Estadística agregada: NO son facturas individuales ni una importación a ventasVerificadas.
+   La fila Total General informa 87 unidades; el detalle individual suma 88. */
+const CRM_ANNA_2026=[["ALBIE,S.A.","6513",1],["ARROZ DE LA TOMASA, SLU","6512",3],["COCINEROS CANARIAS, S.L.","6512",2],["COOL Y HOT MAQUINARIA, S.L.","6512",2],["COOL Y HOT MAQUINARIA, S.L.","6513",1],["COOL Y HOT MAQUINARIA, S.L.","7743",1],["ESKOCIA WURM, S.L.","6513",9],["FRANCESC TOMAS LLOBET SL","7743",4],["HOUSE COLLECTION PARTNERS, S.L.","7743",1],["INVERSIONES CANDIDO 2018, S.L.","6512",3],["JAUME MOSTANY","6512",6],["JAVIER FERNANDEZ-VEGA SANZ","7743",1],["MIMCOOK SOLUTIONS, S.L.","7743",3],["MIMCOOK SOLUTIONS, S.L.","8755",15],["MIMCOOK SOLUTIONS, S.L.","9757",6],["NICTON PLUS, S.L.","7743",2],["OBRADOR MOGA","7744",1],["OKETA BETI, SLU","7743",5],["PROCUINA PROYECTOS DE HOSTELERIA, S.L.","6512",1],["R.MARIN S.A.","6512",1],["R.MARIN S.A.","6513",1],["RESTAURANTE ALMORRATXA (ADS MED.)","7744",4],["RTE. TOMA Y DAKA BILBAO, S.L. (EL GLOBO)","7743",3],["S.I.H. MADRID / SERVITEL","6512",6],["SUMINISTROS UNIC, S.L.","6512",2],["TODO EMPIEZA POR UN SUEÑO, S.L.","6513",1],["VILLARREAL C.F. , S.A.D.","9757",1],["VILLARREAL C.F. , S.A.D.","9840",2]];
+const CRM_ANNA_SKU={
+ '6512':{modelo:'GO',gas:'GP'},'6513':{modelo:'PRO',gas:'GP'},
+ '7743':{modelo:'GO',gas:'GN'},'7744':{modelo:'PRO',gas:'GN'},
+ '8755':{modelo:'GO TURBO',gas:'GP'},'9757':{modelo:'PRO TURBO',gas:'GP'},
+ '9840':{modelo:'PRO TURBO',gas:'GN'}
+};
+const CRM_ANNA_FOOTER={'6512':25,'6513':13,'7743':20,'7744':5,'8755':15,'9757':7,'9840':2};
+function crmRenderAnna2026(){
+ const rows=CRM_ANNA_2026, query=(document.getElementById('anna-2026-buscar')?.value||'').trim().toLocaleLowerCase('es-ES'),sku=document.getElementById('anna-2026-sku')?.value||'all';
+ const filter=rows.filter(r=>(sku==='all'||r[1]===sku)&&(!query||r[0].toLocaleLowerCase('es-ES').includes(query)));
+ const n=rows.reduce((a,r)=>a+r[2],0),regular=rows.filter(r=>!['8755','9757','9840'].includes(r[1])).reduce((a,r)=>a+r[2],0),turbo=n-regular;
+ const companies=new Set(rows.map(r=>r[0])).size;
+ document.getElementById('anna-2026-resumen').innerHTML=[
+ ['Unidades en detalle',n],['GO + PRO estándar',regular],['Turbo',turbo],['Clientes distintos',companies]
+ ].map(x=>'<div class="kpi-card"><div class="kpi-val" style="font-size:27px">'+x[1]+'</div><div class="kpi-label">'+x[0]+'</div></div>').join('');
+ document.getElementById('anna-2026-alerta').textContent='Control de fuente: sumando las líneas de clientes hay '+n+' unidades; la fila «Total General» de Anna registra '+Object.values(CRM_ANNA_FOOTER).reduce((a,b)=>a+b,0)+'. La diferencia es 1 unidad en la referencia 6512 GO GP (detalle: 26; total: 25). Pendiente de aclaración con Administración. Se incluyen también movimientos de MIMCOOK SOLUTIONS, S.L. y equipos TURBO: verificar su naturaleza antes de considerarlos ventas a cliente final.';
+ document.getElementById('anna-2026-filas').innerHTML=filter.map(r=>'<tr><td>'+crmSafe(r[0])+'</td><td>'+crmSafe(r[1])+'</td><td>'+crmSafe(CRM_ANNA_SKU[r[1]].modelo)+'</td><td>'+crmSafe(CRM_ANNA_SKU[r[1]].gas)+'</td><td><strong>'+r[2]+'</strong></td></tr>').join('')||'<tr><td colspan="5" style="text-align:center;color:#888;padding:20px">Sin resultados</td></tr>';
+}
+
 function crmSalesFiltered(){
  const year=document.getElementById('sales-year').value,channel=document.getElementById('sales-channel').value;
  return (state.ventasVerificadas||[]).filter(x=>(year==='all'||String(x.fechaFactura||'').slice(0,4)===year)&&(channel==='all'||x.canal===channel));
 }
 function crmRenderVentas(){
+ crmRenderAnna2026();
  const years=[...new Set((state.ventasVerificadas||[]).map(x=>String(x.fechaFactura||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)))].sort().reverse();
  const sel=document.getElementById('sales-year');const previous=sel.value||'all';sel.innerHTML='<option value="all">Todos</option>'+years.map(y=>'<option value="'+y+'">'+y+'</option>').join('');sel.value=years.includes(previous)?previous:'all';
  const records=crmSalesFiltered(),amount=records.reduce((a,x)=>a+crmN(x.importe),0),items=records.flatMap(crmItems);
