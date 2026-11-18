@@ -158,7 +158,7 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
       <span id="bell-badge" style="display:none;position:absolute;top:0px;right:0px;background:#ef4444;color:white;font-size:10px;font-weight:800;border-radius:999px;min-width:16px;height:16px;line-height:16px;text-align:center;padding:0 3px">0</span>
     </button>
     <div class="save-indicator" id="save-ind" style="display:none">✓ Guardado</div>
-    <button onclick="if(confirm('¿Exportar copia de seguridad (backup) de todos los datos?')){exportBackup();}" style="background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);font-size:10px;padding:3px 8px;border-radius:5px;cursor:pointer;margin-left:4px" title="Exportar backup">💾 Backup</button>
+    <button onclick="if(confirm('¿Exportar copia de seguridad (backup) de todos los datos?')){exportBackup();}" style="background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.6);font-size:10px;padding:3px 8px;border-radius:5px;cursor:pointer;margin-left:4px" title="Exportar backup">💾 Backup</button><button onclick="document.getElementById('crm-restore-file').click()" style="background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);font-size:10px;padding:3px 8px;border-radius:5px;cursor:pointer;margin-left:4px" title="Restaurar backup JSON">↥ Restaurar</button><input id="crm-restore-file" type="file" accept=".json,application/json" style="display:none" onchange="crmRestoreBackupFile(this)">
   </div>
 </div>
 <div id="notif-panel" style="display:none;position:fixed;top:56px;right:16px;width:340px;max-width:calc(100vw - 32px);background:white;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.22);z-index:1000;overflow:hidden">
@@ -475,6 +475,31 @@ function exportBackup() {
   a.href = url; a.download = `mimcook_backup_${fecha}.json`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+
+/* Restaurar una copia local bajo petición expresa, sin subir datos a GitHub. */
+async function crmRestoreBackupFile(input){
+ const file=input.files&&input.files[0];
+ input.value='';
+ if(!file)return;
+ if(file.size>15*1024*1024){alert('El archivo supera 15 MB. No se ha modificado nada.');return;}
+ let parsed;
+ try { parsed=JSON.parse(await file.text()); } catch(e){alert('No se puede leer el archivo JSON. No se ha modificado nada.');return;}
+ const sections=['pipeline','distribuidores','proformas','demos','acciones','comisiones','cartera','formaciones','reuniones','clientesFinales','operaciones','ventasVerificadas'];
+ if(!parsed||typeof parsed!=='object'||Array.isArray(parsed)||!Array.isArray(parsed.proformas)||!Array.isArray(parsed.distribuidores)||
+    sections.some(k=>parsed[k]!==undefined&&!Array.isArray(parsed[k]))){
+  alert('Este archivo no tiene el formato esperado del CRM Mimcook. No se ha modificado nada.');return;
+ }
+ const count=sections.reduce((sum,k)=>sum+(parsed[k]?.length||0),0);
+ if(!confirm('Restaurar '+file.name+' ('+count+' registros en total)?\n\nEsta acción REEMPLAZA los datos actuales de ESTE navegador. Antes se descargará una copia de seguridad de los datos actuales.\n\n¿Continuar?'))return;
+ exportBackup();
+ try{
+  // No escribir hasta que el JSON sea válido y pase la comprobación de tamaño.
+  localStorage.setItem('mimcook_crm_v20',JSON.stringify(parsed));
+  alert('Copia restaurada. Se recargará el CRM.');
+  window.location.reload();
+ }catch(e){alert('No se pudo restaurar: puede que el navegador no tenga espacio. La copia descargada conserva los datos anteriores.');}
 }
 
 function updateHeader() {
