@@ -2582,10 +2582,9 @@ function renderComisiones(){
   // Proyección de comisiones no cobradas. No incluye ventas DEMO ni comisiones cobradas.
   const totalPendiente=sum('reservada')+sum('prevista')+sum('pendiente');
   document.getElementById('com-resumen').innerHTML=[
-    ['TOTAL PENDIENTE · estimado',mcMoney(totalPendiente)],['Reservadas · comisión estimada',mcMoney(sum('reservada'))],
+    ['TOTAL PENDIENTE · estimado',mcMoney(totalPendiente)],['Reservas',mcMoney(sum('reservada'))],
     ['Previstas',mcMoney(sum('prevista'))],['Por cobrar',mcMoney(sum('pendiente'))],
-    ['Cobradas',mcMoney(sum('cobrada'))],['Reservas · valor de pedidos',mcMoney(reservedTotal)],
-    ['Anticipos recibidos (ICC)',mcMoney(reservedAdvances)],['Equipos DEMO',demo]
+    ['Cobradas',mcMoney(sum('cobrada'))],['Equipos DEMO',demo]
   ].map(x=>'<div class="kpi-card" style="min-width:170px"><div class="kpi-val" style="font-size:22px">'+x[1]+'</div><div class="kpi-label">'+x[0]+'</div></div>').join('');
   document.getElementById('com-tbody').innerHTML=records.filter(match).map(c=>{
     const products=mcProducts(c), channel=mcChannel(c),status=mcStatus(c);
