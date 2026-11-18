@@ -259,22 +259,16 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 <div id="view-comisiones" class="view">
   <div class="toolbar">
     <button class="btn active" id="com-all" onclick="setComFilter('all')">Todas</button>
-    <button class="btn" id="com-pen" onclick="setComFilter('pendiente')">Pendientes de cobro</button>
-    <button class="btn" id="com-cob" onclick="setComFilter('cobrada')">Cobradas</button>
-    <button class="btn btn-primary" style="margin-left:auto" onclick="openNewComisionModal()">+ Nueva venta / comisión</button>
+    <button class="btn" id="com-prev" onclick="setComFilter('prevista')">📄 Previstas</button>
+    <button class="btn" id="com-pen" onclick="setComFilter('pendiente')">⏳ Pendientes de cobrar</button>
+    <button class="btn" id="com-cob" onclick="setComFilter('cobrada')">✅ Cobradas</button>
+    <button class="btn" id="com-demo" onclick="setComFilter('demo')">📦 Ventas DEMO</button>
+    <button class="btn btn-primary" style="margin-left:auto" onclick="openNewComisionModal()">+ Nueva operación</button>
   </div>
   <div id="com-resumen" style="display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap"></div>
   <div class="table-wrap">
     <table>
-      <thead><tr>
-        <th>Cliente</th><th>Fecha</th><th>Modelo</th><th>Uds</th>
-        <th title="Precio tarifa oficial">PVP/ud</th>
-        <th title="PVP -30%">Precio distrib.</th>
-        <th title="Precio real al que se vendió (unitario)">Precio venta/ud</th>
-        <th title="Descuento sobre PVP">Dto.</th>
-        <th>Total venta (€)</th><th>% Com.</th><th>Comisión (€)</th>
-        <th>Cobrada</th><th>Notas</th><th></th>
-      </tr></thead>
+      <thead><tr><th>Cliente / distribuidor</th><th>Fecha</th><th>Equipos</th><th>Canal</th><th>Descuentos</th><th>Venta neta (s/IVA)</th><th>% Com.</th><th>Comisión</th><th>Estado</th><th>Notas</th><th></th></tr></thead>
       <tbody id="com-tbody"></tbody>
     </table>
   </div>
@@ -2535,6 +2529,160 @@ function showTab(name, el) {
   if (name==='comisiones') renderComisiones();
   if (name==='kpis') renderKPIs();
   if (name==='reuniones') renderReuniones();
+}
+
+
+/* COMISIONES V2: datos existentes preservados, ampliación compatible con v20 */
+const MC_PVP = {GO:3995,PRO:4800};
+const mcMoney = n => Number(n||0).toLocaleString('es-ES',{style:'currency',currency:'EUR'});
+const mcEsc = v => String(v==null?'':v).replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const mcNum = v => { const n=Number(String(v==null?'':v).trim().replace(/\s/g,'').replace(/€/g,'').replace(/\.(?=\d{3}(?:\D|$))/g,'').replace(',','.')); return Number.isFinite(n)?n:0; };
+const mcProducts = c => Array.isArray(c.productos) && c.productos.length ? c.productos : (c.modelo ? [{modelo:(String(c.modelo).toUpperCase().includes('PRO')?'PRO':'GO'),gas:String(c.modelo).toUpperCase().includes('GN')?'GN':String(c.modelo).toUpperCase().includes('GP')?'GP':'',unidades:mcNum(c.unidades),pvp:0}]:[]);
+const mcUnits = c => mcProducts(c).reduce((sum,p)=>sum+mcNum(p.unidades),0);
+const mcChannel = c => c.canal || (c.tipoVenta==='demo'?'demo':'final');
+const mcStatus = c => mcChannel(c)==='demo'?'demo':(c.estadoComision || (c.cobrada==='si'?'cobrada':'pendiente'));
+const mcBase = c => mcProducts(c).reduce((sum,p)=>sum+mcNum(p.unidades)*(mcNum(p.pvp)||MC_PVP[p.modelo]||0),0);
+const mcDiscount = (c,base) => {
+  if(c.precioFinalManual!==undefined && c.precioFinalManual!==null && c.precioFinalManual!=='')return mcNum(c.precioFinalManual);
+  const primary=mcChannel(c)==='distribuidor'||mcChannel(c)==='demo'?mcNum(c.descuentoBase===undefined?30:c.descuentoBase):mcNum(c.descuentoBase);
+  const units=mcUnits(c), volume=c.descuentoVolumen==='auto'||c.descuentoVolumen===undefined?(mcChannel(c)==='distribuidor'?(units>=6?10:units>=3?5:0):0):mcNum(c.descuentoVolumen);
+  return Math.round(base*(1-primary/100)*(1-volume/100)*(1-mcNum(c.descuentoExtra)/100)*100)/100;
+};
+const mcTotal = c => {
+  if(Array.isArray(c.productos)&&c.productos.length)return mcDiscount(c,mcBase(c));
+  const legacyPrice=mcNum(c.precioVenta)*mcNum(c.unidades);
+  return legacyPrice || mcNum(c.importeVenta);
+};
+const mcRate = c => mcChannel(c)==='demo'?0:(c.pctComision!==undefined && c.pctComision!==''?mcNum(c.pctComision):(mcChannel(c)==='distribuidor'?2:4));
+const mcCommission = c => mcChannel(c)==='demo'?0:(mcTotal(c)*mcRate(c)/100 || mcNum(c.importeComision));
+function renderComisiones(){
+  const records=state.comisiones||[], match=c=>comFilter==='all'||mcStatus(c)===comFilter;
+  const sum=(status)=>records.filter(c=>mcStatus(c)===status).reduce((a,c)=>a+mcCommission(c),0);
+  const demo=records.filter(c=>mcStatus(c)==='demo').reduce((a,c)=>a+mcUnits(c),0);
+  document.getElementById('com-resumen').innerHTML=[
+    ['Previstas',mcMoney(sum('prevista'))],['Pendientes de cobrar',mcMoney(sum('pendiente'))],
+    ['Cobradas',mcMoney(sum('cobrada'))],['Equipos DEMO',demo]
+  ].map(x=>'<div class="kpi-card" style="min-width:170px"><div class="kpi-val" style="font-size:22px">'+x[1]+'</div><div class="kpi-label">'+x[0]+'</div></div>').join('');
+  document.getElementById('com-tbody').innerHTML=records.filter(match).map(c=>{
+    const products=mcProducts(c), channel=mcChannel(c),status=mcStatus(c);
+    const models=products.map(p=>mcEsc(p.unidades)+' × '+mcEsc(p.modelo)+(p.gas?' '+mcEsc(p.gas):'')).join('<br>')||'—';
+    const disc=Array.isArray(c.productos)?(mcNum(c.descuentoBase)+'% base + '+(c.descuentoVolumen==='auto'||c.descuentoVolumen===undefined?'auto':mcNum(c.descuentoVolumen)+'%')+' volumen'+(mcNum(c.descuentoExtra)?' + '+mcNum(c.descuentoExtra)+'% extra':'')+(c.precioFinalManual!==''&&c.precioFinalManual!==undefined?' · Manual':''):'Histórico';
+    const label={prevista:'📄 Prevista',pendiente:'⏳ Pendiente',cobrada:'✅ Cobrada',demo:'📦 DEMO'}[status]||status;
+    return '<tr><td><strong>'+mcEsc(c.cliente)+'</strong>'+(c.num?'<div style="font-size:11px;color:#888">'+mcEsc(c.num)+'</div>':'')+'</td>'+
+      '<td>'+mcEsc(c.fechaCierre||'—')+'</td><td>'+models+'</td><td>'+mcEsc(channel)+'</td>'+
+      '<td style="font-size:11px">'+mcEsc(disc)+'</td><td style="font-weight:700">'+mcMoney(mcTotal(c))+'</td>'+
+      '<td>'+mcRate(c)+'%</td><td style="font-weight:700;color:#2d7a2d">'+mcMoney(mcCommission(c))+'</td>'+
+      '<td><select class="cell-select" onchange="mcSetStatus('+c.id+',this.value)">'+
+      [['prevista','📄 Prevista'],['pendiente','⏳ Pendiente'],['cobrada','✅ Cobrada'],['demo','📦 DEMO']].map(o=>'<option value="'+o[0]+'" '+(status===o[0]?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></td>'+
+      '<td style="max-width:180px;font-size:12px">'+mcEsc(c.notas||'')+'</td>'+
+      '<td style="white-space:nowrap"><button class="btn" onclick="openNewComisionModal('+c.id+')">Editar</button> <button class="btn btn-danger" onclick="deleteCom('+c.id+')">✕</button></td></tr>';
+  }).join('')||'<tr><td colspan="11" style="text-align:center;color:#888;padding:25px">No hay operaciones en esta categoría</td></tr>';
+  document.getElementById('com-totals').innerHTML='';
+}
+function setComFilter(val){
+  comFilter=val;
+  ['all','prev','pen','cob','demo'].forEach(k=>document.getElementById('com-'+k)?.classList.remove('active'));
+  const keys={all:'all',prevista:'prev',pendiente:'pen',cobrada:'cob',demo:'demo'};
+  document.getElementById('com-'+keys[val])?.classList.add('active');
+  renderComisiones();
+}
+function mcSetStatus(id,status){
+  const c=state.comisiones.find(v=>v.id===id);if(!c)return;
+  c.estadoComision=status;
+  if(status==='demo')c.canal='demo';
+  else if(c.canal==='demo')c.canal='distribuidor';
+  c.cobrada=status==='cobrada'?'si':'no';
+  saveState();renderComisiones();renderKPIs();
+}
+function mcAddLine(item){
+  const box=document.getElementById('mc-lines');
+  const line=document.createElement('div');line.className='mc-line';line.style.cssText='display:grid;grid-template-columns:1fr 1fr 100px 36px;gap:6px;margin-bottom:8px';
+  line.innerHTML='<select class="mc-modelo"><option value="GO">GO · 3.995€</option><option value="PRO">PRO · 4.800€</option></select>'+
+    '<select class="mc-gas"><option value="GP">Propano (GP)</option><option value="GN">Natural (GN)</option></select>'+
+    '<input class="mc-uds" type="number" min="1" step="1" value="1" title="Unidades">'+
+    '<button class="btn btn-danger" type="button" onclick="this.parentNode.remove();mcRecalc()">✕</button>';
+  box.appendChild(line);
+  if(item){line.querySelector('.mc-modelo').value=item.modelo==='PRO'?'PRO':'GO';line.querySelector('.mc-gas').value=item.gas==='GN'?'GN':'GP';line.querySelector('.mc-uds').value=mcNum(item.unidades)||1;}
+  line.querySelectorAll('select,input').forEach(el=>el.addEventListener('input',mcRecalc));
+  mcRecalc();
+}
+function mcFormData(){
+  const val=id=>document.getElementById(id).value;
+  const productos=[...document.querySelectorAll('#mc-lines .mc-line')].map(el=>({modelo:el.querySelector('.mc-modelo').value,gas:el.querySelector('.mc-gas').value,unidades:mcNum(el.querySelector('.mc-uds').value)}));
+  return {cliente:val('mc-cliente').trim(),num:val('mc-num').trim(),fechaCierre:val('mc-fecha'),fechaPrevista:val('mc-prevista'),fechaCobro:val('mc-cobro'),notas:val('mc-notas').trim(),
+    canal:val('mc-canal'),estadoComision:val('mc-estado'),tipoPago:val('mc-pago'),productos,
+    descuentoBase:mcNum(val('mc-base')),descuentoVolumen:val('mc-vol-auto').checked?'auto':mcNum(val('mc-volume')),
+    descuentoExtra:mcNum(val('mc-extra')),precioFinalManual:val('mc-manual').trim(),
+    pctComision:mcNum(val('mc-pct')),cobrada:val('mc-estado')==='cobrada'?'si':'no'};
+}
+function mcChannelChange(){
+  const channel=document.getElementById('mc-canal').value;
+  const base=document.getElementById('mc-base');
+  if(!base.dataset.custom)base.value=channel==='final'?0:30;
+  const rate=document.getElementById('mc-pct');if(!rate.dataset.custom)rate.value=channel==='demo'?0:channel==='final'?4:2;
+  if(channel==='demo')document.getElementById('mc-estado').value='demo';
+  else if(document.getElementById('mc-estado').value==='demo')document.getElementById('mc-estado').value='prevista';
+  mcRecalc();
+}
+function mcRecalc(){
+  const result=document.getElementById('mc-preview');if(!result)return;
+  const d=mcFormData(),base=mcBase(d),units=mcUnits(d);
+  const vol=d.descuentoVolumen==='auto'?(d.canal==='distribuidor'?(units>=6?10:units>=3?5:0):0):d.descuentoVolumen;
+  result.textContent='Tarifa: '+mcMoney(base)+' · '+units+' equipos · Volumen: '+vol+'% · Venta final sin IVA: '+mcMoney(mcTotal(d))+' · Comisión: '+mcMoney(mcCommission(d));
+}
+function openNewComisionModal(id){
+  const previous=id?state.comisiones.find(c=>c.id===id):null;
+  const c=previous||{cliente:'',fechaCierre:'',canal:'final',estadoComision:'prevista',descuentoVolumen:'auto',descuentoBase:0,pctComision:4,productos:[],tipoPago:'pendiente'};
+  const channel=mcChannel(c),status=mcStatus(c);
+  openModal('<h2>💰 '+(previous?'Editar operación':'Nueva operación')+'</h2>'+
+   '<div class="field-group">'+
+   '<div class="field full"><label>Cliente / distribuidor</label><input id="mc-cliente"></div>'+
+   '<div class="field"><label>Número de proforma (opcional)</label><input id="mc-num"></div>'+
+   '<div class="field"><label>Fecha operación</label><input type="date" id="mc-fecha"></div>'+
+   '<div class="field"><label>Canal</label><select id="mc-canal"><option value="final">Cliente final</option><option value="distribuidor">Distribuidor</option><option value="demo">Venta DEMO a distribuidor</option></select></div>'+
+   '<div class="field"><label>Estado de comisión</label><select id="mc-estado"><option value="prevista">Prevista / proforma enviada</option><option value="pendiente">Devengada · pendiente de cobrar</option><option value="cobrada">Cobrada</option><option value="demo">DEMO · sin comisión</option></select></div>'+
+   '<div class="field"><label>Fecha prevista / cierre</label><input type="date" id="mc-prevista"></div>'+
+   '<div class="field"><label>Fecha de cobro comisión</label><input type="date" id="mc-cobro"></div>'+
+   '<div class="field"><label>Condición de venta</label><select id="mc-pago"><option value="pendiente">Pendiente de pago / aceptación</option><option value="pagado">Cliente pagó</option><option value="riesgo">Riesgo aprobado por Dirección</option></select></div>'+
+   '<div class="field full"><label>Equipos de esta operación (GO y PRO se suman para volumen)</label><div id="mc-lines"></div><button class="btn" type="button" onclick="mcAddLine()">+ Añadir modelo</button></div>'+
+   '<div class="field"><label>Descuento base (%)</label><input id="mc-base" type="number" min="0" max="100" step="0.01"></div>'+
+   '<div class="field"><label>Descuento volumen</label><div style="display:flex;gap:8px;align-items:center"><label style="font-size:11px"><input type="checkbox" id="mc-vol-auto" checked> Automático</label><select id="mc-volume"><option value="0">0%</option><option value="5">5%</option><option value="10">10%</option></select></div></div>'+
+   '<div class="field"><label>Descuento extraordinario adicional (%)</label><input id="mc-extra" type="number" min="0" max="100" step="0.01" value="0"></div>'+
+   '<div class="field"><label>Precio TOTAL manual sin IVA (€) · opcional</label><input id="mc-manual" type="number" min="0" step="0.01" placeholder="Vacío = cálculo automático"></div>'+
+   '<div class="field"><label>Comisión (%)</label><input id="mc-pct" type="number" min="0" step="0.01"></div>'+
+   '<div class="field full"><label>Notas</label><textarea id="mc-notas"></textarea></div></div>'+
+   '<div id="mc-preview" style="padding:12px;background:#f5f4f0;border-radius:8px;font-size:12px;margin-top:12px"></div>'+
+   '<div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="mcSave('+(id||0)+')">Guardar operación</button></div>');
+  const set=(field,value)=>document.getElementById('mc-'+field).value=value==null?'':value;
+  set('cliente',c.cliente);set('num',c.num);set('fecha',/^\d{4}-\d{2}-\d{2}$/.test(c.fechaCierre||'')?c.fechaCierre:'');
+  set('prevista',c.fechaPrevista);set('cobro',/^\d{4}-\d{2}-\d{2}$/.test(c.fechaCobro||'')?c.fechaCobro:'');
+  set('canal',channel);set('estado',status);set('pago',c.tipoPago||'pendiente');
+  set('base',c.descuentoBase===undefined?(channel==='final'?0:30):c.descuentoBase);
+  set('volume',c.descuentoVolumen==='auto'?0:(c.descuentoVolumen||0));
+  document.getElementById('mc-vol-auto').checked=c.descuentoVolumen===undefined||c.descuentoVolumen==='auto';
+  set('extra',c.descuentoExtra);set('manual',c.precioFinalManual);set('pct',c.pctComision===''?(channel==='distribuidor'?2:4):c.pctComision);
+  set('notas',c.notas);
+  document.getElementById('mc-canal').addEventListener('change',mcChannelChange);
+  ['base','pct'].forEach(key=>document.getElementById('mc-'+key).addEventListener('input',e=>{e.target.dataset.custom='1';mcRecalc();}));
+  ['estado','pago','volume','vol-auto','extra','manual'].forEach(key=>document.getElementById('mc-'+key).addEventListener('input',mcRecalc));
+  const lines=mcProducts(c);(lines.length?lines:[{modelo:'GO',gas:'GP',unidades:1}]).forEach(mcAddLine);
+  mcRecalc();
+}
+function mcSave(id){
+  const d=mcFormData();
+  if(!d.cliente){alert('Indica un cliente o distribuidor.');return;}
+  if(!d.productos.length||d.productos.some(p=>!Number.isInteger(p.unidades)||p.unidades<1)){alert('Añade al menos una línea con unidades válidas.');return;}
+  if([d.descuentoBase,d.descuentoExtra].some(v=>v<0||v>100)){alert('Los descuentos deben estar entre 0 y 100%.');return;}
+  if(d.canal==='demo'){d.estadoComision='demo';d.pctComision=0;}
+  else if(d.estadoComision==='demo'){alert('Selecciona un estado de comisión válido para esta venta.');return;}
+  if(d.estadoComision==='pendiente'&&d.tipoPago==='pendiente'&&!confirm('La venta aún figura sin pago ni riesgo aprobado. ¿Marcar igualmente la comisión como devengada?'))return;
+  const old=id?state.comisiones.find(c=>c.id===id):null;
+  if(old){Object.assign(old,d);}else{state.comisiones.push(Object.assign({id:++nextId},d));}
+  const c=old||state.comisiones[state.comisiones.length-1];
+  c.unidades=mcUnits(c);c.modelo=mcProducts(c).map(p=>p.modelo+' '+p.gas).join(' + ');
+  c.importeVenta=mcTotal(c);c.precioVenta=c.unidades?c.importeVenta/c.unidades:0;
+  c.importeComision=mcCommission(c);
+  saveState();closeModal();renderComisiones();renderKPIs();
 }
 
 // ===================== INIT =====================
