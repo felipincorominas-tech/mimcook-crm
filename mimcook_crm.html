@@ -126,6 +126,19 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .field input:focus, .field select:focus, .field textarea:focus { border-color: #f5c842; }
 .field textarea { resize: vertical; min-height: 70px; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+#view-comisiones #com-resumen{display:grid !important;grid-template-columns:repeat(4,minmax(190px,1fr));gap:16px !important}
+#view-comisiones #com-resumen .kpi-card{min-width:0 !important;padding:22px 24px}
+#view-comisiones #com-resumen .kpi-val{font-size:30px !important;line-height:1.25}
+#view-comisiones #com-resumen .kpi-label{font-size:13px}
+.modal.mc-modal{width:800px;max-width:calc(100vw - 28px)}
+.mc-modal .field-group{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mc-modal .field{min-width:0}
+.mc-modal .field input,.mc-modal .field select,.mc-modal .field textarea{min-width:0;max-width:100%;width:100%}
+.mc-modal .mc-line{grid-template-columns:minmax(130px,1.1fr) minmax(140px,1.1fr) minmax(70px,.5fr) 38px !important;max-width:100%}
+.mc-modal .mc-line .btn{padding:6px;min-width:34px}
+@media(max-width:850px){#view-comisiones #com-resumen{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:530px){.mc-modal .mc-line{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 70px 32px !important;gap:4px !important}.modal.mc-modal{padding:14px}#view-comisiones #com-resumen .kpi-val{font-size:23px !important}}
 </style>
 </head>
 <body>
@@ -260,7 +273,7 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   <div class="toolbar">
     <button class="btn active" id="com-all" onclick="setComFilter('all')">Todas</button>
     <button class="btn" id="com-prev" onclick="setComFilter('prevista')">📄 Previstas</button>
-    <button class="btn" id="com-pen" onclick="setComFilter('pendiente')">⏳ Pendientes de cobrar</button>
+    <button class="btn" id="com-pen" onclick="setComFilter('pendiente')">⏳ Por cobrar</button>
     <button class="btn" id="com-cob" onclick="setComFilter('cobrada')">✅ Cobradas</button>
     <button class="btn" id="com-demo" onclick="setComFilter('demo')">📦 Ventas DEMO</button>
     <button class="btn btn-primary" style="margin-left:auto" onclick="openNewComisionModal()">+ Nueva operación</button>
@@ -2560,7 +2573,7 @@ function renderComisiones(){
   const sum=(status)=>records.filter(c=>mcStatus(c)===status).reduce((a,c)=>a+mcCommission(c),0);
   const demo=records.filter(c=>mcStatus(c)==='demo').reduce((a,c)=>a+mcUnits(c),0);
   document.getElementById('com-resumen').innerHTML=[
-    ['Previstas',mcMoney(sum('prevista'))],['Pendientes de cobrar',mcMoney(sum('pendiente'))],
+    ['Previstas',mcMoney(sum('prevista'))],['Por cobrar',mcMoney(sum('pendiente'))],
     ['Cobradas',mcMoney(sum('cobrada'))],['Equipos DEMO',demo]
   ].map(x=>'<div class="kpi-card" style="min-width:170px"><div class="kpi-val" style="font-size:22px">'+x[1]+'</div><div class="kpi-label">'+x[0]+'</div></div>').join('');
   document.getElementById('com-tbody').innerHTML=records.filter(match).map(c=>{
@@ -2573,7 +2586,7 @@ function renderComisiones(){
       '<td style="font-size:11px">'+mcEsc(disc)+'</td><td style="font-weight:700">'+mcMoney(mcTotal(c))+'</td>'+
       '<td>'+mcRate(c)+'%</td><td style="font-weight:700;color:#2d7a2d">'+mcMoney(mcCommission(c))+'</td>'+
       '<td><select class="cell-select" onchange="mcSetStatus('+c.id+',this.value)">'+
-      [['prevista','📄 Prevista'],['pendiente','⏳ Pendiente'],['cobrada','✅ Cobrada'],['demo','📦 DEMO']].map(o=>'<option value="'+o[0]+'" '+(status===o[0]?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></td>'+
+      [['prevista','📄 Prevista'],['pendiente','⏳ Por cobrar'],['cobrada','✅ Cobrada'],['demo','📦 DEMO']].map(o=>'<option value="'+o[0]+'" '+(status===o[0]?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></td>'+
       '<td style="max-width:180px;font-size:12px">'+mcEsc(c.notas||'')+'</td>'+
       '<td style="white-space:nowrap"><button class="btn" onclick="openNewComisionModal('+c.id+')">Editar</button> <button class="btn btn-danger" onclick="deleteCom('+c.id+')">✕</button></td></tr>';
   }).join('')||'<tr><td colspan="11" style="text-align:center;color:#888;padding:25px">No hay operaciones en esta categoría</td></tr>';
@@ -2640,7 +2653,7 @@ function openNewComisionModal(id){
    '<div class="field"><label>Número de proforma (opcional)</label><input id="mc-num"></div>'+
    '<div class="field"><label>Fecha operación</label><input type="date" id="mc-fecha"></div>'+
    '<div class="field"><label>Canal</label><select id="mc-canal"><option value="final">Cliente final</option><option value="distribuidor">Distribuidor</option><option value="demo">Venta DEMO a distribuidor</option></select></div>'+
-   '<div class="field"><label>Estado de comisión</label><select id="mc-estado"><option value="prevista">Prevista / proforma enviada</option><option value="pendiente">Devengada · pendiente de cobrar</option><option value="cobrada">Cobrada</option><option value="demo">DEMO · sin comisión</option></select></div>'+
+   '<div class="field"><label>Estado de comisión</label><select id="mc-estado"><option value="prevista">Prevista / proforma enviada</option><option value="pendiente">Por cobrar</option><option value="cobrada">Cobrada</option><option value="demo">DEMO · sin comisión</option></select></div>'+
    '<div class="field"><label>Fecha prevista / cierre</label><input type="date" id="mc-prevista"></div>'+
    '<div class="field"><label>Fecha de cobro comisión</label><input type="date" id="mc-cobro"></div>'+
    '<div class="field"><label>Condición de venta</label><select id="mc-pago"><option value="pendiente">Pendiente de pago / aceptación</option><option value="pagado">Cliente pagó</option><option value="riesgo">Riesgo aprobado por Dirección</option></select></div>'+
@@ -2653,6 +2666,7 @@ function openNewComisionModal(id){
    '<div class="field full"><label>Notas</label><textarea id="mc-notas"></textarea></div></div>'+
    '<div id="mc-preview" style="padding:12px;background:#f5f4f0;border-radius:8px;font-size:12px;margin-top:12px"></div>'+
    '<div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="mcSave('+(id||0)+')">Guardar operación</button></div>');
+  document.getElementById('modal-inner').classList.add('mc-modal');
   const set=(field,value)=>document.getElementById('mc-'+field).value=value==null?'':value;
   set('cliente',c.cliente);set('num',c.num);set('fecha',/^\d{4}-\d{2}-\d{2}$/.test(c.fechaCierre||'')?c.fechaCierre:'');
   set('prevista',c.fechaPrevista);set('cobro',/^\d{4}-\d{2}-\d{2}$/.test(c.fechaCobro||'')?c.fechaCobro:'');
@@ -2675,7 +2689,7 @@ function mcSave(id){
   if([d.descuentoBase,d.descuentoExtra].some(v=>v<0||v>100)){alert('Los descuentos deben estar entre 0 y 100%.');return;}
   if(d.canal==='demo'){d.estadoComision='demo';d.pctComision=0;}
   else if(d.estadoComision==='demo'){alert('Selecciona un estado de comisión válido para esta venta.');return;}
-  if(d.estadoComision==='pendiente'&&d.tipoPago==='pendiente'&&!confirm('La venta aún figura sin pago ni riesgo aprobado. ¿Marcar igualmente la comisión como devengada?'))return;
+  if(d.estadoComision==='pendiente'&&d.tipoPago==='pendiente'&&!confirm('La venta aún figura sin pago ni riesgo aprobado. ¿Marcar igualmente la comisión como por cobrar?'))return;
   const old=id?state.comisiones.find(c=>c.id===id):null;
   if(old){Object.assign(old,d);}else{state.comisiones.push(Object.assign({id:++nextId},d));}
   const c=old||state.comisiones[state.comisiones.length-1];
