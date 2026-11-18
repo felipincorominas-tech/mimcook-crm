@@ -174,6 +174,8 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   <div class="tab" onclick="showTab('clientes',this)">👤 Clientes finales</div>
   <div class="tab" onclick="showTab('distribuidores',this)">🤝 Distribuidores</div>
   <div class="tab" onclick="showTab('proformas',this)">📄 Proformas</div>
+  <div class="tab" onclick="showTab('operaciones',this)">📌 Operaciones</div>
+  <div class="tab" onclick="showTab('ventas',this)">📈 Ventas y forecast</div>
   <div class="tab" onclick="showTab('demos',this)">🎬 Demos</div>
   <div class="tab" onclick="showTab('formaciones',this)">🎓 Formaciones</div>
   <div class="tab" onclick="showTab('acciones',this)">✅ Acciones</div>
@@ -290,6 +292,38 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
   </div>
   <div id="com-totals"></div>
 </div>
+<div id="view-operaciones" class="view">
+  <div class="toolbar">
+    <span style="font-size:13px;color:#666">Oportunidades cualificadas y operaciones abiertas, separadas de comisiones</span>
+    <button class="btn btn-primary" style="margin-left:auto" onclick="crmOpenOperacion()">+ Nueva operación</button>
+  </div>
+  <div class="toolbar">
+    <select id="op-origen-filter" class="cell-select" onchange="crmRenderOperaciones()"><option value="all">Todos los orígenes</option><option value="Propia">Propia</option><option value="Ramón / RÓS">Ramón / RÓS</option><option value="Distribuidor">Distribuidor</option></select>
+    <select id="op-estado-filter" class="cell-select" onchange="crmRenderOperaciones()"><option value="abiertas">Abiertas</option><option value="all">Todas</option><option value="ganada">Ganadas</option><option value="perdida">Perdidas</option></select>
+  </div>
+  <div id="op-resumen" class="kpi-grid"></div>
+  <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Origen / Distribuidor</th><th>Fase</th><th>Equipos</th><th>Importe estimado</th><th>Cierre previsto</th><th>Próxima acción</th><th>Responsable</th><th></th></tr></thead><tbody id="op-tbody"></tbody></table></div>
+</div>
+<div id="view-ventas" class="view">
+  <div class="toolbar">
+    <span style="font-size:13px;color:#666">Histórico verificado · Ventas reales sin IVA · No incluye reservas, presupuestos ni comisiones</span>
+    <button class="btn btn-primary" style="margin-left:auto" onclick="crmOpenVenta()">+ Registrar venta</button>
+  </div>
+  <div id="sales-resumen" class="kpi-grid"></div>
+  <div class="toolbar">
+    <label style="font-size:12px;color:#666">Año</label>
+    <select id="sales-year" class="cell-select" onchange="crmRenderVentas()"><option value="all">Todos</option></select>
+    <label style="font-size:12px;color:#666">Canal de facturación</label>
+    <select id="sales-channel" class="cell-select" onchange="crmRenderVentas()"><option value="all">Todos</option><option value="Directa">Directa</option><option value="Distribuidor">Distribuidor</option></select>
+  </div>
+  <h3 style="font-size:15px;margin:18px 0 10px">Evolución mensual · GO y PRO</h3>
+  <div class="table-wrap" style="margin-bottom:20px"><table><thead><tr><th>Mes</th><th>GO</th><th>PRO</th><th>Total equipos</th><th>Facturación neta</th></tr></thead><tbody id="sales-monthly"></tbody></table></div>
+  <h3 style="font-size:15px;margin:18px 0 10px">Desglose por canal y origen</h3>
+  <div id="sales-breakdown"></div>
+  <h3 style="font-size:15px;margin:18px 0 10px">Registro de ventas verificadas</h3>
+  <div class="table-wrap"><table><thead><tr><th>Fecha factura</th><th>Nº factura</th><th>Cliente</th><th>Equipos</th><th>Canal</th><th>Origen</th><th>Distribuidor</th><th>Provincia</th><th>Importe neto</th><th></th></tr></thead><tbody id="sales-tbody"></tbody></table></div>
+  <p style="font-size:12px;color:#777;margin:12px 0">El forecast 2027 se construirá sobre este registro y las operaciones cualificadas. No se proyecta estacionalidad sin histórico suficiente.</p>
+</div>
 <div id="view-kpis" class="view">
   <div class="kpi-grid" id="kpi-grid"></div>
   <div style="font-size:15px;font-weight:700;margin-bottom:14px;margin-top:4px">
@@ -378,11 +412,13 @@ function loadState() {
       if (!state.reuniones) state.reuniones = [];
       if (!state.pipeline) state.pipeline = [];
       if (!state.clientesFinales) state.clientesFinales = [];
+      if (!state.operaciones) state.operaciones = [];
+      if (!state.ventasVerificadas) state.ventasVerificadas = [];
       const allIds = [
         ...(state.pipeline||[]), ...(state.distribuidores||[]),
         ...(state.proformas||[]), ...(state.demos||[]),
         ...(state.acciones||[]), ...(state.comisiones||[]), ...(state.cartera||[]),
-        ...(state.formaciones||[]), ...(state.reuniones||[]), ...(state.clientesFinales||[])
+        ...(state.formaciones||[]), ...(state.reuniones||[]), ...(state.clientesFinales||[]), ...(state.operaciones||[]), ...(state.ventasVerificadas||[])
       ].map(x => typeof x.id === 'number' ? x.id : 0);
       nextId = Math.max(100, ...allIds);
       state.pipeline       = fixDuplicateIds(state.pipeline||[]);
@@ -393,6 +429,8 @@ function loadState() {
       state.comisiones     = fixDuplicateIds(state.comisiones||[]);
       state.cartera        = fixDuplicateIds(state.cartera||[]);
       state.formaciones    = fixDuplicateIds(state.formaciones||[]);
+      state.operaciones   = fixDuplicateIds(state.operaciones||[]);
+      state.ventasVerificadas = fixDuplicateIds(state.ventasVerificadas||[]);
       state.proformas.forEach(p => { if (!p.responsable) p.responsable = 'Felipe'; });
       return;
     }
@@ -401,6 +439,8 @@ function loadState() {
   if (!state.reuniones) state.reuniones = [];
   if (!state.pipeline) state.pipeline = [];
   if (!state.clientesFinales) state.clientesFinales = [];
+  if (!state.operaciones) state.operaciones = [];
+  if (!state.ventasVerificadas) state.ventasVerificadas = [];
 }
 
 function saveState() {
@@ -2543,6 +2583,8 @@ function showTab(name, el) {
   if (name==='formaciones') renderFormaciones();
   if (name==='acciones') renderAcciones();
   if (name==='comisiones') renderComisiones();
+  if (name==='operaciones') crmRenderOperaciones();
+  if (name==='ventas') crmRenderVentas();
   if (name==='kpis') renderKPIs();
   if (name==='reuniones') renderReuniones();
 }
@@ -2717,6 +2759,114 @@ function mcSave(id){
   saveState();closeModal();renderComisiones();renderKPIs();
 }
 
+
+/* REGISTRO COMERCIAL V1: tablas aditivas. No altera proformas, cartera ni comisiones existentes. */
+const crmMoney = n=>Number(n||0).toLocaleString('es-ES',{style:'currency',currency:'EUR'});
+const crmSafe = v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const crmN = v=>Math.max(0,Number(v)||0);
+const crmItems = x => (x.productos||[]).filter(p=>crmN(p.unidades)>0);
+const crmTotalUnits = x=>crmItems(x).reduce((sum,p)=>sum+crmN(p.unidades),0);
+function crmAddItem(x){
+ const host=document.getElementById('crm-item-lines');if(!host)return;
+ const item=document.createElement('div');item.className='crm-item-line';item.style.cssText='display:grid;grid-template-columns:minmax(80px,1fr) minmax(100px,1fr) 80px 38px;gap:7px;margin-bottom:8px';
+ item.innerHTML='<select class="item-model"><option value="GO">GO</option><option value="PRO">PRO</option></select><select class="item-gas"><option value="GP">Propano (GP)</option><option value="GN">Natural (GN)</option></select><input class="item-qty" type="number" min="1" step="1" value="1"><button class="btn btn-danger" type="button" onclick="this.parentElement.remove()">✕</button>';
+ host.appendChild(item);
+ if(x){item.querySelector('.item-model').value=x.modelo||'GO';item.querySelector('.item-gas').value=x.gas||'GP';item.querySelector('.item-qty').value=crmN(x.unidades)||1;}
+}
+function crmReadItems(){
+ return [...document.querySelectorAll('#crm-item-lines .crm-item-line')].map(el=>({modelo:el.querySelector('.item-model').value,gas:el.querySelector('.item-gas').value,unidades:Number(el.querySelector('.item-qty').value)}));
+}
+const crmInput=id=>document.getElementById(id).value;
+const crmSet=(id,value)=>{document.getElementById(id).value=value??'';};
+function crmCommonForm(){
+ return '<div class="field full"><label>Equipos (añadir tantas líneas como sea necesario)</label><div id="crm-item-lines"></div><button class="btn" type="button" onclick="crmAddItem()">+ Añadir equipo</button></div>';
+}
+function crmInitCommon(entity){
+ document.getElementById('modal-inner').classList.add('mc-modal');
+ (crmItems(entity).length?crmItems(entity):[{modelo:'GO',gas:'GP',unidades:1}]).forEach(crmAddItem);
+}
+function crmValidItems(items){
+ return items.length>0&&items.every(p=>Number.isInteger(p.unidades)&&p.unidades>0);
+}
+function crmRenderOperaciones(){
+ const records=state.operaciones||[], source=document.getElementById('op-origen-filter').value, status=document.getElementById('op-estado-filter').value;
+ const open=records.filter(x=>!['ganada','perdida'].includes(x.estado));
+ const pieces=[['Abiertas',open.length],['Equipos previstos',open.reduce((a,x)=>a+crmTotalUnits(x),0)],['Valor potencial sin IVA',crmMoney(open.reduce((a,x)=>a+crmN(x.importe),0))],['Distribuidores',open.filter(x=>x.origen==='Distribuidor').length]];
+ document.getElementById('op-resumen').innerHTML=pieces.map(p=>'<div class="kpi-card"><div class="kpi-val">'+p[1]+'</div><div class="kpi-label">'+p[0]+'</div></div>').join('');
+ const filtered=records.filter(x=>(source==='all'||x.origen===source)&&(status==='all'||(status==='abiertas'?!['ganada','perdida'].includes(x.estado):x.estado===status)));
+ document.getElementById('op-tbody').innerHTML=filtered.map(x=>'<tr><td><strong>'+crmSafe(x.cliente)+'</strong></td><td>'+crmSafe(x.origen)+(x.distribuidor?'<div style="font-size:11px">'+crmSafe(x.distribuidor)+'</div>':'')+'</td><td>'+crmSafe(x.estado)+'</td><td>'+crmItems(x).map(p=>crmSafe(p.unidades)+' '+crmSafe(p.modelo)+' '+crmSafe(p.gas)).join('<br>')+'</td><td>'+crmMoney(x.importe)+'</td><td>'+crmSafe(x.cierre||'—')+'</td><td>'+crmSafe(x.accion||'—')+'<div style="font-size:11px;color:#888">'+crmSafe(x.fechaAccion||'')+'</div></td><td>'+crmSafe(x.responsable||'—')+'</td><td><button class="btn" onclick="crmOpenOperacion('+x.id+')">Editar</button></td></tr>').join('')||'<tr><td colspan="9" style="padding:25px;text-align:center;color:#888">Sin operaciones para este filtro</td></tr>';
+}
+function crmOpenOperacion(id){
+ const x=id?state.operaciones.find(v=>v.id===id):null;const entity=x||{estado:'negociación',origen:'Propia',responsable:'Felipe',productos:[]};
+ openModal('<h2>📌 '+(x?'Editar':'Nueva')+' operación pendiente</h2><div class="field-group">'+
+  '<div class="field full"><label>Cliente</label><input id="op-client"></div>'+
+  '<div class="field"><label>Origen</label><select id="op-source"><option>Propia</option><option>Ramón / RÓS</option><option>Distribuidor</option></select></div>'+
+  '<div class="field"><label>Distribuidor asociado</label><input id="op-distributor"></div>'+
+  '<div class="field"><label>Responsable</label><input id="op-owner"></div>'+
+  '<div class="field"><label>Fase comercial</label><select id="op-stage"><option value="negociación">Negociación</option><option value="demo">Demo</option><option value="proforma">Proforma enviada</option><option value="pedido">Pedido confirmado</option><option value="ganada">Ganada</option><option value="perdida">Perdida</option></select></div>'+
+  crmCommonForm()+
+  '<div class="field"><label>Valor potencial sin IVA (€)</label><input id="op-amount" type="number" step="0.01" min="0"></div>'+
+  '<div class="field"><label>Cierre previsto</label><input id="op-close" type="month"></div>'+
+  '<div class="field"><label>Próxima acción</label><input id="op-action"></div>'+
+  '<div class="field"><label>Fecha próxima acción</label><input id="op-action-date" type="date"></div>'+
+  '<div class="field full"><label>Notas</label><textarea id="op-notes"></textarea></div></div>'+
+  '<div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="crmSaveOperacion('+(id||0)+')">Guardar</button></div>');
+ crmInitCommon(entity);
+ [['op-client',entity.cliente],['op-source',entity.origen],['op-distributor',entity.distribuidor],['op-owner',entity.responsable],['op-stage',entity.estado],['op-amount',entity.importe],['op-close',entity.cierre],['op-action',entity.accion],['op-action-date',entity.fechaAccion],['op-notes',entity.notas]].forEach(v=>crmSet(...v));
+}
+function crmSaveOperacion(id){
+ const productos=crmReadItems(),cliente=crmInput('op-client').trim();if(!cliente||!crmValidItems(productos)){alert('Introduce cliente y cantidades válidas.');return;}
+ const data={cliente,productos,origen:crmInput('op-source'),distribuidor:crmInput('op-distributor').trim(),responsable:crmInput('op-owner').trim(),estado:crmInput('op-stage'),importe:crmN(crmInput('op-amount')),cierre:crmInput('op-close'),accion:crmInput('op-action').trim(),fechaAccion:crmInput('op-action-date'),notas:crmInput('op-notes').trim()};
+ const record=id?state.operaciones.find(v=>v.id===id):null;if(record)Object.assign(record,data);else state.operaciones.push({id:++nextId,...data});
+ saveState();closeModal();crmRenderOperaciones();
+}
+function crmSalesFiltered(){
+ const year=document.getElementById('sales-year').value,channel=document.getElementById('sales-channel').value;
+ return (state.ventasVerificadas||[]).filter(x=>(year==='all'||String(x.fechaFactura||'').slice(0,4)===year)&&(channel==='all'||x.canal===channel));
+}
+function crmRenderVentas(){
+ const years=[...new Set((state.ventasVerificadas||[]).map(x=>String(x.fechaFactura||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)))].sort().reverse();
+ const sel=document.getElementById('sales-year');const previous=sel.value||'all';sel.innerHTML='<option value="all">Todos</option>'+years.map(y=>'<option value="'+y+'">'+y+'</option>').join('');sel.value=years.includes(previous)?previous:'all';
+ const records=crmSalesFiltered(),amount=records.reduce((a,x)=>a+crmN(x.importe),0),items=records.flatMap(crmItems);
+ const count=model=>items.filter(x=>x.modelo===model).reduce((a,x)=>a+crmN(x.unidades),0);
+ const gp=items.filter(x=>x.gas==='GP').reduce((a,x)=>a+crmN(x.unidades),0),gn=items.filter(x=>x.gas==='GN').reduce((a,x)=>a+crmN(x.unidades),0);
+ document.getElementById('sales-resumen').innerHTML=[['Facturación s/IVA',crmMoney(amount)],['Equipos',count('GO')+count('PRO')],['GO',count('GO')],['PRO',count('PRO')],['Propano (GP)',gp],['Natural (GN)',gn]].map(x=>'<div class="kpi-card"><div class="kpi-val" style="font-size:26px">'+x[1]+'</div><div class="kpi-label">'+x[0]+'</div></div>').join('');
+ const months=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+ const monthly=months.map((m,i)=>{const rows=records.filter(x=>Number(String(x.fechaFactura||'').slice(5,7))===i+1);const list=rows.flatMap(crmItems);const units=t=>list.filter(p=>p.modelo===t).reduce((a,p)=>a+crmN(p.unidades),0);return '<tr><td>'+m+'</td><td>'+units('GO')+'</td><td>'+units('PRO')+'</td><td>'+(units('GO')+units('PRO'))+'</td><td>'+crmMoney(rows.reduce((a,x)=>a+crmN(x.importe),0))+'</td></tr>';});
+ document.getElementById('sales-monthly').innerHTML=monthly.join('');
+ const group=(key)=>{const vals=[...new Set(records.map(x=>x[key]||'Sin informar'))].sort();return vals.map(v=>{const subset=records.filter(x=>(x[key]||'Sin informar')===v);return '<tr><td>'+crmSafe(v)+'</td><td>'+subset.reduce((a,x)=>a+crmTotalUnits(x),0)+'</td><td>'+crmMoney(subset.reduce((a,x)=>a+crmN(x.importe),0))+'</td></tr>';}).join('');};
+ document.getElementById('sales-breakdown').innerHTML='<div class="table-wrap" style="margin-bottom:12px"><table><thead><tr><th>Canal de facturación</th><th>Unidades</th><th>Ventas netas</th></tr></thead><tbody>'+group('canal')+'</tbody></table></div><div class="table-wrap"><table><thead><tr><th>Origen de oportunidad</th><th>Unidades</th><th>Ventas netas</th></tr></thead><tbody>'+group('origen')+'</tbody></table></div>';
+ document.getElementById('sales-tbody').innerHTML=records.map(x=>'<tr><td>'+crmSafe(x.fechaFactura)+'</td><td>'+crmSafe(x.numeroFactura)+'</td><td><strong>'+crmSafe(x.cliente)+'</strong></td><td>'+crmItems(x).map(p=>crmSafe(p.unidades)+' '+crmSafe(p.modelo)+' '+crmSafe(p.gas)).join('<br>')+'</td><td>'+crmSafe(x.canal)+'</td><td>'+crmSafe(x.origen)+'</td><td>'+crmSafe(x.distribuidor||'—')+'</td><td>'+crmSafe(x.provincia||'—')+'</td><td>'+crmMoney(x.importe)+'</td><td><button class="btn" onclick="crmOpenVenta('+x.id+')">Editar</button></td></tr>').join('')||'<tr><td colspan="10" style="padding:25px;text-align:center;color:#888">Aún no hay ventas verificadas. Solicita el histórico a Administración y añádelo aquí.</td></tr>';
+}
+function crmOpenVenta(id){
+ const x=id?state.ventasVerificadas.find(v=>v.id===id):null;const d=x||{canal:'Directa',origen:'Propia',productos:[]};
+ openModal('<h2>📈 '+(x?'Editar':'Registrar')+' venta facturada</h2><div class="field-group">'+
+ '<div class="field full"><label>Cliente</label><input id="sale-client"></div>'+
+ '<div class="field"><label>Fecha de factura</label><input type="date" id="sale-date"></div>'+
+ '<div class="field"><label>Número de factura</label><input id="sale-invoice"></div>'+
+ '<div class="field"><label>Canal de facturación</label><select id="sale-channel"><option>Directa</option><option>Distribuidor</option></select></div>'+
+ '<div class="field"><label>Origen de oportunidad</label><select id="sale-origin"><option>Propia</option><option>Ramón / RÓS</option><option>Distribuidor</option><option>Otro / desconocido</option></select></div>'+
+ '<div class="field"><label>Distribuidor asociado</label><input id="sale-distributor"></div>'+
+ '<div class="field"><label>Provincia</label><input id="sale-province"></div>'+
+ crmCommonForm()+
+ '<div class="field"><label>Total factura SIN IVA (€)</label><input type="number" min="0" step="0.01" id="sale-total"></div>'+
+ '<div class="field"><label>Referencia de proforma (opcional)</label><input id="sale-proforma"></div>'+
+ '<div class="field full"><label>Observaciones / fuente del dato</label><textarea id="sale-notes"></textarea></div></div>'+
+ '<p style="font-size:12px;color:#888">Una factura = un registro. No incluye anticipos ni reservas. Los equipos DEMO facturados también pueden registrarse.</p>'+
+ '<div class="modal-footer"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="crmSaveVenta('+(id||0)+')">Guardar venta</button></div>');
+ crmInitCommon(d);
+ [['sale-client',d.cliente],['sale-date',d.fechaFactura],['sale-invoice',d.numeroFactura],['sale-channel',d.canal],['sale-origin',d.origen],['sale-distributor',d.distribuidor],['sale-province',d.provincia],['sale-total',d.importe],['sale-proforma',d.proforma],['sale-notes',d.notas]].forEach(v=>crmSet(...v));
+}
+function crmSaveVenta(id){
+ const cliente=crmInput('sale-client').trim(),fechaFactura=crmInput('sale-date'),numeroFactura=crmInput('sale-invoice').trim(),productos=crmReadItems(),importe=Number(crmInput('sale-total'));
+ if(!cliente||!fechaFactura||!numeroFactura||!crmValidItems(productos)||!Number.isFinite(importe)||importe<0){alert('Completa cliente, fecha, número de factura, equipos e importe sin IVA.');return;}
+ const normalized=numeroFactura.toLowerCase().replace(/\s+/g,'');
+ if(state.ventasVerificadas.some(x=>x.id!==id&&String(x.numeroFactura||'').toLowerCase().replace(/\s+/g,'')===normalized)){alert('Ya existe una venta con este número de factura. Revisa el registro para evitar duplicados.');return;}
+ const data={cliente,fechaFactura,numeroFactura,productos,importe,canal:crmInput('sale-channel'),origen:crmInput('sale-origin'),distribuidor:crmInput('sale-distributor').trim(),provincia:crmInput('sale-province').trim(),proforma:crmInput('sale-proforma').trim(),notas:crmInput('sale-notes').trim(),verificada:true};
+ const old=id?state.ventasVerificadas.find(x=>x.id===id):null;if(old)Object.assign(old,data);else state.ventasVerificadas.push({id:++nextId,...data});
+ saveState();closeModal();crmRenderVentas();
+}
+
 // ===================== INIT =====================
 loadState();
 if (!state.comisiones) state.comisiones = [];
@@ -2750,6 +2900,8 @@ renderFormaciones();
 renderAcciones();
 renderComisiones();
 renderKPIs();
+crmRenderOperaciones();
+crmRenderVentas();
 renderReuniones();
 renderAgenda();
 updateHeader();
