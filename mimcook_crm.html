@@ -1265,7 +1265,7 @@ function openModal(html) {
   document.getElementById('modal-inner').innerHTML = html;
   document.getElementById('modal-bg').classList.add('open');
 }
-function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); document.getElementById('modal-inner').classList.remove('mc-modal'); }
 document.getElementById('modal-bg').addEventListener('click', e => { if(e.target.id==='modal-bg') closeModal(); });
 
 function openNewCardModal(defaultStage=0) {
