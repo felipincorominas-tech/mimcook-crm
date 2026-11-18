@@ -127,10 +127,12 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .field textarea { resize: vertical; min-height: 70px; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
 
-#view-comisiones #com-resumen{display:grid !important;grid-template-columns:repeat(3,minmax(190px,1fr));gap:16px !important}
-#view-comisiones #com-resumen .kpi-card{min-width:0 !important;padding:22px 24px}
-#view-comisiones #com-resumen .kpi-val{font-size:30px !important;line-height:1.25}
-#view-comisiones #com-resumen .kpi-label{font-size:13px}
+#view-comisiones #com-resumen{display:grid !important;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px !important}
+#view-comisiones #com-resumen .kpi-card{min-width:0 !important;padding:28px 30px;min-height:135px;display:flex;flex-direction:column;justify-content:center}
+#view-comisiones #com-resumen .kpi-val{font-size:36px !important;line-height:1.22;overflow-wrap:anywhere}
+#view-comisiones #com-resumen .kpi-label{font-size:15px;margin-top:9px}
+#view-comisiones #com-resumen .kpi-card:first-child{grid-column:span 2;background:#fffdf4;border:1px solid #ebdca5}
+#view-comisiones #com-resumen .kpi-card:first-child .kpi-val{font-size:43px !important}
 .modal.mc-modal{width:800px;max-width:calc(100vw - 28px)}
 .mc-modal .field-group{grid-template-columns:repeat(2,minmax(0,1fr))}
 .mc-modal .field{min-width:0}
@@ -138,7 +140,7 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 .mc-modal .mc-line{grid-template-columns:minmax(130px,1.1fr) minmax(140px,1.1fr) minmax(70px,.5fr) 38px !important;max-width:100%}
 .mc-modal .mc-line .btn{padding:6px;min-width:34px}
 @media(max-width:850px){#view-comisiones #com-resumen{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:530px){.mc-modal .mc-line{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 70px 32px !important;gap:4px !important}.modal.mc-modal{padding:14px}#view-comisiones #com-resumen .kpi-val{font-size:23px !important}}
+@media(max-width:530px){#view-comisiones #com-resumen .kpi-card{padding:18px;min-height:112px}#view-comisiones #com-resumen .kpi-card:first-child .kpi-val{font-size:32px !important}.mc-modal .mc-line{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 70px 32px !important;gap:4px !important}.modal.mc-modal{padding:14px}#view-comisiones #com-resumen .kpi-val{font-size:23px !important}}
 </style>
 </head>
 <body>
@@ -2577,9 +2579,13 @@ function renderComisiones(){
   const reserved=records.filter(c=>mcStatus(c)==='reservada');
   const reservedTotal=reserved.reduce((a,c)=>a+mcTotal(c),0);
   const reservedAdvances=reserved.reduce((a,c)=>a+mcAdvance(c),0);
+  // Proyección de comisiones no cobradas. No incluye ventas DEMO ni comisiones cobradas.
+  const totalPendiente=sum('reservada')+sum('prevista')+sum('pendiente');
   document.getElementById('com-resumen').innerHTML=[
-    ['Reservadas',mcMoney(reservedTotal)],['Anticipos recibidos',mcMoney(reservedAdvances)],['Previstas',mcMoney(sum('prevista'))],['Por cobrar',mcMoney(sum('pendiente'))],
-    ['Cobradas',mcMoney(sum('cobrada'))],['Equipos DEMO',demo]
+    ['TOTAL PENDIENTE · estimado',mcMoney(totalPendiente)],['Reservadas · comisión estimada',mcMoney(sum('reservada'))],
+    ['Previstas',mcMoney(sum('prevista'))],['Por cobrar',mcMoney(sum('pendiente'))],
+    ['Cobradas',mcMoney(sum('cobrada'))],['Reservas · valor de pedidos',mcMoney(reservedTotal)],
+    ['Anticipos recibidos (ICC)',mcMoney(reservedAdvances)],['Equipos DEMO',demo]
   ].map(x=>'<div class="kpi-card" style="min-width:170px"><div class="kpi-val" style="font-size:22px">'+x[1]+'</div><div class="kpi-label">'+x[0]+'</div></div>').join('');
   document.getElementById('com-tbody').innerHTML=records.filter(match).map(c=>{
     const products=mcProducts(c), channel=mcChannel(c),status=mcStatus(c);
