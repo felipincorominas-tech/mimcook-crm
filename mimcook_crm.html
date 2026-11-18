@@ -295,10 +295,10 @@ select.cell-select { border: 1px solid #f5c842; border-radius: 4px; padding: 2px
 <div id="view-operaciones" class="view">
   <div class="toolbar">
     <span style="font-size:13px;color:#666">Oportunidades cualificadas y operaciones abiertas, separadas de comisiones</span>
-    <button class="btn btn-primary" style="margin-left:auto" onclick="crmOpenOperacion()">+ Nueva operación</button>
+    <button class="btn" style="margin-left:auto" onclick="crmImportKnownOperations()">↧ Cargar pendientes conocidos</button><button class="btn btn-primary" onclick="crmOpenOperacion()">+ Nueva operación</button>
   </div>
   <div class="toolbar">
-    <select id="op-origen-filter" class="cell-select" onchange="crmRenderOperaciones()"><option value="all">Todos los orígenes</option><option value="Propia">Propia</option><option value="Ramón / RÓS">Ramón / RÓS</option><option value="Distribuidor">Distribuidor</option></select>
+    <select id="op-origen-filter" class="cell-select" onchange="crmRenderOperaciones()"><option value="all">Todos los orígenes</option><option value="Propia">Propia</option><option value="Ramón / RÓS">Ramón / RÓS</option><option value="Distribuidor">Distribuidor</option><option value="Por clasificar">Por clasificar</option></select>
     <select id="op-estado-filter" class="cell-select" onchange="crmRenderOperaciones()"><option value="abiertas">Abiertas</option><option value="all">Todas</option><option value="ganada">Ganadas</option><option value="perdida">Perdidas</option></select>
   </div>
   <div id="op-resumen" class="kpi-grid"></div>
@@ -2788,6 +2788,18 @@ function crmInitCommon(entity){
 function crmValidItems(items){
  return items.length>0&&items.every(p=>Number.isInteger(p.unidades)&&p.unidades>0);
 }
+
+const CRM_CANDIDATES=[{"cliente":"Grupo Toloño / Zalacaín","estado":"proforma","productos":[],"detalle":"6 equipos; modelo y gas por confirmar","notas":"Proforma enviada; falta confirmar pago. Se esperan 6 equipos, modelos y gas sin verificar."},{"cliente":"Almorratxa","estado":"pedido","productos":[{"modelo":"PRO","gas":"GN","unidades":4}],"detalle":"4 PRO GN","notas":"Pendiente confirmar pago; no contar dos veces en ventas/stock."},{"cliente":"Beso Beach","estado":"proforma","productos":[{"modelo":"GO","gas":"GP","unidades":1}],"detalle":"1 GO GP piloto","notas":"Proforma piloto enviada. Potencial de 12 unidades adicionales no constituye pedido confirmado."},{"cliente":"Grupo NASS / Hostelgroup","estado":"negociación","productos":[],"detalle":"8–10 equipos; modelos pendientes","notas":"Planos y propuesta técnica pendientes. Proforma histórica NASS perdida, no confundir con esta oportunidad."},{"cliente":"Diamond Ibérica","origen":"Distribuidor","distribuidor":"Diamond Ibérica","estado":"negociación","productos":[],"detalle":"4 GO; gas por confirmar","notas":"Seguimiento comercial con distribuidor, confirmar cantidad/modelo/gas."},{"cliente":"Can Panxo — Javier","estado":"negociación","productos":[],"detalle":"Cantidad por confirmar","notas":"Pendiente respuesta de Javier."}];
+function crmImportKnownOperations(){
+ const pending=CRM_CANDIDATES.filter(p=>!state.operaciones.some(x=>x.importKey===p.cliente || String(x.cliente||'').trim().toLocaleLowerCase('es-ES')===p.cliente.toLocaleLowerCase('es-ES')));
+ if(!pending.length){alert('Estas operaciones ya están cargadas.');return;}
+ const summary=pending.map(p=>'- '+p.cliente+': '+p.detalle).join('\n');
+ if(!confirm('Cargar '+pending.length+' operaciones documentadas?\n\n'+summary+'\n\nSe conservan como pendientes, sin sumar facturación ni comisiones.'))return;
+ pending.forEach(p=>state.operaciones.push({id:++nextId,importKey:p.cliente,cliente:p.cliente,origen:p.origen||'Por clasificar',distribuidor:p.distribuidor||'',responsable:'Felipe',estado:p.estado,productos:p.productos,detalleEquipos:p.detalle,importe:0,cierre:'',accion:'Confirmar situación comercial y datos pendientes',fechaAccion:'',notas:p.notas}));
+ saveState();crmRenderOperaciones();
+ alert('Operaciones importadas. Completa los campos sin confirmar cuando tengas información.');
+}
+
 function crmRenderOperaciones(){
  const records=state.operaciones||[], source=document.getElementById('op-origen-filter').value, status=document.getElementById('op-estado-filter').value;
  const open=records.filter(x=>!['ganada','perdida'].includes(x.estado));
@@ -2800,7 +2812,7 @@ function crmOpenOperacion(id){
  const x=id?state.operaciones.find(v=>v.id===id):null;const entity=x||{estado:'negociación',origen:'Propia',responsable:'Felipe',productos:[]};
  openModal('<h2>📌 '+(x?'Editar':'Nueva')+' operación pendiente</h2><div class="field-group">'+
   '<div class="field full"><label>Cliente</label><input id="op-client"></div>'+
-  '<div class="field"><label>Origen</label><select id="op-source"><option>Propia</option><option>Ramón / RÓS</option><option>Distribuidor</option></select></div>'+
+  '<div class="field"><label>Origen</label><select id="op-source"><option>Propia</option><option>Ramón / RÓS</option><option>Distribuidor</option><option>Por clasificar</option></select></div>'+
   '<div class="field"><label>Distribuidor asociado</label><input id="op-distributor"></div>'+
   '<div class="field"><label>Responsable</label><input id="op-owner"></div>'+
   '<div class="field"><label>Fase comercial</label><select id="op-stage"><option value="negociación">Negociación</option><option value="demo">Demo</option><option value="proforma">Proforma enviada</option><option value="pedido">Pedido confirmado</option><option value="ganada">Ganada</option><option value="perdida">Perdida</option></select></div>'+
