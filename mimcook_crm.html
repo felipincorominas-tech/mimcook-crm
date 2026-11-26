@@ -2682,7 +2682,48 @@ function renderComisiones(){
       '<td style="max-width:180px;font-size:12px">'+(status==='reservada'?'<div>Anticipo: '+mcMoney(mcAdvance(c))+'</div><div>Pendiente pedido: '+mcMoney(Math.max(0,mcTotal(c)-mcAdvance(c)))+'</div>':'')+mcEsc(c.notas||'')+'</td>'+
       '<td style="white-space:nowrap"><button class="btn" onclick="openNewComisionModal('+c.id+')">Editar</button> <button class="btn btn-danger" onclick="deleteCom('+c.id+')">✕</button></td></tr>';
   }).join('')||'<tr><td colspan="11" style="text-align:center;color:#888;padding:25px">No hay operaciones en esta categoría</td></tr>';
-  document.getElementById('com-totals').innerHTML='';
+
+  // Resumen sin filtros: la suma no varía al alternar las pestañas de estado.
+  // Nunca agregar facturas verificadas a las operaciones de comisión: pueden referirse a la misma venta.
+  const st=['reservada','prevista','pendiente','cobrada','demo'];
+  const statuses={
+   reservada:'Reservadas',prevista:'Previstas',pendiente:'Por cobrar',
+   cobrada:'Cobradas',demo:'DEMO (sin comisión)'
+  };
+  const buckets=Object.fromEntries(st.map(status=>{
+   const filtered=records.filter(c=>mcStatus(c)===status);
+   return [status,{count:filtered.length,units:filtered.reduce((a,c)=>a+mcUnits(c),0),amount:filtered.reduce((a,c)=>a+mcTotal(c),0),commission:filtered.reduce((a,c)=>a+mcCommission(c),0)}];
+  }));
+  const allSales=st.reduce((a,k)=>a+buckets[k].amount,0);
+  const confirmed=buckets.pendiente.amount+buckets.cobrada.amount;
+  const prospective=buckets.reservada.amount+buckets.prevista.amount;
+  const totalComm=st.reduce((a,k)=>a+buckets[k].commission,0);
+  const verified=state.ventasVerificadas||[];
+  const invoiced=verified.reduce((a,v)=>a+crmN(v.importe),0);
+  const invoicedUnits=verified.reduce((a,v)=>a+crmTotalUnits(v),0);
+  const cards=[
+   ['Total operaciones en Comisiones',mcMoney(allSales),'Incluye reservas, previstas y DEMO'],
+   ['Ventas en fase de cobro o cobradas',mcMoney(confirmed),'Por cobrar + cobradas, según estado de comisión'],
+   ['Reservas + previstas',mcMoney(prospective),'Potencial comercial, no facturación'],
+   ['Importe de operaciones DEMO',mcMoney(buckets.demo.amount),'Sin comisión'],
+   ['Comisiones totales calculadas',mcMoney(totalComm),'Todos los estados salvo DEMO'],
+   ['Facturación verificada (registro aparte)',mcMoney(invoiced),verified.length+' facturas · '+invoicedUnits+' unidades']
+  ];
+  document.getElementById('com-totals').innerHTML=
+   '<div style="margin:24px 0 12px"><div style="font-size:17px;font-weight:750">📊 Resumen económico de ventas y comisiones</div>'+
+   '<div style="font-size:12px;color:#777;margin-top:5px">Todos los registros, independientemente del filtro seleccionado. Importes sin IVA.</div></div>'+
+   '<div class="kpi-grid" style="margin-bottom:18px">'+cards.map(x=>
+    '<div class="kpi-card"><div class="kpi-val" style="font-size:23px">'+x[1]+'</div>'+
+    '<div class="kpi-label">'+x[0]+'</div><div style="font-size:11px;color:#888;margin-top:7px">'+x[2]+'</div></div>'
+   ).join('')+'</div>'+
+   '<div class="table-wrap"><table><thead><tr><th>Estado</th><th>Operaciones</th><th>Equipos</th><th>Valor de ventas s/IVA</th><th>Comisiones (€)</th></tr></thead><tbody>'+
+   st.map(k=>'<tr><td><strong>'+statuses[k]+'</strong></td><td>'+buckets[k].count+'</td><td>'+buckets[k].units+'</td><td><strong>'+mcMoney(buckets[k].amount)+'</strong></td><td>'+mcMoney(buckets[k].commission)+'</td></tr>').join('')+
+   '<tr style="font-weight:750;background:#f3f5f8"><td>Total</td><td>'+records.length+'</td><td>'+st.reduce((a,k)=>a+buckets[k].units,0)+'</td><td>'+mcMoney(allSales)+'</td><td>'+mcMoney(totalComm)+'</td></tr>'+
+   '</tbody></table></div>'+
+   '<div style="font-size:11px;color:#777;margin-top:12px;line-height:1.5">El total de Comisiones reúne importes de operaciones de distinto estado y <strong>no es la facturación real de ICC</strong>. '+
+   'La cifra «Facturación verificada» procede exclusivamente del registro de facturas en Ventas y forecast, que puede contener las mismas operaciones. <strong>No se suman ambos totales</strong>. '+
+   'El Excel agregado de Anna no aporta importes netos por factura y, por ello, tampoco se añade a estos euros.</div>';
+
 }
 function setComFilter(val){
   comFilter=val;
